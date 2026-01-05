@@ -21,7 +21,7 @@ header {
     position: fixed;
     width: 100%;
     z-index: 100;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
 }
 
 .logo {
@@ -34,7 +34,7 @@ header {
 }
 
 .logo:hover {
-    letter-spacing: 8px; /* Hiệu ứng giãn chữ khi rê chuột vào logo */
+    letter-spacing: 8px;
 }
 
 nav {
@@ -56,7 +56,6 @@ nav {
     opacity: 0.7;
 }
 
-/* Hiệu ứng gạch chân chạy ra (Hover effect) */
 .nav-link::after {
     content: '';
     position: absolute;
@@ -76,7 +75,6 @@ nav {
     width: 100%;
 }
 
-/* NÚT ĐĂNG NHẬP */
 .btn-login {
     background: transparent;
     color: #fff;
@@ -93,7 +91,6 @@ nav {
 .btn-login:hover {
     background: #fff;
     color: #000;
-    border-color: #fff;
 }
 
 /* 3. PHẦN HERO (TRANG CHỦ) */
@@ -101,8 +98,7 @@ nav {
     position: relative;
     height: 100vh;
     width: 100%;
-    /* --- KIỂM TRA TÊN FILE ẢNH CỦA BẠN Ở ĐÂY --- */
-    background-image: url('hero-bg.jpg'); 
+    background-image: url('hero-bg.jpg'); /* ĐẢM BẢO TÊN FILE ẢNH ĐÚNG */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -118,7 +114,7 @@ nav {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Làm tối ảnh để nổi chữ */
+    background: rgba(0, 0, 0, 0.5);
     z-index: 1;
 }
 
@@ -135,7 +131,6 @@ nav {
     font-weight: 800;
 }
 
-/* Hiệu ứng chữ rỗng (Outline) */
 .outline {
     -webkit-text-stroke: 1px #fff;
     color: transparent;
@@ -149,7 +144,54 @@ nav {
     text-transform: uppercase;
 }
 
-/* HIỆU ỨNG CUỘN XUỐNG */
+/* 4. CSS CHO CÁC TRANG CON (VỀ SAOVN) */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 150px 50px;
+}
+
+.section-title {
+    font-size: 40px;
+    letter-spacing: 5px;
+    margin-bottom: 60px;
+    text-align: center;
+    font-weight: 800;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.info-box {
+    padding: 50px 40px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.info-box:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: #fff;
+    transform: translateY(-15px);
+}
+
+.info-box h3 {
+    font-size: 18px;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.info-box p {
+    line-height: 1.8;
+    opacity: 0.6;
+    font-size: 15px;
+}
+
 .scroll-down {
     margin-top: 80px;
     font-size: 12px;
