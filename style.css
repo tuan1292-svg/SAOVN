@@ -1,0 +1,79 @@
+/* Thiết lập cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif; /* Nếu chưa có, nó sẽ dùng font không chân mặc định */
+}
+
+body {
+    background-color: #050505; /* Đen sâu đúng chất Zeit */
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+/* Header sang trọng */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 50px;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+}
+
+.logo {
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 30px;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.btn-login {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Phần Hero ấn tượng */
+.hero {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: 80px;
+    line-height: 1.1;
+    letter-spacing: -2px;
+}
+
+.hero-content p {
+    margin-top: 20px;
+    opacity: 0.6;
+}
+
+.scroll-down {
+    margin-top: 100px;
+    font-size: 12px;
+    opacity: 0.5;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
