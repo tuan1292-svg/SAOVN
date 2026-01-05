@@ -1,18 +1,16 @@
-/* Thiết lập cơ bản */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif; /* Nếu chưa có, nó sẽ dùng font không chân mặc định */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background-color: #050505; /* Đen sâu đúng chất Zeit */
+    background-color: #050505;
     color: #ffffff;
     overflow-x: hidden;
 }
 
-/* Header sang trọng */
 header {
     display: flex;
     justify-content: space-between;
@@ -45,19 +43,48 @@ nav a {
     font-weight: bold;
 }
 
-/* Phần Hero ấn tượng */
 .hero {
+    position: relative;
     height: 100vh;
+    width: 100%;
+    
+    /* ĐOẠN QUAN TRỌNG NHẤT: Thay tên file ảnh của bạn vào đây */
+    background-image: url('hero-bg.jpg'); 
+    
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Tạo hiệu ứng ảnh đứng yên khi cuộn rất sang */
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Làm tối ảnh 50% */
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
     text-align: center;
 }
 
 .hero-content h1 {
-    font-size: 80px;
+    font-size: clamp(40px, 8vw, 80px); /* Tự co giãn kích thước chữ theo màn hình */
     line-height: 1.1;
     letter-spacing: -2px;
+}
+
+.outline {
+    -webkit-text-stroke: 1px #fff;
+    color: transparent;
 }
 
 .hero-content p {
