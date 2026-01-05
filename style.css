@@ -1,8 +1,9 @@
+/* 1. THIẾT LẬP CHUNG */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -11,6 +12,7 @@ body {
     overflow-x: hidden;
 }
 
+/* 2. HEADER & MENU ĐIỀU HƯỚNG */
 header {
     display: flex;
     justify-content: space-between;
@@ -19,41 +21,91 @@ header {
     position: fixed;
     width: 100%;
     z-index: 100;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
 }
 
 .logo {
-    font-weight: 800;
-    letter-spacing: 2px;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-nav a {
+.logo:hover {
+    letter-spacing: 8px; /* Hiệu ứng giãn chữ khi rê chuột vào logo */
+}
+
+nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
     color: #fff;
     text-decoration: none;
-    margin-right: 30px;
-    font-size: 14px;
+    margin-right: 25px;
+    font-size: 13px;
+    font-weight: 500;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    padding: 5px 0;
+    transition: 0.3s;
+    opacity: 0.7;
 }
 
+/* Hiệu ứng gạch chân chạy ra (Hover effect) */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    transition: 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+    opacity: 1;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* NÚT ĐĂNG NHẬP */
 .btn-login {
-    background: #fff;
-    color: #000;
-    border: none;
-    padding: 10px 20px;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.5);
+    padding: 8px 22px;
     cursor: pointer;
     font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+    transition: all 0.4s;
+    margin-left: 10px;
 }
 
+.btn-login:hover {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+/* 3. PHẦN HERO (TRANG CHỦ) */
 .hero {
     position: relative;
     height: 100vh;
     width: 100%;
-    
-    /* ĐOẠN QUAN TRỌNG NHẤT: Thay tên file ảnh của bạn vào đây */
+    /* --- KIỂM TRA TÊN FILE ẢNH CỦA BẠN Ở ĐÂY --- */
     background-image: url('hero-bg.jpg'); 
-    
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* Tạo hiệu ứng ảnh đứng yên khi cuộn rất sang */
+    background-attachment: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -66,7 +118,7 @@ nav a {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Làm tối ảnh 50% */
+    background: rgba(0, 0, 0, 0.5); /* Làm tối ảnh để nổi chữ */
     z-index: 1;
 }
 
@@ -77,24 +129,31 @@ nav a {
 }
 
 .hero-content h1 {
-    font-size: clamp(40px, 8vw, 80px); /* Tự co giãn kích thước chữ theo màn hình */
-    line-height: 1.1;
-    letter-spacing: -2px;
+    font-size: clamp(40px, 10vw, 90px);
+    line-height: 1;
+    letter-spacing: -3px;
+    font-weight: 800;
 }
 
+/* Hiệu ứng chữ rỗng (Outline) */
 .outline {
     -webkit-text-stroke: 1px #fff;
     color: transparent;
 }
 
 .hero-content p {
-    margin-top: 20px;
-    opacity: 0.6;
+    margin-top: 25px;
+    font-size: 18px;
+    letter-spacing: 2px;
+    opacity: 0.7;
+    text-transform: uppercase;
 }
 
+/* HIỆU ỨNG CUỘN XUỐNG */
 .scroll-down {
-    margin-top: 100px;
+    margin-top: 80px;
     font-size: 12px;
+    letter-spacing: 3px;
     opacity: 0.5;
     animation: bounce 2s infinite;
 }
