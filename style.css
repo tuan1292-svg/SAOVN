@@ -1,103 +1,61 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Về SAOVN | Sứ mệnh & Đội ngũ</title>
-    <link rel="stylesheet" href="../style.css">
-</head>
-<body>
-    <header>
-        <div class="logo">SAOVN</div>
-        <nav>
-            <a href="../index.html" class="nav-link">Trang chủ</a>
-            <a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
-            <a href="du-an.html" class="nav-link">Dự án</a>
-            <a href="#" class="nav-link">Liên hệ</a>
-            <a href="#" class="nav-link">Đăng ký</a>
-            <button class="btn-login">Đăng nhập</button>
-        </nav>
-    </header>
+/* THIẾT LẬP CHUNG */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+body { background-color: #050505; color: #ffffff; overflow-x: hidden; line-height: 1.6; }
 
-    <section class="content-section">
-        <div class="container">
-            <h2 class="section-title">GIỚI THIỆU SAOVN</h2>
-            <div class="info-grid">
-                <div class="info-box">
-                    <h3>🔷 SỨ MỆNH</h3>
-                    <p>SAOVN tồn tại để tổ chức những hoạt động đặc biệt, thiết thực vì Việt Nam.</p>
-                </div>
-                <div class="info-box">
-                    <h3>🌍 TẦM NHÌN</h3>
-                    <p>Trở thành tổ chức tiên phong kết nối con người và ý tưởng vì cộng đồng.</p>
-                </div>
-                <div class="info-box">
-                    <h3>💎 GIÁ TRỊ CỐT LÕI</h3>
-                    <p>Vì Việt Nam - Hành động - Trách nhiệm - Sáng tạo - Kết nối.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+/* HEADER */
+header { display: flex; justify-content: space-between; align-items: center; padding: 30px 50px; position: fixed; width: 100%; z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); }
+.logo { font-size: 26px; font-weight: 900; letter-spacing: 5px; color: #fff; text-transform: uppercase; }
+.nav-link { color: #fff; text-decoration: none; margin-right: 25px; font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; opacity: 0.7; transition: 0.3s; position: relative; }
+.nav-link:hover, .nav-link.active { opacity: 1; }
+.btn-login { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.5); padding: 8px 22px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 11px; transition: 0.4s; }
+.btn-login:hover { background: #fff; color: #000; }
 
-    <section class="founder-section">
-        <div class="container">
-            <div class="founder-wrapper">
-                <div class="founder-image-container">
-                    <img src="../images/about/founder.jpg" alt="Nguyễn Anh Tuấn" class="founder-img">
-                    <div class="image-overlay"></div>
-                </div>
-                <div class="founder-info">
-                    <span class="label">The Leader</span>
-                    <h2 class="founder-name">Nguyễn Anh Tuấn</h2>
-                    <p class="founder-title">Người Sáng Lập SAOVN</p>
-                    <div class="founder-meta">
-                        <span>Ngày sinh: 01/02/1992</span>
-                    </div>
-                    <p class="founder-quote">
-                        "Sáng tạo không chỉ là tạo ra cái mới, mà là tạo ra giá trị thiết thực nhất cho quê hương Việt Nam."
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
+/* TRANG CHỦ - HERO */
+.hero { height: 100vh; background-image: url('images/hero/hero-bg.jpg'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; position: relative; }
+.hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+.hero-content { position: relative; z-index: 2; text-align: center; }
+.hero-content h1 { font-size: clamp(40px, 10vw, 90px); line-height: 1; font-weight: 800; }
+.outline { -webkit-text-stroke: 1px #fff; color: transparent; }
+.scroll-down { margin-top: 50px; font-size: 12px; letter-spacing: 3px; opacity: 0.5; animation: bounce 2s infinite; }
 
-    <section class="management-section">
-        <div class="container">
-            <h2 class="section-title">BAN QUẢN LÝ</h2>
-            <div class="team-grid">
-                <div class="team-card">
-                    <div class="member-img-box">
-                        <img src="../images/about/member1.jpg" alt="Member" class="member-img">
-                    </div>
-                    <div class="member-info">
-                        <h4>Thành viên 01</h4>
-                        <p>Giám đốc điều hành</p>
-                    </div>
-                </div>
-                <div class="team-card">
-                    <div class="member-img-box">
-                        <img src="../images/about/member2.jpg" alt="Member" class="member-img">
-                    </div>
-                    <div class="member-info">
-                        <h4>Thành viên 02</h4>
-                        <p>Giám đốc sáng tạo</p>
-                    </div>
-                </div>
-                <div class="team-card">
-                    <div class="member-img-box">
-                        <img src="../images/about/member3.jpg" alt="Member" class="member-img">
-                    </div>
-                    <div class="member-info">
-                        <h4>Thành viên 03</h4>
-                        <p>Trưởng ban cộng đồng</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div style="text-align: center; margin-top: 80px;">
-                <a href="../index.html" class="nav-link" style="opacity: 1;">← Quay lại trang chủ</a>
-            </div>
-        </div>
-    </section>
-</body>
-</html>
+/* NỘI DUNG CHUNG CÁC TRANG CON */
+.container { max-width: 1200px; margin: 0 auto; padding: 120px 50px; }
+.section-title { font-size: clamp(30px, 5vw, 40px); letter-spacing: 5px; margin-bottom: 60px; text-align: center; font-weight: 800; text-transform: uppercase; }
+
+/* GRID GIỚI THIỆU */
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 100px; }
+.info-box { padding: 50px 40px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); transition: 0.4s; }
+.info-box:hover { border-color: #fff; transform: translateY(-10px); }
+
+/* PHẦN NGƯỜI SÁNG LẬP */
+.founder-section { background: #0a0a0a; padding: 100px 0; }
+.founder-wrapper { display: flex; align-items: center; gap: 60px; }
+.founder-image-container { flex: 1; max-width: 400px; height: 550px; border-left: 2px solid #fff; overflow: hidden; position: relative; }
+.founder-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(50%); transition: 1s; }
+.founder-image-container:hover .founder-img { filter: grayscale(0%); transform: scale(1.05); }
+.founder-info { flex: 1; }
+.founder-name { font-size: 45px; margin-bottom: 10px; }
+.founder-title { font-size: 18px; opacity: 0.7; margin-bottom: 20px; color: #fff; }
+.founder-quote { font-size: 20px; font-style: italic; border-left: 3px solid #fff; padding-left: 20px; margin-top: 30px; opacity: 0.8; }
+
+/* BAN QUẢN LÝ */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+.team-card { text-align: center; }
+.member-img-box { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #1a1a1a; margin-bottom: 15px; }
+.member-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.4s; }
+.team-card:hover .member-img { opacity: 1; }
+
+/* DỰ ÁN */
+.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
+.project-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; }
+.project-card:hover { border-color: #fff; }
+
+/* ANIMATION */
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .founder-wrapper { flex-direction: column; text-align: center; }
+    .founder-image-container { margin: 0 auto; border-left: none; border-bottom: 2px solid #fff; }
+    .founder-quote { border-left: none; border-top: 1px solid #fff; padding: 20px 0 0 0; }
+}
