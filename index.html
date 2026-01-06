@@ -12,7 +12,14 @@
             <span class="logo-text">SAOVN</span>
             <span class="logo-slogan">Special Actions Organization for Vietnam</span>
         </a>
-        <nav>
+
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+        <nav class="nav-container">
             <a href="index.html" class="nav-link active">Trang chủ</a>
             <a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
             <a href="du-an.html" class="nav-link">Dự án</a>
@@ -22,14 +29,23 @@
         </nav>
     </header>
 
-<section class="hero">
+    <section class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <h1>SÁNG TẠO <br> <span class="outline">KHÔNG GIỚI HẠN</span></h1>
             <p>Tổ chức hoạt động đặc biệt vì Việt Nam</p>
-            
             <div class="scroll-down">Cuộn xuống để xem ↓</div>
         </div>
     </section>
+
+    <script>
+        const menu = document.querySelector('#mobile-menu');
+        const menuLinks = document.querySelector('.nav-container');
+
+        menu.addEventListener('click', function() {
+            menu.classList.toggle('is-active');
+            menuLinks.classList.toggle('active');
+        });
+    </script>
 </body>
 </html>
