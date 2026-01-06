@@ -1,107 +1,51 @@
-/* DỰ ÁN SAOVN - CSS MASTER FILE
-   Cập nhật: 06/01/2026
-   Phong cách: Sang trọng, Quyền lực, Dark Mode
-*/
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background-color: #050505; color: #fff; overflow-x: hidden; }
 
-/* 1. THIẾT LẬP CHUNG */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
+header { display: flex; justify-content: space-between; align-items: center; padding: 30px 50px; position: fixed; width: 100%; z-index: 100; background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent); }
 
-body {
-    background-color: #050505;
-    color: #ffffff;
-    overflow-x: hidden;
-    line-height: 1.6;
-}
+/* LOGO & SLOGAN */
+.logo-wrapper { display: flex; flex-direction: column; text-decoration: none; cursor: pointer; transition: 0.5s; }
+.logo { font-size: 35px; font-weight: 900; letter-spacing: 7px; color: #fff; line-height: 1; text-transform: uppercase; transition: 0.5s; }
+.slogan-sub { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255, 255, 255, 0); margin-top: 5px; transition: 0.5s; transform: translateY(-5px); }
+.logo-wrapper:hover .logo { letter-spacing: 12px; }
+.logo-wrapper:hover .slogan-sub { color: rgba(255, 255, 255, 0.7); transform: translateY(0); }
 
-/* 2. HEADER & LOGO (Hiệu ứng Slogan ẩn) */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 30px 50px;
-    position: fixed;
-    width: 100%;
-    z-index: 100;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-}
+nav { display: flex; align-items: center; }
+.nav-link { color: #fff; text-decoration: none; margin-right: 25px; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px; opacity: 0.6; transition: 0.3s; }
+.nav-link:hover, .nav-link.active { opacity: 1; }
+.btn-login { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4); padding: 10px 25px; cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
 
-.logo-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    cursor: pointer;
-    text-decoration: none;
-    transition: 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-}
+/* HERO */
+.hero { height: 100vh; background-image: url('images/hero/hero-bg.jpg'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; position: relative; }
+.hero-overlay { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+.hero-content { position: relative; z-index: 2; text-align: center; }
+.hero-content h1 { font-size: 80px; font-weight: 800; }
+.outline { -webkit-text-stroke: 1px #fff; color: transparent; }
 
-.logo {
-    font-size: 35px; /* Logo to và quyền lực */
-    font-weight: 900;
-    letter-spacing: 7px;
-    color: #fff;
-    line-height: 1;
-    text-transform: uppercase;
-    transition: 0.5s all ease;
-}
+/* CONTAINER & SECTIONS */
+.container { max-width: 1200px; margin: 0 auto; padding: 120px 50px; }
+.section-title { font-size: 40px; text-align: center; margin-bottom: 60px; letter-spacing: 8px; font-weight: 800; }
 
-.slogan-sub {
-    font-size: 8px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0); /* Mặc định ẩn */
-    margin-top: 5px;
-    transition: 0.5s all ease;
-    transform: translateY(-5px);
-}
+.info-grid, .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+.info-box { padding: 40px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); transition: 0.4s; }
+.info-box:hover { border-color: #fff; transform: translateY(-10px); }
 
-.logo-wrapper:hover .logo {
-    letter-spacing: 12px;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-}
+/* FOUNDER */
+.founder-section { padding: 80px 0; background: #0a0a0a; }
+.founder-wrapper { display: flex; align-items: center; gap: 60px; }
+.founder-image-container { flex: 1; max-width: 400px; height: 500px; border-left: 2px solid #fff; overflow: hidden; }
+.founder-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: 1s; }
+.founder-image-container:hover .founder-img { filter: grayscale(0%); transform: scale(1.05); }
+.founder-info { flex: 1; }
+.founder-name { font-size: 40px; margin-bottom: 10px; }
+.founder-quote { font-size: 20px; font-style: italic; border-left: 3px solid #fff; padding-left: 20px; margin-top: 20px; }
 
-.logo-wrapper:hover .slogan-sub {
-    color: rgba(255, 255, 255, 0.7);
-    transform: translateY(0);
-}
+/* TEAM */
+.member-img-box { width: 100%; aspect-ratio: 3/4; overflow: hidden; background: #111; margin-bottom: 15px; }
+.member-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: grayscale(100%); transition: 0.5s; }
+.team-card:hover .member-img { opacity: 1; filter: grayscale(0%); }
 
-.logo-wrapper:hover {
-    transform: scale(1.05);
-}
-
-/* 3. MENU ĐIỀU HƯỚNG */
-nav {
-    display: flex;
-    align-items: center;
-}
-
-.nav-link {
-    color: #fff;
-    text-decoration: none;
-    margin-right: 25px;
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    opacity: 0.6;
-    transition: 0.3s;
-    position: relative;
-}
-
-.nav-link:hover, .nav-link.active {
-    opacity: 1;
-}
-
-.nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 1px;
-    bottom: -5px;
-    left: 0;
-    background-color: #fff;
-    transition
+/* PROJECT */
+.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+.project-card { border: 1px solid rgba(255,255,255,0.1); transition: 0.4s; }
+.project-card:hover { border-color: #fff; }
