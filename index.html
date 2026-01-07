@@ -60,6 +60,41 @@
         </div>
     </section>
 
+<section class="section stats-section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Dữ Liệu <span class="highlight">Thực Tế</span></h2>
+            
+            <div class="stats-container">
+                <div class="stats-grid">
+                    <div class="stat-item" data-aos="fade-right">
+                        <div class="live-dot"></div> <span class="stat-number" data-target="1250">0</span>
+                        <span class="stat-label">Thành viên hành động</span>
+                    </div>
+                    <div class="stat-item" data-aos="fade-right" data-aos-delay="200">
+                        <span class="stat-number" data-target="12">0</span>
+                        <span class="stat-label">Dự án hoàn thành</span>
+                    </div>
+                    <div class="stat-item" data-aos="fade-right" data-aos-delay="400">
+                        <span class="stat-number" data-target="5.8">0</span><span class="unit">B+</span>
+                        <span class="stat-label">Quỹ huy động (VNĐ)</span>
+                    </div>
+                </div>
+
+                <div class="stats-chart" data-aos="fade-left">
+                    <div class="chart-header">
+                        <span>Tăng trưởng tác động xã hội (2025-2026)</span>
+                    </div>
+                    <div class="chart-placeholder">
+                        <div class="bar" style="height: 30%;" data-label="T1"></div>
+                        <div class="bar" style="height: 45%;" data-label="T2"></div>
+                        <div class="bar" style="height: 60%;" data-label="T3"></div>
+                        <div class="bar" style="height: 85%;" data-label="Hiện tại"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="section projects-section">
         <div class="container">
             <h2 class="section-title" data-aos="fade-up">Dự Án <span class="highlight">Tiêu Biểu</span></h2>
@@ -157,6 +192,37 @@
                 menuLinks.classList.remove('active');
             });
         });
+
+const stats = document.querySelectorAll('.stat-number');
+const speed = 200;
+
+const startCounters = () => {
+    stats.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const inc = target / speed;
+
+            if (count < target) {
+                counter.innerText = (count + inc).toFixed(target % 1 === 0 ? 0 : 1);
+                setTimeout(updateCount, 1);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCount();
+    });
+};
+
+// Kích hoạt khi cuộn đến
+let started = false;
+window.addEventListener('scroll', () => {
+    const statsSection = document.querySelector('.stats-section');
+    if (window.scrollY > statsSection.offsetTop - 500 && !started) {
+        startCounters();
+        started = true;
+    }
+});
     </script>
 </body>
 </html>
