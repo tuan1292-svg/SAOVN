@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAOVN | Sáng Tạo Không Giới Hạn</title>
     <link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 <body>
     <header>
@@ -38,7 +39,94 @@
         </div>
     </section>
 
-<script>
+<section class="section about-section">
+    <div class="container">
+        <h2 class="section-title" data-aos="fade-up">
+            Về <span class="highlight">SAOVN</span>
+        </h2>
+        
+        <p class="about-text" data-aos="fade-up" data-aos-delay="200">
+            SAOVN là tổ chức tiên phong trong việc áp dụng công nghệ và sáng tạo để giải quyết các vấn đề thực tiễn. 
+            Chúng tôi kết nối những tài năng trẻ, tạo ra các dự án đột phá nhằm nâng tầm vị thế Việt Nam trên bản đồ số.
+        </p>
+    </div>
+</section>
+
+    <section class="section projects-section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Dự Án <span class="highlight">Tiêu Biểu</span></h2>
+            
+            <div class="project-grid">
+                <div class="project-card" data-aos="fade-right">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Cyber City">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Công nghệ</span>
+                        <h3>Cyber City Map</h3>
+                        <p>Bản đồ số hóa 3D các đô thị lớn tại Việt Nam với dữ liệu thời gian thực.</p>
+                        <a href="#" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80" alt="AI Education">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Giáo dục</span>
+                        <h3>AI For Education</h3>
+                        <p>Hệ thống trợ giảng ảo hỗ trợ học sinh vùng sâu vùng xa tiếp cận tri thức.</p>
+                        <a href="#" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-left" data-aos-delay="400">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80" alt="Green Energy">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Môi trường</span>
+                        <h3>Green Energy</h3>
+                        <p>Giải pháp quản lý năng lượng thông minh cho các tòa nhà chọc trời.</p>
+                        <a href="#" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<footer>
+        <div class="container footer-grid" data-aos="fade-up">
+            <div class="footer-brand">
+                <h3>SAOVN</h3>
+                <p>Special Actions Organization for Vietnam</p>
+                <p class="footer-slogan">Sáng tạo không giới hạn - Nâng tầm vị thế Việt.</p>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Liên Hệ</h4>
+                <p>📍 Địa chỉ: Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
+                <p>📞 Điện thoại: 090 xxx xxxx</p>
+                <p>✉️ Email: contact@saovn.org</p>
+            </div>
+
+            <div class="footer-socials">
+                <h4>Kết Nối</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-link">TikTok</a>
+                    <a href="#" class="social-link">YouTube</a>
+                    <a href="#" class="social-link">Discord</a>
+                    <a href="#" class="social-link">Facebook</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="copyright">&copy; 2026 SAOVN. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
         const menu = document.querySelector('#mobile-menu');
         const menuLinks = document.querySelector('.nav-container');
 
@@ -47,7 +135,6 @@
             menuLinks.classList.toggle('active');
         });
         
-        // Thêm tính năng: Click vào link thì đóng menu luôn (dành cho mobile)
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 menu.classList.remove('is-active');
@@ -55,7 +142,13 @@
             });
         });
     </script>
-</body>
-</html>
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 1000,
+    once: true,
+  });
+</script>
 </body>
 </html>
