@@ -100,3 +100,76 @@ footer { padding: 80px 20px 30px; background: #000; border-top: 1px solid #222; 
     .footer-contact h4, .footer-socials h4 { border-left: none; padding-left: 0; }
     .social-icons { justify-content: center; }
 }
+
+/* --- TRANG VỀ SAOVN PHIÊN BẢN CHUYÊN NGHIỆP --- */
+.about-hero-pro {
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.2)), url('hero-bg.jpg') center/cover;
+    text-align: left;
+    padding-top: 100px;
+}
+.sub-title { color: #00d2ff; text-transform: uppercase; letter-spacing: 3px; font-weight: bold; margin-bottom: 20px; display: block; }
+.about-hero-pro h1 { font-size: clamp(35px, 8vw, 65px); font-weight: 900; line-height: 1.1; }
+
+.problem-section { background: #080808; padding: 120px 20px; }
+.large-text { font-size: 1.5rem; line-height: 1.6; color: #fff; max-width: 1000px; margin: 0 auto 40px; font-weight: 300; }
+.quote-box { border-left: 4px solid #00d2ff; padding-left: 30px; max-width: 800px; margin: 0 auto; font-style: italic; color: #aaa; }
+
+.vision-mission-section { background: #000; }
+.vision-mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; text-align: left; }
+.vm-card h2 { font-size: 32px; color: #00d2ff; margin-bottom: 25px; text-transform: uppercase; }
+.vm-card p { color: #ccc; line-height: 1.8; }
+
+.mission-list { list-style: none; margin-top: 20px; }
+.mission-list li { margin-bottom: 15px; display: flex; align-items: center; gap: 15px; color: #ccc; }
+.mission-list li span { color: #00d2ff; font-weight: bold; font-family: 'Courier New', monospace; font-size: 1.2rem; }
+
+.fields-pro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+.field-item { background: #111; padding: 50px 30px; border-top: 3px solid transparent; transition: 0.4s; text-align: left; }
+.field-item:hover { border-top-color: #00d2ff; background: #151515; }
+.field-item h3 { margin-bottom: 15px; font-size: 20px; text-transform: uppercase; }
+
+/* --- CẬP NHẬT KHOẢNG CÁCH NÚT CTA --- */
+.cta-inner h2 { 
+    font-size: clamp(28px, 5vw, 40px); 
+    margin-bottom: 25px; 
+}
+
+.cta-inner p { 
+    margin-bottom: 45px; /* Tăng khoảng cách này để nút không bị sát chữ */
+    line-height: 1.8;
+    color: #ccc;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-btns {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Tinh chỉnh lại nút đăng ký cho trang trọng */
+.cta-inner .btn-main {
+    padding: 15px 45px; /* Làm nút to và bề thế hơn */
+    font-size: 14px;
+    letter-spacing: 2px;
+    border: 1px solid #00d2ff;
+    background: #00d2ff;
+    color: #000;
+    transition: all 0.4s ease;
+}
+
+.cta-inner .btn-main:hover {
+    background: transparent;
+    color: #00d2ff;
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
+}
+
+@media (max-width: 850px) {
+    .vision-mission-grid { grid-template-columns: 1fr; }
+    .about-hero-pro { text-align: center; justify-content: center; }
+}
