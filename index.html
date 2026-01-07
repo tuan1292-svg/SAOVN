@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAOVN | Sáng Tạo Không Giới Hạn</title>
     <link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 </head>
 <body>
     <header>
@@ -33,13 +33,13 @@
     <section class="hero">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>SÁNG TẠO <br> <span class="outline">KHÔNG GIỚI HẠN</span></h1>
-            <p>Tổ chức hoạt động đặc biệt vì Việt Nam</p>
+            <h1 data-aos="zoom-in">SÁNG TẠO <br> <span class="outline">KHÔNG GIỚI HẠN</span></h1>
+            <p data-aos="fade-up" data-aos-delay="200">Tổ chức hoạt động đặc biệt vì Việt Nam</p>
             <div class="scroll-down">Cuộn xuống để xem ↓</div>
         </div>
     </section>
 
-<section class="section about-section">
+    <section class="section about-section">
         <div class="container">
             <h2 class="section-title" data-aos="fade-up">Về <span class="highlight">SAOVN</span></h2>
             
@@ -67,44 +67,44 @@
             <div class="project-grid">
                 <div class="project-card" data-aos="fade-right">
                     <div class="card-img">
-                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Cyber City">
+                        <img src="https://images.unsplash.com/photo-1547619292-8816ee7cdd50?auto=format&fit=crop&w=600&q=80" alt="Hệ thống cảnh báo lũ">
                     </div>
                     <div class="card-content">
-                        <span class="card-tag">Công nghệ</span>
-                        <h3>Cyber City Map</h3>
-                        <p>Bản đồ số hóa 3D các đô thị lớn tại Việt Nam với dữ liệu thời gian thực.</p>
-                        <a href="#" class="btn-card">Xem chi tiết</a>
+                        <span class="card-tag">Thiên tai</span>
+                        <h3>Giải Pháp Bão Lũ</h3>
+                        <p>Hệ thống giám sát lưu lượng xả lũ thủy điện và cảnh báo sớm dựa trên dữ liệu thực tế.</p>
+                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
                     </div>
                 </div>
 
                 <div class="project-card" data-aos="fade-up" data-aos-delay="200">
                     <div class="card-img">
-                        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=600&q=80" alt="AI Education">
+                        <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80" alt="Giao thông thông minh">
                     </div>
                     <div class="card-content">
-                        <span class="card-tag">Giáo dục</span>
-                        <h3>AI For Education</h3>
-                        <p>Hệ thống trợ giảng ảo hỗ trợ học sinh vùng sâu vùng xa tiếp cận tri thức.</p>
-                        <a href="#" class="btn-card">Xem chi tiết</a>
+                        <span class="card-tag">Giao thông</span>
+                        <h3>Giải pháp Ùn tắc Đô thị</h3>
+                        <p>Phân tích điểm nghẽn và đề xuất phương án phân luồng, quy hoạch hạ tầng khả thi.</p>
+                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
                     </div>
                 </div>
 
                 <div class="project-card" data-aos="fade-left" data-aos-delay="400">
                     <div class="card-img">
-                        <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=600&q=80" alt="Green Energy">
+                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80" alt="Hỗ trợ thoát nghèo">
                     </div>
                     <div class="card-content">
-                        <span class="card-tag">Môi trường</span>
-                        <h3>Green Energy</h3>
-                        <p>Giải pháp quản lý năng lượng thông minh cho các tòa nhà chọc trời.</p>
-                        <a href="#" class="btn-card">Xem chi tiết</a>
+                        <span class="card-tag">An sinh</span>
+                        <h3>Thoát nghèo bền vững</h3>
+                        <p>Xây dựng lộ trình hỗ trợ các hoàn cảnh khó khăn tìm hướng đi mới và ổn định cuộc sống.</p>
+                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-<footer>
+    <footer>
         <div class="container footer-grid" data-aos="fade-up">
             <div class="footer-brand">
                 <h3>SAOVN</h3>
@@ -134,7 +134,15 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
+        // Init AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+        });
+
+        // Mobile Menu Toggle
         const menu = document.querySelector('#mobile-menu');
         const menuLinks = document.querySelector('.nav-container');
 
@@ -150,13 +158,5 @@
             });
         });
     </script>
-
-<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-<script>
-  AOS.init({
-    duration: 1000,
-    once: true,
-  });
-</script>
 </body>
 </html>
