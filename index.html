@@ -60,36 +60,58 @@
         </div>
     </section>
 
-<section class="section stats-section">
+    <section class="section stats-section">
         <div class="container">
             <h2 class="section-title" data-aos="fade-up">Dữ Liệu <span class="highlight">Thực Tế</span></h2>
             
-            <div class="stats-container">
-                <div class="stats-grid">
-                    <div class="stat-item" data-aos="fade-right">
-                        <div class="live-dot"></div> <span class="stat-number" data-target="1250">0</span>
-                        <span class="stat-label">Thành viên hành động</span>
+            <div class="dashboard-grid">
+                <div class="dash-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="card-header">
+                        <span class="dot-live"></span> <span class="card-label">Thành viên tham gia</span>
                     </div>
-                    <div class="stat-item" data-aos="fade-right" data-aos-delay="200">
-                        <span class="stat-number" data-target="12">0</span>
-                        <span class="stat-label">Dự án hoàn thành</span>
+                    <div class="card-body">
+                        <h3 class="stat-number" data-target="1250">0</h3>
+                        <div class="mini-chart bar-chart">
+                            <div class="bar-line"></div><div class="bar-line"></div>
+                            <div class="bar-line"></div><div class="bar-line"></div>
+                            <div class="bar-line"></div><div class="bar-line"></div>
+                        </div>
                     </div>
-                    <div class="stat-item" data-aos="fade-right" data-aos-delay="400">
-                        <span class="stat-number" data-target="5.8">0</span><span class="unit">B+</span>
-                        <span class="stat-label">Quỹ huy động (VNĐ)</span>
-                    </div>
+                    <p class="card-footer">↑ 12% so với tháng trước</p>
                 </div>
 
-                <div class="stats-chart" data-aos="fade-left">
-                    <div class="chart-header">
-                        <span>Tăng trưởng tác động xã hội (2025-2026)</span>
+                <div class="dash-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-header">
+                        <span class="status-icon">⚡</span> <span class="card-label">Dự án hoàn thành</span>
                     </div>
-                    <div class="chart-placeholder">
-                        <div class="bar" style="height: 30%;" data-label="T1"></div>
-                        <div class="bar" style="height: 45%;" data-label="T2"></div>
-                        <div class="bar" style="height: 60%;" data-label="T3"></div>
-                        <div class="bar" style="height: 85%;" data-label="Hiện tại"></div>
+                    <div class="card-body">
+                        <h3 class="stat-number" data-target="14">0</h3>
+                        <div class="mini-chart circle-chart">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path class="circle" stroke-dasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            </svg>
+                        </div>
                     </div>
+                    <p class="card-footer">Đang triển khai: 03</p>
+                </div>
+
+                <div class="dash-card highlight-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card-header">
+                        <span class="money-icon">$</span> <span class="card-label">Quỹ huy động (VNĐ)</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="money-wrapper">
+                            <h3 class="stat-number" data-target="6.8" data-is-float="true">0</h3>
+                            <span class="unit">Tỷ+</span>
+                        </div>
+                        <div class="mini-chart line-chart">
+                            <svg viewBox="0 0 100 30" class="trending-line">
+                                <polyline fill="none" stroke="#00d2ff" stroke-width="2" points="0,25 20,20 40,22 60,10 80,15 100,5" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="card-footer live-text">Đang cập nhật real-time...</p>
                 </div>
             </div>
         </div>
@@ -172,10 +194,7 @@
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
         // Init AOS
-        AOS.init({
-            duration: 1000,
-            once: true,
-        });
+        AOS.init({ duration: 1000, once: true });
 
         // Mobile Menu Toggle
         const menu = document.querySelector('#mobile-menu');
@@ -186,43 +205,56 @@
             menuLinks.classList.toggle('active');
         });
         
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.remove('is-active');
-                menuLinks.classList.remove('active');
-            });
+        // 1. HEADER SCROLL EFFECT
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         });
 
-const stats = document.querySelectorAll('.stat-number');
-const speed = 200;
+        // 2. COUNTER ANIMATION LOGIC
+        const stats = document.querySelectorAll('.stat-number');
+        let hasAnimated = false;
 
-const startCounters = () => {
-    stats.forEach(counter => {
-        const updateCount = () => {
-            const target = +counter.getAttribute('data-target');
-            const count = +counter.innerText;
-            const inc = target / speed;
+        const animateCounters = () => {
+            stats.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const isFloat = counter.getAttribute('data-is-float') === 'true';
+                const duration = 2000; 
+                const frameRate = 20; 
+                const totalFrames = duration / frameRate;
+                const increment = target / totalFrames;
+                
+                let current = 0;
 
-            if (count < target) {
-                counter.innerText = (count + inc).toFixed(target % 1 === 0 ? 0 : 1);
-                setTimeout(updateCount, 1);
-            } else {
-                counter.innerText = target;
-            }
+                const updateCount = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.innerText = isFloat ? current.toFixed(1) : Math.ceil(current);
+                        setTimeout(updateCount, frameRate);
+                    } else {
+                        counter.innerText = isFloat ? target : target;
+                    }
+                };
+                updateCount();
+            });
         };
-        updateCount();
-    });
-};
 
-// Kích hoạt khi cuộn đến
-let started = false;
-window.addEventListener('scroll', () => {
-    const statsSection = document.querySelector('.stats-section');
-    if (window.scrollY > statsSection.offsetTop - 500 && !started) {
-        startCounters();
-        started = true;
-    }
-});
+        // Kích hoạt khi cuộn đến section Stats
+        window.addEventListener('scroll', () => {
+            const statsSection = document.querySelector('.stats-section');
+            if(statsSection) {
+                const triggerPoint = window.innerHeight * 0.8; 
+                const sectionTop = statsSection.getBoundingClientRect().top;
+                if (sectionTop < triggerPoint && !hasAnimated) {
+                    animateCounters();
+                    hasAnimated = true;
+                }
+            }
+        });
     </script>
 </body>
 </html>
