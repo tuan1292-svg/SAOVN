@@ -21,6 +21,7 @@
             <a href="ve-saovn.html" class="nav-link active">Về SAOVN</a>
             <a href="du-an.html" class="nav-link">Dự án</a>
             <a href="lien-he.html" class="nav-link">Liên hệ</a>
+            <a href="#" class="nav-link">Đăng ký</a>
             <button class="btn-login">Đăng nhập</button>
         </nav>
     </header>
@@ -50,7 +51,7 @@
             <div class="vision-mission-grid">
                 <div class="vm-card" data-aos="fade-right">
                     <h2>Tầm nhìn</h2>
-                    <p>SAOVN hướng tới việc trở thành một cộng đồng hành động xã hội dựa trên <strong>tư duy dữ liệu – thảo luận mở – giải pháp khả thi</strong>, nơi mỗi cá nhân đều có thể đóng góp trí tuệ, công sức và kinh nghiệm của mình cho những vấn đề chung của xã hội Việt Nam.</p>
+                    <p>SAOVN hướng tới việc trở thành một cộng đồng hành động xã hội dựa trên <strong>tư duy dữ liệu – thảo luận mở – giải pháp khả thi</strong>.</p>
                 </div>
                 <div class="vm-card" data-aos="fade-left">
                     <h2>Sứ mệnh</h2>
@@ -66,13 +67,13 @@
         </div>
     </section>
 
-    <section class="section fields-section">
+    <section class="section fields-pro-section">
         <div class="container">
-            <h2 class="section-title">Lĩnh vực <span class="highlight">hướng tới</span></h2>
+            <h2 class="section-title" data-aos="fade-up">Lĩnh vực trọng tâm</h2>
             <div class="fields-pro-grid">
                 <div class="field-item" data-aos="fade-up" data-aos-delay="100">
-                    <h3>Ứng phó thiên tai</h3>
-                    <p>Bài toán bão lũ lặp lại hằng năm và tác động đến đời sống người dân. Việc xả lũ tại các đập thủy điện và ảnh hưởng đến hạ du.</p>
+                    <h3>Thiên tai & Môi trường</h3>
+                    <p>Nghiên cứu các giải pháp về cảnh báo sớm, quản lý rủi ro thiên tai và bài toán xả lũ của các đập thủy điện và ảnh hưởng đến hạ du.</p>
                 </div>
                 <div class="field-item" data-aos="fade-up" data-aos-delay="200">
                     <h3>Giao thông & Quy hoạch</h3>
@@ -98,10 +99,50 @@
         </div>
     </section>
 
+    <footer>
+        <div class="container footer-grid" data-aos="fade-up">
+            <div class="footer-brand">
+                <h3>SAOVN</h3>
+                <p>Special Actions Organization for Vietnam</p>
+                <p class="footer-slogan">Sáng tạo không giới hạn - Nâng tầm vị thế Việt.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Liên Hệ</h4>
+                <p>📍 Địa chỉ: Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
+                <p>📞 Điện thoại: 090 xxx xxxx</p>
+                <p>✉️ Email: contact@saovn.org</p>
+            </div>
+            <div class="footer-socials">
+                <h4>Kết Nối</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-link">TikTok</a>
+                    <a href="#" class="social-link">YouTube</a>
+                    <a href="#" class="social-link">Discord</a>
+                    <a href="#" class="social-link">Facebook</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="copyright">&copy; 2026 SAOVN. All Rights Reserved.</p>
+        </div>
+    </footer>
+
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 1000, once: true });
-        // Menu mobile script...
+        
+        const menu = document.querySelector('#mobile-menu');
+        const menuLinks = document.querySelector('.nav-container');
+        menu.addEventListener('click', () => {
+            menu.classList.toggle('is-active');
+            menuLinks.classList.toggle('active');
+        });
+
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) { header.classList.add('scrolled'); } 
+            else { header.classList.remove('scrolled'); }
+        });
     </script>
 </body>
 </html>

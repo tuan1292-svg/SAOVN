@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự án | SAOVN - Hành Động Vì Việt Nam</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo-wrapper">
+            <span class="logo-text">SAOVN</span>
+            <span class="logo-slogan">Special Actions Organization for Vietnam</span>
+        </a>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+        <nav class="nav-container">
+            <a href="index.html" class="nav-link">Trang chủ</a>
+            <a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
+            <a href="du-an.html" class="nav-link active">Dự án</a>
+            <a href="lien-he.html" class="nav-link">Liên hệ</a>
+            <a href="#" class="nav-link">Đăng ký</a>
+            <button class="btn-login">Đăng nhập</button>
+        </nav>
+    </header>
+
+    <section class="about-hero-pro">
+        <div class="container">
+            <span class="sub-title" data-aos="fade-up">Kho lưu trữ hành động</span>
+            <h1 data-aos="fade-up" data-aos-delay="200">DỰ ÁN <span class="highlight">CHIẾN LƯỢC</span></h1>
+        </div>
+    </section>
+
+    <section class="section filter-section">
+        <div class="container">
+            <div class="filter-controls" data-aos="fade-up">
+                <button class="filter-btn active" data-filter="all">Tất cả</button>
+                <button class="filter-btn" data-filter="thien-tai">Thiên tai</button>
+                <button class="filter-btn" data-filter="giao-thong">Giao thông</button>
+                <button class="filter-btn" data-filter="an-sinh">An sinh</button>
+                <button class="filter-btn" data-filter="cong-dong">Dự án từ cộng đồng</button>
+            </div>
+
+            <div class="project-grid" id="project-container">
+                <div class="project-card" data-category="thien-tai" data-aos="fade-up">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1547619292-8816ee7cdd50?auto=format&fit=crop&w=600&q=80" alt="Lũ lụt">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Thiên tai</span>
+                        <h3>Hệ thống Cảnh báo Sớm</h3>
+                        <p>Ứng dụng dữ liệu thủy văn thời gian thực để cảnh báo xả lũ cho bà con vùng hạ du.</p>
+                        <div class="card-meta">
+                            <span>💬 24 Thảo luận</span>
+                            <span>👥 15 Thành viên</span>
+                        </div>
+                        <a href="#" class="btn-card">Tham gia thảo luận</a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-category="giao-thong" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80" alt="Giao thông">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Giao thông</span>
+                        <h3>Bản đồ Nhiệt Ùn tắc</h3>
+                        <p>Phân tích dữ liệu di chuyển để tối ưu hóa thời gian đèn tín hiệu tại các nút giao trọng điểm.</p>
+                        <div class="card-meta">
+                            <span>💬 42 Thảo luận</span>
+                            <span>👥 08 Thành viên</span>
+                        </div>
+                        <a href="#" class="btn-card">Đóng góp ý tưởng</a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-category="an-sinh" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80" alt="An sinh">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">An sinh</span>
+                        <h3>Chuỗi cung ứng Nhân ái</h3>
+                        <p>Kết nối nông sản vùng xa trực tiếp tới các bếp ăn từ thiện đô thị qua nền tảng số.</p>
+                        <div class="card-meta">
+                            <span>💬 18 Thảo luận</span>
+                            <span>👥 20 Thành viên</span>
+                        </div>
+                        <a href="#" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-category="cong-dong" data-aos="fade-up">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=600&q=80" alt="Y tế">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Cộng đồng đề xuất</span>
+                        <h3>Số hóa Hồ sơ Y tế vùng cao</h3>
+                        <p>Dự án do thành viên đề xuất nhằm cải thiện việc theo dõi sức khỏe cộng đồng.</p>
+                        <div class="card-meta">
+                            <span>💬 09 Thảo luận</span>
+                            <span>👥 04 Thành viên</span>
+                        </div>
+                        <a href="#" class="btn-card">Góp ý giải pháp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section submit-project-section">
+        <div class="container">
+            <div class="submit-box" data-aos="zoom-in">
+                <h2>Bạn có ý tưởng giải pháp?</h2>
+                <p>SAOVN luôn sẵn sàng lắng nghe các dự án dựa trên dữ liệu từ bạn.</p>
+                <form class="project-form">
+                    <div class="form-grid">
+                        <input type="text" placeholder="Tên dự án của bạn" required>
+                        <select required>
+                            <option value="">Chọn danh mục</option>
+                            <option value="thien-tai">Thiên tai</option>
+                            <option value="giao-thong">Giao thông</option>
+                            <option value="an-sinh">An sinh</option>
+                        </select>
+                    </div>
+                    <textarea placeholder="Mô tả ngắn gọn vấn đề và giải pháp đề xuất..." rows="5" required></textarea>
+                    <button type="submit" class="btn-main">Gửi đề xuất dự án</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid" data-aos="fade-up">
+            <div class="footer-brand">
+                <h3>SAOVN</h3>
+                <p>Special Actions Organization for Vietnam</p>
+                <p class="footer-slogan">Sáng tạo không giới hạn - Nâng tầm vị thế Việt.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Liên Hệ</h4>
+                <p>📍 Địa chỉ: Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
+                <p>📞 Điện thoại: 090 xxx xxxx</p>
+                <p>✉️ Email: contact@saovn.org</p>
+            </div>
+            <div class="footer-socials">
+                <h4>Kết Nối</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-link">TikTok</a>
+                    <a href="#" class="social-link">YouTube</a>
+                    <a href="#" class="social-link">Discord</a>
+                    <a href="#" class="social-link">Facebook</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="copyright">&copy; 2026 SAOVN. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filterValue = btn.getAttribute('data-filter');
+                projectCards.forEach(card => {
+                    if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
+                        card.style.display = 'block';
+                    } else { card.style.display = 'none'; }
+                });
+            });
+        });
+
+        const menu = document.querySelector('#mobile-menu');
+        const menuLinks = document.querySelector('.nav-container');
+        menu.addEventListener('click', () => {
+            menu.classList.toggle('is-active');
+            menuLinks.classList.toggle('active');
+        });
+
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) { header.classList.add('scrolled'); } 
+            else { header.classList.remove('scrolled'); }
+        });
+    </script>
+</body>
+</html>
