@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên hệ | SAOVN - Hành Động Vì Việt Nam</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        /* --- HIỆU ỨNG RIÊNG CHO TRANG LIÊN HỆ (KHÔNG XUNG ĐỘT) --- */
+        .contact-page-wrapper {
+            padding-top: 150px;
+            overflow: hidden;
+        }
+
+        /* 1. Bản đồ nhiệt tương tác (Heatmap Placeholder) */
+        .heatmap-container {
+            width: 100%;
+            height: 450px;
+            background: #0a0a0a;
+            border-radius: 20px;
+            position: relative;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 50px;
+        }
+
+        .map-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+            background: radial-gradient(circle, #111 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Các điểm sáng huỳnh quang trên bản đồ */
+        .pulse-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #00d2ff;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #00d2ff, 0 0 40px #00d2ff;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+        /* 2. Thanh huỳnh quang (Fluorescent Bars) */
+        .fluorescent-bar {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00d2ff, transparent);
+            width: 100%;
+            position: relative;
+            margin: 40px 0;
+            filter: drop-shadow(0 0 8px #00d2ff);
+        }
+
+        .fluorescent-bar::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 100%;
+            background: #fff;
+            box-shadow: 0 0 15px #fff;
+            animation: moveBar 3s infinite linear;
+        }
+
+        @keyframes moveBar {
+            0% { left: 0; }
+            100% { left: 100%; }
+        }
+
+        /* 3. Bố cục Form */
+        .contact-main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 50px;
+            margin-bottom: 100px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .type-select-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .type-btn {
+            padding: 15px;
+            background: #111;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .type-btn.active {
+            background: rgba(0, 210, 255, 0.1);
+            border-color: #00d2ff;
+            color: #00d2ff;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+        }
+
+        .contact-input {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            border: 1px solid #222;
+            color: #fff;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .contact-input:focus {
+            border-color: #00d2ff;
+            outline: none;
+        }
+
+        @media (max-width: 992px) {
+            .contact-main-grid { grid-template-columns: 1fr; }
+            .type-select-box { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo-wrapper">
+            <span class="logo-text">SAOVN</span>
+            <span class="logo-slogan">Special Actions Organization for Vietnam</span>
+        </a>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+        <nav class="nav-container">
+            <a href="index.html" class="nav-link">Trang chủ</a>
+            <a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
+            <a href="du-an.html" class="nav-link">Dự án</a>
+            <a href="lien-he.html" class="nav-link active">Liên hệ</a>
+            <a href="#" class="nav-link">Đăng ký</a>
+            <button class="btn-login">Đăng nhập</button>
+        </nav>
+    </header>
+
+    <main class="contact-page-wrapper container">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <span class="sub-title" data-aos="fade-up">Trung tâm chỉ huy hành động</span>
+            <h1 data-aos="fade-up" data-aos-delay="200" style="font-size: clamp(32px, 8vw, 64px); font-weight: 900;">
+                LIÊN HỆ <span class="highlight">SAOVN</span>
+            </h1>
+        </div>
+
+        <div class="heatmap-container" data-aos="zoom-in">
+            <div class="map-bg"></div>
+            <div style="z-index: 2; text-align: center;">
+                <h3 style="color: #00d2ff; letter-spacing: 5px; margin-bottom: 10px;">ACTION HEATMAP</h3>
+                <p style="font-size: 12px; color: #555; text-transform: uppercase;">Dữ liệu hành động thời gian thực tại Việt Nam</p>
+            </div>
+            <div class="pulse-point" style="top: 30%; left: 45%;"></div>
+            <div class="pulse-point" style="top: 70%; left: 60%;"></div>
+            <div class="pulse-point" style="top: 50%; left: 52%;"></div>
+            <div class="pulse-point" style="top: 85%; left: 58%;"></div>
+        </div>
+
+        <div class="fluorescent-bar"></div>
+
+        <div class="contact-main-grid">
+            <div class="contact-text" data-aos="fade-right">
+                <h2 style="font-size: 2.5rem; line-height: 1.2; margin-bottom: 30px;">
+                    Sẵn sàng biến ý tưởng thành <span style="color: #00d2ff;">thực tế?</span>
+                </h2>
+                <p style="color: #888; margin-bottom: 30px;">Hãy cho chúng tôi biết bạn có gì. Một bộ óc phân tích dữ liệu, một tâm hồn nhiệt huyết, hay một giải pháp công nghệ đột phá?</p>
+                
+                <div style="margin-top: 50px;">
+                    <div style="margin-bottom: 20px;">
+                        <small style="color: #00d2ff; text-transform: uppercase; letter-spacing: 2px;">Hotline</small>
+                        <p style="font-size: 1.2rem;">090 XXX XXXX</p>
+                    </div>
+                    <div>
+                        <small style="color: #00d2ff; text-transform: uppercase; letter-spacing: 2px;">Email</small>
+                        <p style="font-size: 1.2rem;">action@saovn.org</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-card" data-aos="fade-left">
+                <form>
+                    <label style="font-size: 13px; color: #888;">CHỌN VAI TRÒ CỦA BẠN</label>
+                    <div class="type-select-box">
+                        <div class="type-btn active">Tình nguyện viên</div>
+                        <div class="type-btn">Nhà nghiên cứu</div>
+                        <div class="type-btn">Đối tác chiến lược</div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <input type="text" class="contact-input" placeholder="Họ và tên" required>
+                        <input type="tel" class="contact-input" placeholder="Số điện thoại" required>
+                    </div>
+                    <input type="email" class="contact-input" placeholder="Địa chỉ Email" required>
+                    <textarea class="contact-input" rows="5" placeholder="Bạn muốn đóng góp điều gì cho Việt Nam..."></textarea>
+                    
+                    <button type="submit" class="btn-main" style="width: 100%; border: none; cursor: pointer;">
+                        XÁC NHẬN GIA NHẬP
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="fluorescent-bar" style="animation-delay: 1.5s;"></div>
+    </main>
+
+    <footer>
+        <div class="container footer-grid" data-aos="fade-up">
+            <div class="footer-brand">
+                <h3>SAOVN</h3>
+                <p>Special Actions Organization for Vietnam</p>
+                <p class="footer-slogan">Sáng tạo không giới hạn - Nâng tầm vị thế Việt.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Liên Hệ</h4>
+                <p>📍 Quận 1, TP. Hồ Chí Minh</p>
+                <p>📞 090 xxx xxxx</p>
+                <p>✉️ contact@saovn.org</p>
+            </div>
+            <div class="footer-socials">
+                <h4>Kết Nối</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-link">TikTok</a>
+                    <a href="#" class="social-link">YouTube</a>
+                    <a href="#" class="social-link">Discord</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 SAOVN. All Rights Reserved.</p></div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // Menu mobile logic
+        const menu = document.querySelector('#mobile-menu');
+        const menuLinks = document.querySelector('.nav-container');
+        menu.addEventListener('click', () => {
+            menu.classList.toggle('is-active');
+            menuLinks.classList.toggle('active');
+        });
+
+        // Sticky Header
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+
+        // Selector logic
+        const typeBtns = document.querySelectorAll('.type-btn');
+        typeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                typeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
