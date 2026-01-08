@@ -191,3 +191,32 @@ footer { padding: 80px 20px 30px; background: #000; border-top: 1px solid #222; 
 .cta-inner .btn-main { padding: 15px 45px; font-size: 14px; letter-spacing: 2px; border: 1px solid #00d2ff; background: #00d2ff; color: #000; transition: all 0.4s ease; }
 .cta-inner .btn-main:hover { background: transparent; color: #00d2ff; box-shadow: 0 0 30px rgba(0, 210, 255, 0.4); }
 @media (max-width: 850px) { .vision-mission-grid { grid-template-columns: 1fr; } .about-hero-pro { text-align: center; justify-content: center; } }
+
+/* 12. PROJECT PAGE ADDITIONS */
+.filter-controls { margin-bottom: 50px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+.filter-btn {
+    background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff;
+    padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; font-size: 13px;
+}
+.filter-btn:hover, .filter-btn.active { background: #00d2ff; color: #000; border-color: #00d2ff; font-weight: bold; }
+
+.card-meta { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-bottom: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+/* Submit Project Form */
+.submit-project-section { background: #0a0a0a; border-top: 1px solid #111; }
+.submit-box { background: #111; padding: 60px; border-radius: 20px; border: 1px solid rgba(0, 210, 255, 0.2); max-width: 900px; margin: 0 auto; }
+.submit-box h2 { margin-bottom: 15px; color: #00d2ff; }
+.submit-box p { margin-bottom: 35px; opacity: 0.7; }
+
+.project-form { display: flex; flex-direction: column; gap: 20px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.project-form input, .project-form select, .project-form textarea {
+    background: #050505; border: 1px solid #222; padding: 15px; color: #fff; border-radius: 5px; outline: none; transition: 0.3s;
+}
+.project-form input:focus, .project-form textarea:focus { border-color: #00d2ff; }
+.project-form .btn-main { border: none; cursor: pointer; align-self: center; margin-top: 10px; }
+
+@media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .submit-box { padding: 30px 20px; }
+}
