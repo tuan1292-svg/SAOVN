@@ -3,52 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAOVN | Hệ thống quản trị</title>
+    <title>Dashboard | SAOVN Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
+    <style>
+        /* Màn hình chờ khi đang kiểm tra đăng nhập */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050505; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 9999;
+        }
+        .loader {
+            width: 40px; height: 40px; border: 3px solid #111;
+            border-top: 3px solid #00d2ff; border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
-<body style="display:none;" id="dashBody">
+<body id="dashBody" style="display:none;">
+
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <p style="color: #00d2ff; font-size: 14px; letter-spacing: 2px;">ĐANG XÁC THỰC...</p>
+    </div>
 
     <aside class="sidebar">
         <a href="index.html" class="sidebar-logo">SAOVN</a>
         <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="#" class="nav-link-dash active"><i class="fas fa-th-large"></i> <span>Tổng quan</span></a>
-            </li>
-            <li class="nav-item admin-only" style="display:none;">
-                <a href="#" class="nav-link-dash"><i class="fas fa-user-shield"></i> <span>Quản trị viên</span></a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link-dash"><i class="fas fa-folder-open"></i> <span>Dự án của tôi</span></a>
-            </li>
+            <li class="nav-item"><a href="#" class="nav-link-dash active"><i class="fas fa-th-large"></i> <span>Tổng quan</span></a></li>
+            <li class="nav-item admin-only" style="display:none;"><a href="#" class="nav-link-dash"><i class="fas fa-user-shield"></i> <span>Quản trị</span></a></li>
+            <li class="nav-item"><a href="#" class="nav-link-dash"><i class="fas fa-folder-open"></i> <span>Dự án</span></a></li>
         </ul>
-        
-        <a href="#" id="btnChangePass" class="nav-link-dash" style="margin-top: auto; color: #aaa;">
-            <i class="fas fa-cog"></i> <span>Đổi mật khẩu</span>
-        </a>
-        <a href="#" id="btnLogout" class="nav-link-dash logout-link">
-            <i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span>
-        </a>
+        <a href="#" id="btnChangePass" class="nav-link-dash" style="margin-top: auto; color: #888;"><i class="fas fa-cog"></i> <span>Đổi mật khẩu</span></a>
+        <a href="#" id="btnLogout" class="nav-link-dash logout-link"><i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span></a>
     </aside>
 
     <main class="main-content">
         <header class="dash-header">
             <div>
-                <h1 id="welcomeName">Đang tải...</h1>
-                <div id="roleBadge" style="display:inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; margin-top: 5px;"></div>
+                <h1 id="welcomeName">Chào mừng</h1>
+                <div id="roleBadge" style="display:inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; margin-top: 5px;"></div>
             </div>
-            <div class="user-profile">
-                <div class="avatar-circle" id="userInitial">..</div>
-            </div>
+            <div class="user-profile"><div class="avatar-circle" id="userInitial">..</div></div>
         </header>
 
         <div class="stats-grid" id="statsContainer">
-            <div class="stat-card"><h3>Trạng thái</h3><div class="value" style="font-size: 18px; color: #00d2ff;">Đang hoạt động</div></div>
-            </div>
+            <div class="stat-card"><h3>Trạng thái</h3><div class="value" style="font-size: 18px; color: #00d2ff;">Hệ thống ổn định</div></div>
+        </div>
 
         <div class="charts-container" style="margin-top: 30px;">
             <div class="chart-card" style="height: 350px;">
-                <h3 id="chartTitle">Dữ liệu hệ thống</h3>
+                <h3 id="chartTitle" style="color:#00d2ff; font-size:14px; margin-bottom:15px;">DỮ LIỆU</h3>
                 <canvas id="statsChart"></canvas>
             </div>
         </div>
@@ -60,7 +66,9 @@
         import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // --- DÁN CONFIG CỦA BẠN VÀO ĐÂY ---
+        // ==========================================
+        // DÁN CONFIG CỦA BẠN VÀO ĐÂY
+        // ==========================================
         const firebaseConfig = {
   apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
   authDomain: "saovn-project.firebaseapp.com",
@@ -71,101 +79,91 @@
   measurementId: "G-L7Y106VT85"
 };
 
+        // ==========================================
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // Biến cờ để kiểm tra Firebase đã phản hồi chưa
+        let isAuthChecked = false;
+
         onAuthStateChanged(auth, async (user) => {
+            isAuthChecked = true;
             if (user) {
+                console.log("Xác thực thành công:", user.email);
                 try {
-                    // Lấy dữ liệu phân quyền từ Firestore
                     const userDoc = await getDoc(doc(db, "users", user.uid));
-                    const userData = userDoc.data();
-                    
-                    if (userData) {
-                        renderDashboard(userData);
+                    if (userDoc.exists()) {
+                        renderDashboard(userDoc.data());
+                        hideLoading();
+                    } else {
+                        alert("Hồ sơ không tồn tại!");
+                        window.location.href = "login.html";
                     }
-                    document.getElementById('dashBody').style.display = 'flex';
                 } catch (e) {
-                    console.error("Lỗi lấy dữ liệu:", e);
+                    console.error("Lỗi Firestore:", e);
+                    alert("Lỗi quyền truy cập! Hãy kiểm tra Rules trên Firebase.");
                 }
             } else {
+                console.log("Không có phiên đăng nhập.");
                 window.location.href = "login.html";
             }
         });
 
+        // Bảo hiểm nếu Firebase treo quá lâu
+        setTimeout(() => {
+            if (!isAuthChecked) {
+                console.log("Hết thời gian chờ xác thực.");
+                window.location.href = "login.html";
+            }
+        }, 5000);
+
+        function hideLoading() {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('dashBody').style.display = 'flex';
+        }
+
         function renderDashboard(data) {
-            const nameEl = document.getElementById('welcomeName');
-            const badgeEl = document.getElementById('roleBadge');
-            const initialEl = document.getElementById('userInitial');
-            const statsGrid = document.getElementById('statsContainer');
+            document.getElementById('welcomeName').innerText = "Chào, " + data.fullName;
+            document.getElementById('userInitial').innerText = data.fullName.charAt(0).toUpperCase();
+            const badge = document.getElementById('roleBadge');
+            const stats = document.getElementById('statsContainer');
 
-            nameEl.innerText = "Chào, " + data.fullName;
-            initialEl.innerText = data.fullName.charAt(0).toUpperCase();
-
-            // Xử lý Giao diện theo quyền
-            if (data.role === "admin") {
-                badgeEl.innerText = "Quản trị viên";
-                badgeEl.style.background = "rgba(255, 0, 0, 0.2)";
-                badgeEl.style.color = "#ff4444";
-                badgeEl.style.border = "1px solid #ff4444";
-                
-                // Hiện menu admin
+            if (data.role === 'admin') {
+                badge.innerText = "QUẢN TRỊ VIÊN";
+                badge.style.border = "1px solid #ff4444"; badge.style.color = "#ff4444";
                 document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
-                
-                // Thêm thống kê cho Admin
-                statsGrid.innerHTML += `
-                    <div class="stat-card"><h3>Tổng thành viên</h3><div class="value">1,240</div></div>
-                    <div class="stat-card"><h3>Dự án chờ duyệt</h3><div class="value" style="color: #f1c40f;">05</div></div>
-                `;
-                document.getElementById('chartTitle').innerText = "TĂNG TRƯỞNG TOÀN HỆ THỐNG";
+                stats.innerHTML += `<div class="stat-card"><h3>Tổng thành viên</h3><div class="value">1,240</div></div>`;
             } else {
-                badgeEl.innerText = "Thành viên";
-                badgeEl.style.background = "rgba(0, 210, 255, 0.2)";
-                badgeEl.style.color = "#00d2ff";
-                badgeEl.style.border = "1px solid #00d2ff";
-
-                // Thống kê cho Member
-                statsGrid.innerHTML += `
-                    <div class="stat-card"><h3>Dự án tham gia</h3><div class="value">02</div></div>
-                    <div class="stat-card"><h3>Điểm tích lũy</h3><div class="value">450</div></div>
-                `;
-                document.getElementById('chartTitle').innerText = "HOẠT ĐỘNG CÁ NHÂN";
+                badge.innerText = "THÀNH VIÊN";
+                badge.style.border = "1px solid #00d2ff"; badge.style.color = "#00d2ff";
+                stats.innerHTML += `<div class="stat-card"><h3>Điểm tích lũy</h3><div class="value">450</div></div>`;
             }
             initChart(data.role);
         }
 
-        // Xử lý Đổi mật khẩu
-        document.getElementById('btnChangePass').addEventListener('click', () => {
-            const newPass = prompt("Nhập mật khẩu mới (tối thiểu 6 ký tự):");
-            if (newPass && newPass.length >= 6) {
-                updatePassword(auth.currentUser, newPass).then(() => {
-                    alert("Đã cập nhật mật khẩu thành công!");
-                }).catch((error) => {
-                    alert("Lỗi: Bạn cần đăng nhập lại để thực hiện thao tác bảo mật này.");
-                });
-            }
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.href = "index.html");
         });
 
-        // Đăng xuất
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            signOut(auth).then(() => window.location.href = "login.html");
+        document.getElementById('btnChangePass').addEventListener('click', () => {
+            const p = prompt("Nhập mật khẩu mới:");
+            if (p && p.length >= 6) {
+                updatePassword(auth.currentUser, p).then(() => alert("Xong!")).catch(e => alert("Cần đăng nhập lại!"));
+            }
         });
 
         function initChart(role) {
             const ctx = document.getElementById('statsChart').getContext('2d');
-            const chartData = role === "admin" ? [120, 450, 800, 1240] : [5, 15, 25, 45];
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
+                    labels: ['T3', 'T4', 'T5', 'T6'],
                     datasets: [{
-                        label: role === "admin" ? 'Thành viên mới' : 'Số giờ đóng góp',
-                        data: chartData,
-                        borderColor: '#00d2ff',
-                        tension: 0.4,
-                        fill: true,
+                        label: role === 'admin' ? 'Thành viên' : 'Đóng góp',
+                        data: role === 'admin' ? [100, 300, 700, 1200] : [10, 20, 35, 50],
+                        borderColor: '#00d2ff', tension: 0.4, fill: true,
                         backgroundColor: 'rgba(0, 210, 255, 0.05)'
                     }]
                 },
