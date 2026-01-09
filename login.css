@@ -105,16 +105,51 @@ body {
     transform: translateY(-2px);
 }
 
+/* --- FOOTER LOGIN TỐI ƯU --- */
 .login-footer {
     margin-top: 25px;
-    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Khoảng cách giữa các dòng */
 }
 
-.login-footer a {
-    color: #666;
+.footer-top {
+    display: flex;
+    justify-content: space-between; /* Đẩy 2 link sang 2 bên */
+    font-size: 13px;
+}
+
+.footer-top a {
+    color: #888;
     text-decoration: none;
     transition: 0.3s;
 }
 
-.login-footer a:hover { color: var(--accent-color); }
-.login-footer span { color: #333; margin: 0 10px; }
+.footer-top a:hover {
+    color: var(--accent-color);
+}
+
+.footer-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1); /* Đường kẻ mờ ngăn cách */
+    width: 100%;
+}
+
+.footer-bottom {
+    font-size: 14px;
+}
+
+.footer-bottom span {
+    color: #666;
+    margin-right: 5px;
+}
+
+.footer-bottom a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline;
+}

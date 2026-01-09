@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gia nhập SAOVN | Đăng ký thành viên</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-box">
+            <a href="index.html" class="register-logo">SAOVN</a>
+            <h2>GIA NHẬP TỔ CHỨC</h2>
+            <p>Hoàn thiện hồ sơ để bắt đầu hành động</p>
+            
+            <form id="registerForm">
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <i class="fas fa-user-tag"></i>
+                        <input type="text" placeholder="Họ và tên" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email liên lạc" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" placeholder="Số điện thoại" required>
+                    </div>
+
+                    <div class="input-group full-width select-wrapper">
+                        <i class="fas fa-briefcase"></i>
+                        <select required>
+                            <option value="" disabled selected>Lĩnh vực chuyên môn</option>
+                            <option value="tech">Công nghệ / CNTT</option>
+                            <option value="env">Môi trường / Sinh thái</option>
+                            <option value="edu">Giáo dục / Cộng đồng</option>
+                            <option value="media">Truyền thông / Thiết kế</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Mật khẩu" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class="fas fa-shield-alt"></i>
+                        <input type="password" placeholder="Xác nhận MK" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="register-btn">GỬI YÊU CẦU GIA NHẬP</button>
+            </form>
+            
+            <div class="register-footer">
+                Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Yêu cầu gia nhập của bạn đã được gửi thành công!');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

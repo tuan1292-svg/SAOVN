@@ -1,0 +1,181 @@
+/* --- BIẾN TOÀN CỤC --- */
+:root {
+    --accent-color: #00d2ff;
+    --bg-dark: #050505;
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --border-color: rgba(0, 210, 255, 0.2);
+    --input-bg: rgba(255, 255, 255, 0.05);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+body {
+    background: var(--bg-dark);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
+    padding: 20px;
+    color: #fff;
+}
+
+.register-container {
+    width: 100%;
+    max-width: 550px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.register-box {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+}
+
+.register-logo {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--accent-color);
+    text-decoration: none;
+    letter-spacing: 5px;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.register-box h2 {
+    font-size: 16px;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.register-box p {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 35px;
+}
+
+/* --- GRID LAYOUT --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.full-width { grid-column: span 2; }
+
+/* --- INPUT GROUPS --- */
+.input-group {
+    position: relative;
+    text-align: left;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-color);
+    font-size: 14px;
+    z-index: 2;
+}
+
+.input-group input, 
+.input-group select {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 14px 15px 14px 45px;
+    border-radius: 12px;
+    color: #fff;
+    outline: none;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+/* Tùy chỉnh riêng cho Dropdown */
+.select-wrapper::after {
+    content: '\f107'; /* Icon arrow-down của FontAwesome */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-color);
+    pointer-events: none;
+    font-size: 14px;
+}
+
+.input-group select {
+    appearance: none; /* Ẩn mũi tên mặc định */
+    cursor: pointer;
+}
+
+.input-group select option {
+    background: #111;
+    color: #fff;
+}
+
+.input-group input:focus, 
+.input-group select:focus {
+    border-color: var(--accent-color);
+    background: rgba(0, 210, 255, 0.05);
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+}
+
+/* --- BUTTON --- */
+.register-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent-color);
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-weight: 800;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.4s;
+    margin-top: 10px;
+}
+
+.register-btn:hover {
+    background: #fff;
+    box-shadow: 0 0 30px rgba(0, 210, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.register-footer {
+    margin-top: 30px;
+    font-size: 13px;
+    color: #666;
+}
+
+.register-footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Chống Autocomplete đổi màu nền */
+input:-webkit-autofill {
+    -webkit-text-fill-color: #fff;
+    -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .full-width { grid-column: span 1; }
+    .register-box { padding: 30px 20px; }
+}
