@@ -1,0 +1,120 @@
+:root {
+    --accent-color: #00d2ff;
+    --bg-dark: #050505;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+body {
+    background: var(--bg-dark);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-box {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 210, 255, 0.2);
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+
+.login-logo {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--accent-color);
+    text-decoration: none;
+    letter-spacing: 5px;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.login-box h2 {
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.login-box p {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 30px;
+}
+
+/* Input Styles */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-color);
+    font-size: 14px;
+}
+
+.input-group input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 15px 15px 15px 45px;
+    border-radius: 10px;
+    color: #fff;
+    outline: none;
+    transition: 0.3s;
+}
+
+.input-group input:focus {
+    border-color: var(--accent-color);
+    background: rgba(0, 210, 255, 0.05);
+}
+
+/* Button */
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent-color);
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.login-btn:hover {
+    background: #00b8e6;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.login-footer {
+    margin-top: 25px;
+    font-size: 12px;
+}
+
+.login-footer a {
+    color: #666;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.login-footer a:hover { color: var(--accent-color); }
+.login-footer span { color: #333; margin: 0 10px; }

@@ -1,0 +1,187 @@
+/* --- BIẾN TOÀN CỤC --- */
+:root {
+    --sidebar-width: 260px;
+    --accent-color: #00d2ff; /* Màu xanh Neon từ style.css của bạn */
+    --bg-dark: #050505;
+    --sidebar-bg: #0a0a0a;
+    --card-bg: #111;
+    --text-gray: #888;
+    --transition: 0.3s ease;
+}
+
+/* --- CẤU TRÚC CHÍNH --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    display: flex;
+    background: var(--bg-dark);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    border-right: 1px solid rgba(0, 210, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    position: fixed;
+    height: 100vh;
+    transition: var(--transition);
+}
+
+.sidebar-logo {
+    font-weight: 900;
+    color: var(--accent-color);
+    font-size: 24px;
+    margin-bottom: 50px;
+    text-decoration: none;
+    letter-spacing: 2px;
+}
+
+.nav-menu {
+    list-style: none;
+    flex-grow: 1;
+}
+
+.nav-item {
+    margin-bottom: 8px;
+}
+
+.nav-link-dash {
+    color: var(--text-gray);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 12px;
+    transition: var(--transition);
+    font-size: 15px;
+}
+
+.nav-link-dash i {
+    margin-right: 15px;
+    width: 20px;
+    font-size: 18px;
+}
+
+.nav-link-dash:hover, 
+.nav-link-dash.active {
+    background: rgba(0, 210, 255, 0.1);
+    color: var(--accent-color);
+}
+
+.logout-link {
+    color: #ff4444 !important;
+    margin-top: auto;
+}
+
+/* --- NỘI DUNG CHÍNH --- */
+.main-content {
+    margin-left: var(--sidebar-width); /* Chừa chỗ cho sidebar cố định */
+    flex-grow: 1;
+    padding: 40px;
+    min-height: 100vh;
+}
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.dash-header h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar-circle {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(45deg, var(--accent-color), #0045ff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+}
+
+/* --- STATS GRID --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(0, 210, 255, 0.3);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-color);
+    border-radius: 4px 0 0 4px;
+}
+
+.stat-card h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: var(--text-gray);
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+
+.stat-card .value {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+/* Responsive cho Mobile */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 80px;
+        padding: 20px 10px;
+    }
+    .sidebar-logo, .nav-link-dash span, .user-profile span {
+        display: none;
+    }
+    .main-content {
+        margin-left: 80px;
+        padding: 20px;
+    }
+    .nav-link-dash i {
+        margin-right: 0;
+    }
+}

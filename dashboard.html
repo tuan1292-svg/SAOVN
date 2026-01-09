@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | SAOVN Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <a href="index.html" class="sidebar-logo">SAOVN</a>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link-dash active">
+                    <i class="fas fa-th-large"></i> <span>Tổng quan</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link-dash">
+                    <i class="fas fa-project-diagram"></i> <span>Quản lý Dự án</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link-dash">
+                    <i class="fas fa-users"></i> <span>Thành viên</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link-dash">
+                    <i class="fas fa-envelope"></i> <span>Tin nhắn</span>
+                </a>
+            </li>
+        </ul>
+        <a href="index.html" class="nav-link-dash logout-link">
+            <i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span>
+        </a>
+    </aside>
+
+    <main class="main-content">
+        <header class="dash-header">
+            <div>
+                <h1>Chào mừng trở lại, Admin!</h1>
+                <p style="color: #666;">Bảng điều khiển hệ thống SAOVN</p>
+            </div>
+            <div class="user-profile">
+                <span>Quản trị viên</span>
+                <div class="avatar-circle">AD</div>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Tổng dự án</h3>
+                <div class="value">24</div>
+            </div>
+            <div class="stat-card">
+                <h3>Thành viên</h3>
+                <div class="value">1,240</div>
+            </div>
+            <div class="stat-card">
+                <h3>Lượt truy cập</h3>
+                <div class="value">8.5K</div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

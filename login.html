@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập | SAOVN Portal</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <a href="index.html" class="login-logo">SAOVN</a>
+            <h2>HỆ THỐNG ĐIỀU HÀNH</h2>
+            <p>Vui lòng đăng nhập để tiếp tục truy cập</p>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" placeholder="Tên đăng nhập" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" placeholder="Mật khẩu" required>
+                </div>
+                <button type="submit" class="login-btn">XÁC MINH DANH TÍNH</button>
+            </form>
+            
+            <div class="login-footer">
+                <a href="#">Quên mật khẩu?</a>
+                <span>|</span>
+                <a href="index.html">Quay lại trang chủ</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Logic giả lập chuyển hướng vào Dashboard
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Sau này bạn sẽ thêm logic kiểm tra tài khoản ở đây
+            window.location.href = 'dashboard.html';
+        });
+    </script>
+</body>
+</html>
