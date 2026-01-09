@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | SAOVN Admin</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
@@ -42,7 +42,7 @@
         <header class="dash-header">
             <div>
                 <h1>Chào mừng trở lại, Admin!</h1>
-                <p style="color: #666;">Bảng điều khiển hệ thống SAOVN</p>
+                <p style="color: #888;">Hệ thống đang hoạt động ổn định.</p>
             </div>
             <div class="user-profile">
                 <span>Quản trị viên</span>
@@ -64,7 +64,54 @@
                 <div class="value">8.5K</div>
             </div>
         </div>
+
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3>XU HƯỚNG TĂNG TRƯỞNG THÀNH VIÊN</h3>
+                <canvas id="statsChart"></canvas>
+            </div>
+        </div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
+                datasets: [{
+                    label: 'Thành viên mới',
+                    data: [120, 250, 450, 700, 950, 1240],
+                    borderColor: '#00d2ff',
+                    backgroundColor: 'rgba(0, 210, 255, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#00d2ff',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { color: '#888' }
+                    },
+                    x: { 
+                        grid: { display: false },
+                        ticks: { color: '#888' }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

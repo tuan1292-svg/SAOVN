@@ -18,22 +18,19 @@
                 <div class="form-grid">
                     <div class="input-group full-width">
                         <i class="fas fa-user-tag"></i>
-                        <input type="text" placeholder="Họ và tên" required>
+                        <input type="text" id="regName" placeholder="Họ và tên" required>
                     </div>
-
                     <div class="input-group">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" placeholder="Email liên lạc" required>
+                        <input type="email" id="regEmail" placeholder="Email liên lạc" required>
                     </div>
-
                     <div class="input-group">
                         <i class="fas fa-phone"></i>
-                        <input type="tel" placeholder="Số điện thoại" required>
+                        <input type="tel" id="regPhone" placeholder="Số điện thoại" required>
                     </div>
-
                     <div class="input-group full-width select-wrapper">
                         <i class="fas fa-briefcase"></i>
-                        <select required>
+                        <select id="regMajor" required>
                             <option value="" disabled selected>Lĩnh vực chuyên môn</option>
                             <option value="tech">Công nghệ / CNTT</option>
                             <option value="env">Môi trường / Sinh thái</option>
@@ -41,32 +38,66 @@
                             <option value="media">Truyền thông / Thiết kế</option>
                         </select>
                     </div>
-
                     <div class="input-group">
                         <i class="fas fa-lock"></i>
-                        <input type="password" placeholder="Mật khẩu" required>
+                        <input type="password" id="regPass" placeholder="Mật khẩu" required>
                     </div>
-
                     <div class="input-group">
                         <i class="fas fa-shield-alt"></i>
-                        <input type="password" placeholder="Xác nhận MK" required>
+                        <input type="password" id="regConfirmPass" placeholder="Xác nhận MK" required>
                     </div>
                 </div>
-                
                 <button type="submit" class="register-btn">GỬI YÊU CẦU GIA NHẬP</button>
             </form>
-            
             <div class="register-footer">
                 Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a>
             </div>
         </div>
     </div>
 
-    <script>
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // --- DÁN CONFIG CỦA BẠN VÀO ĐÂY ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+            authDomain: "saovn-project.firebaseapp.com",
+            projectId: "saovn-project",
+            storageBucket: "...",
+            messagingSenderId: "...",
+            appId: "..."
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert('Yêu cầu gia nhập của bạn đã được gửi thành công!');
-            window.location.href = 'login.html';
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const major = document.getElementById('regMajor').value;
+            const pass = document.getElementById('regPass').value;
+            const confirmPass = document.getElementById('regConfirmPass').value;
+
+            if(pass !== confirmPass) return alert("Mật khẩu không khớp!");
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                await setDoc(doc(db, "users", userCredential.user.uid), {
+                    fullName: name,
+                    email: email,
+                    major: major,
+                    role: "member",
+                    createdAt: new Date()
+                });
+                alert("Đăng ký thành công!");
+                window.location.href = "login.html";
+            } catch (error) {
+                alert("Lỗi: " + error.message);
+            }
         });
     </script>
 </body>
