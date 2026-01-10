@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
     <style>
-        /* Màn hình chờ khi đang kiểm tra đăng nhập */
+        /* Giữ nguyên màn hình chờ đẹp đẽ của bạn */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; display: flex; flex-direction: column;
@@ -21,41 +21,65 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body id="dashBody" style="display:none;">
-
-    <div id="loading-screen">
+<body id="dashBody" style="display:none;"> <div id="loading-screen">
         <div class="loader"></div>
-        <p style="color: #00d2ff; font-size: 14px; letter-spacing: 2px;">ĐANG XÁC THỰC...</p>
+        <p style="color: #00d2ff; font-family: sans-serif; letter-spacing: 2px;">ĐANG XÁC MINH QUYỀN TRUY CẬP...</p>
     </div>
 
     <aside class="sidebar">
         <a href="index.html" class="sidebar-logo">SAOVN</a>
-        <ul class="nav-menu">
-            <li class="nav-item"><a href="#" class="nav-link-dash active"><i class="fas fa-th-large"></i> <span>Tổng quan</span></a></li>
-            <li class="nav-item admin-only" style="display:none;"><a href="#" class="nav-link-dash"><i class="fas fa-user-shield"></i> <span>Quản trị</span></a></li>
-            <li class="nav-item"><a href="#" class="nav-link-dash"><i class="fas fa-folder-open"></i> <span>Dự án</span></a></li>
-        </ul>
-        <a href="#" id="btnChangePass" class="nav-link-dash" style="margin-top: auto; color: #888;"><i class="fas fa-cog"></i> <span>Đổi mật khẩu</span></a>
-        <a href="#" id="btnLogout" class="nav-link-dash logout-link"><i class="fas fa-sign-out-alt"></i> <span>Đăng xuất</span></a>
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active"><i class="fas fa-th-large"></i> Tổng quan</a>
+            <a href="#" class="nav-item"><i class="fas fa-project-diagram"></i> Dự án đang chạy</a>
+            <a href="#" class="nav-item"><i class="fas fa-users"></i> Thành viên</a>
+            <a href="#" class="nav-item"><i class="fas fa-envelope"></i> Tin nhắn</a>
+            <a href="#" class="nav-item"><i class="fas fa-cog"></i> Cấu hình hệ thống</a>
+        </nav>
+        <button class="logout-btn" id="btnLogout"><i class="fas fa-sign-out-alt"></i> ĐĂNG XUẤT</button>
     </aside>
 
     <main class="main-content">
-        <header class="dash-header">
-            <div>
-                <h1 id="welcomeName">Chào mừng</h1>
-                <div id="roleBadge" style="display:inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; margin-top: 5px;"></div>
+        <header class="top-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Tìm kiếm dữ liệu hệ thống...">
             </div>
-            <div class="user-profile"><div class="avatar-circle" id="userInitial">..</div></div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <span id="userName" class="name">Đang tải...</span>
+                    <span id="userRole" class="role">Khách</span>
+                </div>
+                <div class="avatar" id="userAvatar">SV</div>
+            </div>
         </header>
 
-        <div class="stats-grid" id="statsContainer">
-            <div class="stat-card"><h3>Trạng thái</h3><div class="value" style="font-size: 18px; color: #00d2ff;">Hệ thống ổn định</div></div>
-        </div>
+        <div class="content-wrapper">
+            <div class="welcome-section">
+                <h1>Chào mừng trở lại, <span id="welcomeName" style="color: var(--accent-color);">Thành viên</span>!</h1>
+                <p>Hệ thống SAOVN đã sẵn sàng cho các hành động mới của bạn.</p>
+            </div>
 
-        <div class="charts-container" style="margin-top: 30px;">
-            <div class="chart-card" style="height: 350px;">
-                <h3 id="chartTitle" style="color:#00d2ff; font-size:14px; margin-bottom:15px;">DỮ LIỆU</h3>
-                <canvas id="statsChart"></canvas>
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <h3>Tổng nhiệm vụ</h3>
+                    <div class="value">124</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Thời gian hoạt động</h3>
+                    <div class="value">48h</div>
+                </div>
+                </div>
+
+            <div class="chart-section">
+                <div class="chart-container">
+                    <canvas id="statsChart"></canvas>
+                </div>
+                <div class="action-panel">
+                    <h3>Thao tác nhanh</h3>
+                    <button class="action-btn" id="btnChangePass">Đổi mật khẩu bảo mật</button>
+                    <button class="action-btn">Xuất báo cáo hoạt động</button>
+                    <button class="action-btn">Liên hệ quản trị viên</button>
+                </div>
             </div>
         </div>
     </main>
@@ -66,91 +90,75 @@
         import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // ==========================================
-        // DÁN CONFIG CỦA BẠN VÀO ĐÂY
-        // ==========================================
+        // CẤU HÌNH FIREBASE (Giữ nguyên cấu hình của bạn)
         const firebaseConfig = {
-  apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
-  authDomain: "saovn-project.firebaseapp.com",
-  projectId: "saovn-project",
-  storageBucket: "saovn-project.firebasestorage.app",
-  messagingSenderId: "194928117396",
-  appId: "1:194928117396:web:642612a60105add5639681",
-  measurementId: "G-L7Y106VT85"
-};
-
-        // ==========================================
+            apiKey: "AIzaSy...", 
+            authDomain: "saovn-project.firebaseapp.com",
+            projectId: "saovn-project",
+            storageBucket: "saovn-project.appspot.com",
+            messagingSenderId: "...",
+            appId: "..."
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Biến cờ để kiểm tra Firebase đã phản hồi chưa
-        let isAuthChecked = false;
-
+        // QUAN TRỌNG: Kiểm tra trạng thái đăng nhập
         onAuthStateChanged(auth, async (user) => {
-            isAuthChecked = true;
             if (user) {
-                console.log("Xác thực thành công:", user.email);
+                // Nếu đã đăng nhập -> Lấy dữ liệu từ Firestore
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
-                        renderDashboard(userDoc.data());
-                        hideLoading();
+                        updateUI(userDoc.data());
                     } else {
-                        alert("Hồ sơ không tồn tại!");
-                        window.location.href = "login.html";
+                        console.log("Không tìm thấy hồ sơ người dùng!");
                     }
-                } catch (e) {
-                    console.error("Lỗi Firestore:", e);
-                    alert("Lỗi quyền truy cập! Hãy kiểm tra Rules trên Firebase.");
+                } catch (error) {
+                    console.error("Lỗi lấy dữ liệu:", error);
+                } finally {
+                    // Hiển thị dashboard và ẩn màn hình chờ
+                    document.getElementById('dashBody').style.display = 'flex';
+                    document.getElementById('loading-screen').style.display = 'none';
                 }
             } else {
-                console.log("Không có phiên đăng nhập.");
+                // Nếu chưa đăng nhập hoặc token hết hạn -> Đẩy về login
                 window.location.href = "login.html";
             }
         });
 
-        // Bảo hiểm nếu Firebase treo quá lâu
-        setTimeout(() => {
-            if (!isAuthChecked) {
-                console.log("Hết thời gian chờ xác thực.");
-                window.location.href = "login.html";
-            }
-        }, 5000);
-
-        function hideLoading() {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('dashBody').style.display = 'flex';
-        }
-
-        function renderDashboard(data) {
-            document.getElementById('welcomeName').innerText = "Chào, " + data.fullName;
-            document.getElementById('userInitial').innerText = data.fullName.charAt(0).toUpperCase();
-            const badge = document.getElementById('roleBadge');
-            const stats = document.getElementById('statsContainer');
+        function updateUI(data) {
+            document.getElementById('userName').innerText = data.fullName || "Thành viên";
+            document.getElementById('welcomeName').innerText = data.fullName || "Thành viên";
+            document.getElementById('userRole').innerText = data.role === 'admin' ? 'Quản trị viên' : 'Thành viên';
+            
+            const badge = document.getElementById('userAvatar');
+            const stats = document.getElementById('statsGrid');
 
             if (data.role === 'admin') {
-                badge.innerText = "QUẢN TRỊ VIÊN";
-                badge.style.border = "1px solid #ff4444"; badge.style.color = "#ff4444";
-                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
-                stats.innerHTML += `<div class="stat-card"><h3>Tổng thành viên</h3><div class="value">1,240</div></div>`;
+                badge.style.background = "linear-gradient(45deg, #ff416c, #ff4b2b)";
+                stats.innerHTML += `<div class="stat-card"><h3>Yêu cầu chờ duyệt</h3><div class="value">12</div></div>`;
             } else {
-                badge.innerText = "THÀNH VIÊN";
-                badge.style.border = "1px solid #00d2ff"; badge.style.color = "#00d2ff";
+                badge.style.background = "#00d2ff";
+                badge.style.color = "#00d2ff";
                 stats.innerHTML += `<div class="stat-card"><h3>Điểm tích lũy</h3><div class="value">450</div></div>`;
             }
             initChart(data.role);
         }
 
+        // Đăng xuất
         document.getElementById('btnLogout').addEventListener('click', () => {
             signOut(auth).then(() => window.location.href = "index.html");
         });
 
+        // Đổi mật khẩu
         document.getElementById('btnChangePass').addEventListener('click', () => {
-            const p = prompt("Nhập mật khẩu mới:");
+            const p = prompt("Nhập mật khẩu mới (tối thiểu 6 ký tự):");
             if (p && p.length >= 6) {
-                updatePassword(auth.currentUser, p).then(() => alert("Xong!")).catch(e => alert("Cần đăng nhập lại!"));
+                updatePassword(auth.currentUser, p)
+                    .then(() => alert("Cập nhật mật khẩu thành công!"))
+                    .catch(e => alert("Lỗi: Bạn cần đăng nhập lại để thực hiện thao tác này."));
             }
         });
 
@@ -161,13 +169,23 @@
                 data: {
                     labels: ['T3', 'T4', 'T5', 'T6'],
                     datasets: [{
-                        label: role === 'admin' ? 'Thành viên' : 'Đóng góp',
+                        label: role === 'admin' ? 'Thành viên mới' : 'Đóng góp cá nhân',
                         data: role === 'admin' ? [100, 300, 700, 1200] : [10, 20, 35, 50],
-                        borderColor: '#00d2ff', tension: 0.4, fill: true,
-                        backgroundColor: 'rgba(0, 210, 255, 0.05)'
+                        borderColor: '#00d2ff',
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(0, 210, 255, 0.1)'
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
+                        x: { grid: { display: false }, ticks: { color: '#888' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
             });
         }
     </script>
