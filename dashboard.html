@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
     <style>
-        /* Giữ nguyên màn hình chờ đẹp đẽ của bạn */
+        /* Giữ nguyên giao diện loading đẹp của dự án */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; display: flex; flex-direction: column;
@@ -21,9 +21,11 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body id="dashBody" style="display:none;"> <div id="loading-screen">
+<body id="dashBody" style="display:none;">
+
+    <div id="loading-screen">
         <div class="loader"></div>
-        <p style="color: #00d2ff; font-family: sans-serif; letter-spacing: 2px;">ĐANG XÁC MINH QUYỀN TRUY CẬP...</p>
+        <p style="color: #00d2ff; font-family: sans-serif; letter-spacing: 2px; font-size: 12px;">ĐANG XÁC MINH QUYỀN TRUY CẬP...</p>
     </div>
 
     <aside class="sidebar">
@@ -33,7 +35,7 @@
             <a href="#" class="nav-item"><i class="fas fa-project-diagram"></i> Dự án đang chạy</a>
             <a href="#" class="nav-item"><i class="fas fa-users"></i> Thành viên</a>
             <a href="#" class="nav-item"><i class="fas fa-envelope"></i> Tin nhắn</a>
-            <a href="#" class="nav-item"><i class="fas fa-cog"></i> Cấu hình hệ thống</a>
+            <a href="#" class="nav-item"><i class="fas fa-cog"></i> Cấu hình</a>
         </nav>
         <button class="logout-btn" id="btnLogout"><i class="fas fa-sign-out-alt"></i> ĐĂNG XUẤT</button>
     </aside>
@@ -68,7 +70,7 @@
                     <h3>Thời gian hoạt động</h3>
                     <div class="value">48h</div>
                 </div>
-                </div>
+            </div>
 
             <div class="chart-section">
                 <div class="chart-container">
@@ -90,41 +92,40 @@
         import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CẤU HÌNH FIREBASE (Giữ nguyên cấu hình của bạn)
+        // CẤU HÌNH FIREBASE - ĐÃ SỬA LỖI SYNTAX
         const firebaseConfig = {
-            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk", 
+            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk", // Thay bằng Key thật của bạn
             authDomain: "saovn-project.firebaseapp.com",
             projectId: "saovn-project",
             storageBucket: "saovn-project.appspot.com",
-            messagingSenderId: "194928117396",
-            appId: "1:194928117396:web:642612a60105add5639681",
-		measurementId: "G-L7Y106VT85"
+            messagingSenderId: "194928117396", // Thay bằng ID thật của bạn
+            appId: "1:194928117396:web:642612a60105add5639681", // Thay bằng App ID thật của bạn
+            measurementId: "G-L7Y106VT85" // Chú ý dấu phẩy ở các dòng trên
         };
 
+        // Khởi tạo Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // QUAN TRỌNG: Kiểm tra trạng thái đăng nhập
+        // Kiểm tra trạng thái đăng nhập thời gian thực
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                // Nếu đã đăng nhập -> Lấy dữ liệu từ Firestore
+                console.log("User UID:", user.uid);
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
                         updateUI(userDoc.data());
-                    } else {
-                        console.log("Không tìm thấy hồ sơ người dùng!");
                     }
                 } catch (error) {
-                    console.error("Lỗi lấy dữ liệu:", error);
+                    console.error("Lỗi lấy dữ liệu Firestore:", error);
                 } finally {
-                    // Hiển thị dashboard và ẩn màn hình chờ
+                    // Xử lý hiển thị sau khi đã check xong
                     document.getElementById('dashBody').style.display = 'flex';
                     document.getElementById('loading-screen').style.display = 'none';
                 }
             } else {
-                // Nếu chưa đăng nhập hoặc token hết hạn -> Đẩy về login
+                // Nếu chưa đăng nhập, trả về trang chủ/đăng nhập
                 window.location.href = "login.html";
             }
         });
@@ -139,27 +140,25 @@
 
             if (data.role === 'admin') {
                 badge.style.background = "linear-gradient(45deg, #ff416c, #ff4b2b)";
-                stats.innerHTML += `<div class="stat-card"><h3>Yêu cầu chờ duyệt</h3><div class="value">12</div></div>`;
-            } else {
-                badge.style.background = "#00d2ff";
-                badge.style.color = "#00d2ff";
-                stats.innerHTML += `<div class="stat-card"><h3>Điểm tích lũy</h3><div class="value">450</div></div>`;
+                if(!document.getElementById('admin-stat')) {
+                    stats.innerHTML += `<div class="stat-card" id="admin-stat"><h3>Yêu cầu chờ</h3><div class="value">12</div></div>`;
+                }
             }
             initChart(data.role);
         }
 
-        // Đăng xuất
+        // Logout logic
         document.getElementById('btnLogout').addEventListener('click', () => {
-            signOut(auth).then(() => window.location.href = "index.html");
+            signOut(auth).then(() => window.location.href = "login.html");
         });
 
-        // Đổi mật khẩu
+        // Đổi mật khẩu logic
         document.getElementById('btnChangePass').addEventListener('click', () => {
-            const p = prompt("Nhập mật khẩu mới (tối thiểu 6 ký tự):");
+            const p = prompt("Nhập mật khẩu mới (min 6 ký tự):");
             if (p && p.length >= 6) {
                 updatePassword(auth.currentUser, p)
-                    .then(() => alert("Cập nhật mật khẩu thành công!"))
-                    .catch(e => alert("Lỗi: Bạn cần đăng nhập lại để thực hiện thao tác này."));
+                    .then(() => alert("Đã cập nhật mật khẩu!"))
+                    .catch(e => alert("Vui lòng đăng nhập lại để thực hiện thay đổi này."));
             }
         });
 
@@ -170,22 +169,22 @@
                 data: {
                     labels: ['T3', 'T4', 'T5', 'T6'],
                     datasets: [{
-                        label: role === 'admin' ? 'Thành viên mới' : 'Đóng góp cá nhân',
-                        data: role === 'admin' ? [100, 300, 700, 1200] : [10, 20, 35, 50],
+                        label: role === 'admin' ? 'Lượt truy cập' : 'Hoạt động',
+                        data: role === 'admin' ? [100, 450, 800, 1200] : [5, 15, 25, 40],
                         borderColor: '#00d2ff',
                         tension: 0.4,
                         fill: true,
-                        backgroundColor: 'rgba(0, 210, 255, 0.1)'
+                        backgroundColor: 'rgba(0, 210, 255, 0.05)'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#888' } },
-                        x: { grid: { display: false }, ticks: { color: '#888' } }
-                    },
-                    plugins: { legend: { display: false } }
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#555' } },
+                        x: { grid: { display: false }, ticks: { color: '#555' } }
+                    }
                 }
             });
         }
