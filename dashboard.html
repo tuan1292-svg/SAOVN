@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
     <style>
-        /* Giữ nguyên giao diện loading đẹp của dự án */
+        /* CSS nội bộ để xử lý màn hình chờ mà không ảnh hưởng file chính */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; display: flex; flex-direction: column;
@@ -19,13 +19,18 @@
             animation: spin 1s linear infinite; margin-bottom: 15px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Đảm bảo khi load xong body hiện theo kiểu flex của sidebar */
+        body.loaded {
+            display: flex !important;
+        }
     </style>
 </head>
 <body id="dashBody" style="display:none;">
 
     <div id="loading-screen">
         <div class="loader"></div>
-        <p style="color: #00d2ff; font-family: sans-serif; letter-spacing: 2px; font-size: 12px;">ĐANG XÁC MINH QUYỀN TRUY CẬP...</p>
+        <p style="color: #00d2ff; font-family: sans-serif; letter-spacing: 2px; font-size: 12px;">ĐANG ĐỒNG BỘ DỮ LIỆU...</p>
     </div>
 
     <aside class="sidebar">
@@ -55,10 +60,10 @@
             </div>
         </header>
 
-        <div class="content-wrapper">
-            <div class="welcome-section">
-                <h1>Chào mừng trở lại, <span id="welcomeName" style="color: var(--accent-color);">Thành viên</span>!</h1>
-                <p>Hệ thống SAOVN đã sẵn sàng cho các hành động mới của bạn.</p>
+        <div class="content-wrapper" style="padding: 30px;">
+            <div class="welcome-section" style="margin-bottom: 40px;">
+                <h1 style="font-size: 32px;">Chào mừng trở lại, <span id="welcomeName" style="color: #00d2ff;">Thành viên</span>!</h1>
+                <p style="color: #888; margin-top: 10px;">Hệ thống SAOVN đã sẵn sàng cho các hành động mới của bạn.</p>
             </div>
 
             <div class="stats-grid" id="statsGrid">
@@ -70,17 +75,16 @@
                     <h3>Thời gian hoạt động</h3>
                     <div class="value">48h</div>
                 </div>
-            </div>
+                </div>
 
-            <div class="chart-section">
-                <div class="chart-container">
+            <div class="chart-section" style="margin-top: 30px; display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
+                <div class="chart-container" style="background: #111; padding: 25px; border-radius: 20px; height: 350px;">
                     <canvas id="statsChart"></canvas>
                 </div>
-                <div class="action-panel">
-                    <h3>Thao tác nhanh</h3>
-                    <button class="action-btn" id="btnChangePass">Đổi mật khẩu bảo mật</button>
-                    <button class="action-btn">Xuất báo cáo hoạt động</button>
-                    <button class="action-btn">Liên hệ quản trị viên</button>
+                <div class="action-panel" style="background: #111; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px;">
+                    <h3 style="margin-bottom: 10px; font-size: 16px;">Thao tác nhanh</h3>
+                    <button class="action-btn" id="btnChangePass" style="width: 100%; padding: 12px; background: rgba(0,210,255,0.1); border: 1px solid #00d2ff; color: #00d2ff; border-radius: 10px; cursor: pointer;">Đổi mật khẩu</button>
+                    <button class="action-btn" style="width: 100%; padding: 12px; background: transparent; border: 1px solid #333; color: #fff; border-radius: 10px; cursor: pointer;">Xuất báo cáo</button>
                 </div>
             </div>
         </div>
@@ -92,89 +96,59 @@
         import { getAuth, onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // CẤU HÌNH FIREBASE - ĐÃ SỬA LỖI SYNTAX
+        // CẤU HÌNH FIREBASE CỦA BẠN
         const firebaseConfig = {
-            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk", // Thay bằng Key thật của bạn
-            authDomain: "saovn-project.firebaseapp.com",
-            projectId: "saovn-project",
-            storageBucket: "saovn-project.appspot.com",
-            messagingSenderId: "194928117396", // Thay bằng ID thật của bạn
-            appId: "1:194928117396:web:642612a60105add5639681", // Thay bằng App ID thật của bạn
-            measurementId: "G-L7Y106VT85" // Chú ý dấu phẩy ở các dòng trên
-        };
+  apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+  authDomain: "saovn-project.firebaseapp.com",
+  projectId: "saovn-project",
+  storageBucket: "saovn-project.firebasestorage.app",
+  messagingSenderId: "194928117396",
+  appId: "1:194928117396:web:642612a60105add5639681",
+  measurementId: "G-L7Y106VT85"
+};
 
-        // Khởi tạo Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Kiểm tra trạng thái đăng nhập thời gian thực
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log("User UID:", user.uid);
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
-                        updateUI(userDoc.data());
+                        const data = userDoc.data();
+                        document.getElementById('userName').innerText = data.fullName || "User";
+                        document.getElementById('welcomeName').innerText = data.fullName || "User";
+                        document.getElementById('userRole').innerText = data.role === 'admin' ? 'Quản trị viên' : 'Thành viên';
                     }
-                } catch (error) {
-                    console.error("Lỗi lấy dữ liệu Firestore:", error);
-                } finally {
-                    // Xử lý hiển thị sau khi đã check xong
+                    // Kích hoạt giao diện
+                    document.body.classList.add('loaded');
                     document.getElementById('dashBody').style.display = 'flex';
                     document.getElementById('loading-screen').style.display = 'none';
-                }
+                    initChart();
+                } catch (error) { console.error(error); }
             } else {
-                // Nếu chưa đăng nhập, trả về trang chủ/đăng nhập
                 window.location.href = "login.html";
             }
         });
 
-        function updateUI(data) {
-            document.getElementById('userName').innerText = data.fullName || "Thành viên";
-            document.getElementById('welcomeName').innerText = data.fullName || "Thành viên";
-            document.getElementById('userRole').innerText = data.role === 'admin' ? 'Quản trị viên' : 'Thành viên';
-            
-            const badge = document.getElementById('userAvatar');
-            const stats = document.getElementById('statsGrid');
-
-            if (data.role === 'admin') {
-                badge.style.background = "linear-gradient(45deg, #ff416c, #ff4b2b)";
-                if(!document.getElementById('admin-stat')) {
-                    stats.innerHTML += `<div class="stat-card" id="admin-stat"><h3>Yêu cầu chờ</h3><div class="value">12</div></div>`;
-                }
-            }
-            initChart(data.role);
-        }
-
-        // Logout logic
         document.getElementById('btnLogout').addEventListener('click', () => {
             signOut(auth).then(() => window.location.href = "login.html");
         });
 
-        // Đổi mật khẩu logic
-        document.getElementById('btnChangePass').addEventListener('click', () => {
-            const p = prompt("Nhập mật khẩu mới (min 6 ký tự):");
-            if (p && p.length >= 6) {
-                updatePassword(auth.currentUser, p)
-                    .then(() => alert("Đã cập nhật mật khẩu!"))
-                    .catch(e => alert("Vui lòng đăng nhập lại để thực hiện thay đổi này."));
-            }
-        });
-
-        function initChart(role) {
+        function initChart() {
             const ctx = document.getElementById('statsChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: ['T3', 'T4', 'T5', 'T6'],
                     datasets: [{
-                        label: role === 'admin' ? 'Lượt truy cập' : 'Hoạt động',
-                        data: role === 'admin' ? [100, 450, 800, 1200] : [5, 15, 25, 40],
+                        label: 'Hoạt động',
+                        data: [10, 25, 45, 30],
                         borderColor: '#00d2ff',
-                        tension: 0.4,
+                        backgroundColor: 'rgba(0, 210, 255, 0.05)',
                         fill: true,
-                        backgroundColor: 'rgba(0, 210, 255, 0.05)'
+                        tension: 0.4
                     }]
                 },
                 options: {
