@@ -17,35 +17,65 @@
             <form id="loginForm">
                 <div class="input-group">
                     <i class="fas fa-user"></i>
-                    <input type="text" placeholder="Tên đăng nhập" required>
+                    <input type="email" id="loginEmail" placeholder="Email" required>
                 </div>
                 <div class="input-group">
                     <i class="fas fa-lock"></i>
-                    <input type="password" placeholder="Mật khẩu" required>
+                    <input type="password" id="loginPass" placeholder="Mật khẩu" required>
                 </div>
                 <button type="submit" class="login-btn">XÁC MINH DANH TÍNH</button>
             </form>
             
            <div class="login-footer">
-    <div class="footer-top">
-        <a href="#">Quên mật khẩu?</a>
-        <a href="index.html">Quay lại trang chủ</a>
-    </div>
-    <div class="footer-divider"></div>
-    <div class="footer-bottom">
-        <span>Chưa có tài khoản?</span>
-        <a href="register.html">Đăng ký ngay</a>
-    </div>
-</div>
+                <div class="footer-top">
+                    <a href="#">Quên mật khẩu?</a>
+                    <a href="index.html">Quay lại trang chủ</a>
+                </div>
+                <div class="footer-divider"></div>
+                <div class="footer-bottom">
+                    <span>Chưa có tài khoản?</span>
+                    <a href="register.html">Đăng ký ngay</a>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Logic giả lập chuyển hướng vào Dashboard
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // CẤU HÌNH FIREBASE (Dán cấu hình của bạn vào đây)
+        const firebaseConfig = {
+  apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+  authDomain: "saovn-project.firebaseapp.com",
+  projectId: "saovn-project",
+  storageBucket: "saovn-project.firebasestorage.app",
+  messagingSenderId: "194928117396",
+  appId: "1:194928117396:web:642612a60105add5639681",
+  measurementId: "G-L7Y106VT85"
+};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            // Sau này bạn sẽ thêm logic kiểm tra tài khoản ở đây
-            window.location.href = 'dashboard.html';
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+
+            try {
+                // Ép Firebase lưu trạng thái đăng nhập vào trình duyệt
+                await setPersistence(auth, browserLocalPersistence);
+                await signInWithEmailAndPassword(auth, email, pass);
+                
+                // Chờ một chút để hệ thống ghi token rồi mới chuyển trang
+                setTimeout(() => {
+                    window.location.replace("dashboard.html");
+                }, 500);
+            } catch (error) {
+                console.error(error);
+                alert("Lỗi: " + error.message);
+            }
         });
     </script>
 </body>
