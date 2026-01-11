@@ -50,7 +50,7 @@
             sendEmailVerification, 
             signOut 
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, runTransaction, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
@@ -80,26 +80,33 @@
                 btn.disabled = true;
                 btn.innerText = "ĐANG XỬ LÝ...";
 
-                // 1. Tạo tài khoản
                 const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
                 const user = userCredential.user;
 
-                // 2. Gửi Email xác thực
-                await sendEmailVerification(user);
+                // Sử dụng Transaction để tăng bộ đếm an toàn tuyệt đối
+                const statsDocRef = doc(db, "metadata", "users_stats");
+                
+                await runTransaction(db, async (transaction) => {
+                    const statsDoc = await transaction.get(statsDocRef);
+                    if (!statsDoc.exists()) {
+                        transaction.set(statsDocRef, { totalMembers: 1 });
+                    } else {
+                        transaction.update(statsDocRef, { totalMembers: increment(1) });
+                    }
 
-                // 3. Lưu thông tin vào Firestore
-                await setDoc(doc(db, "users", user.uid), {
-                    fullName: name,
-                    email: email,
-                    role: "member",
-                    emailVerified: false, // Trạng thái mặc định
-                    createdAt: new Date()
+                    transaction.set(doc(db, "users", user.uid), {
+                        fullName: name,
+                        email: email,
+                        role: "member",
+                        emailVerified: false,
+                        createdAt: new Date()
+                    });
                 });
 
-                // 4. Đăng xuất ngay lập tức (để tránh user vào Dashboard khi chưa xác thực)
+                await sendEmailVerification(user);
                 await signOut(auth);
 
-                alert("🎉 Đăng ký thành công! Một email xác nhận đã được gửi tới " + email + ". Vui lòng kiểm tra hộp thư trước khi đăng nhập.");
+                alert("🎉 Đăng ký thành công! Vui lòng kiểm tra email để xác thực trước khi đăng nhập.");
                 window.location.href = "login.html";
 
             } catch (error) {
