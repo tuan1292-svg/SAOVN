@@ -20,23 +20,9 @@
                         <i class="fas fa-user-tag"></i>
                         <input type="text" id="regName" placeholder="Họ và tên" required>
                     </div>
-                    <div class="input-group">
+                    <div class="input-group full-width">
                         <i class="fas fa-envelope"></i>
                         <input type="email" id="regEmail" placeholder="Email liên lạc" required>
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-phone"></i>
-                        <input type="tel" id="regPhone" placeholder="Số điện thoại" required>
-                    </div>
-                    <div class="input-group full-width select-wrapper">
-                        <i class="fas fa-briefcase"></i>
-                        <select id="regMajor" required>
-                            <option value="" disabled selected>Lĩnh vực chuyên môn</option>
-                            <option value="tech">Công nghệ / CNTT</option>
-                            <option value="env">Môi trường / Sinh thái</option>
-                            <option value="edu">Giáo dục / Cộng đồng</option>
-                            <option value="media">Truyền thông / Thiết kế</option>
-                        </select>
                     </div>
                     <div class="input-group">
                         <i class="fas fa-lock"></i>
@@ -44,30 +30,36 @@
                     </div>
                     <div class="input-group">
                         <i class="fas fa-shield-alt"></i>
-                        <input type="password" id="regConfirmPass" placeholder="Xác nhận MK" required>
+                        <input type="password" id="regConfirmPass" placeholder="Nhập lại mật khẩu" required>
                     </div>
                 </div>
-                <button type="submit" class="register-btn">GỬI YÊU CẦU GIA NHẬP</button>
+                <button type="submit" class="register-btn" id="btnRegister">BẮT ĐẦU GIA NHẬP</button>
             </form>
-            <div class="register-footer">
-                Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a>
+            
+            <div class="register-footer" style="margin-top: 20px; font-size: 14px; color: #666;">
+                Đã có tài khoản? <a href="login.html" style="color: var(--accent-color); text-decoration: none;">Đăng nhập tại đây</a>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { 
+            getAuth, 
+            createUserWithEmailAndPassword, 
+            sendEmailVerification, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // --- DÁN CONFIG CỦA BẠN VÀO ĐÂY ---
         const firebaseConfig = {
             apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
             authDomain: "saovn-project.firebaseapp.com",
             projectId: "saovn-project",
-            storageBucket: "...",
-            messagingSenderId: "...",
-            appId: "..."
+            storageBucket: "saovn-project.firebasestorage.app",
+            messagingSenderId: "194928117396",
+            appId: "1:194928117396:web:642612a60105add5639681",
+            measurementId: "G-L7Y106VT85"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -76,27 +68,44 @@
 
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btn = document.getElementById('btnRegister');
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
-            const major = document.getElementById('regMajor').value;
             const pass = document.getElementById('regPass').value;
             const confirmPass = document.getElementById('regConfirmPass').value;
 
             if(pass !== confirmPass) return alert("Mật khẩu không khớp!");
 
             try {
+                btn.disabled = true;
+                btn.innerText = "ĐANG XỬ LÝ...";
+
+                // 1. Tạo tài khoản
                 const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                await setDoc(doc(db, "users", userCredential.user.uid), {
+                const user = userCredential.user;
+
+                // 2. Gửi Email xác thực
+                await sendEmailVerification(user);
+
+                // 3. Lưu thông tin vào Firestore
+                await setDoc(doc(db, "users", user.uid), {
                     fullName: name,
                     email: email,
-                    major: major,
                     role: "member",
+                    emailVerified: false, // Trạng thái mặc định
                     createdAt: new Date()
                 });
-                alert("Đăng ký thành công!");
+
+                // 4. Đăng xuất ngay lập tức (để tránh user vào Dashboard khi chưa xác thực)
+                await signOut(auth);
+
+                alert("🎉 Đăng ký thành công! Một email xác nhận đã được gửi tới " + email + ". Vui lòng kiểm tra hộp thư trước khi đăng nhập.");
                 window.location.href = "login.html";
+
             } catch (error) {
                 alert("Lỗi: " + error.message);
+                btn.disabled = false;
+                btn.innerText = "BẮT ĐẦU GIA NHẬP";
             }
         });
     </script>

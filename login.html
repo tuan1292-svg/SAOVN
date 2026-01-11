@@ -12,7 +12,7 @@
         <div class="login-box">
             <a href="index.html" class="login-logo">SAOVN</a>
             <h2>HỆ THỐNG ĐIỀU HÀNH</h2>
-            <p>Vui lòng đăng nhập để tiếp tục truy cập</p>
+            <p>Vui lòng đăng nhập bằng tài khoản SAOVN</p>
             
             <form id="loginForm">
                 <div class="input-group">
@@ -23,58 +23,79 @@
                     <i class="fas fa-lock"></i>
                     <input type="password" id="loginPass" placeholder="Mật khẩu" required>
                 </div>
-                <button type="submit" class="login-btn">XÁC MINH DANH TÍNH</button>
+                <button type="submit" class="login-btn" id="btnLogin">XÁC MINH DANH TÍNH</button>
             </form>
             
            <div class="login-footer">
                 <div class="footer-top">
                     <a href="#">Quên mật khẩu?</a>
-                    <a href="index.html">Quay lại trang chủ</a>
+                    <a href="register.html" style="color: var(--accent-color)">Tạo tài khoản mới</a>
                 </div>
-                <div class="footer-divider"></div>
-                <div class="footer-bottom">
-                    <span>Chưa có tài khoản?</span>
-                    <a href="register.html">Đăng ký ngay</a>
                 </div>
-            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            setPersistence, 
+            browserLocalPersistence,
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // CẤU HÌNH FIREBASE (Dán cấu hình của bạn vào đây)
         const firebaseConfig = {
-  apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
-  authDomain: "saovn-project.firebaseapp.com",
-  projectId: "saovn-project",
-  storageBucket: "saovn-project.firebasestorage.app",
-  messagingSenderId: "194928117396",
-  appId: "1:194928117396:web:642612a60105add5639681",
-  measurementId: "G-L7Y106VT85"
-};
+            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+            authDomain: "saovn-project.firebaseapp.com",
+            projectId: "saovn-project",
+            storageBucket: "saovn-project.firebasestorage.app",
+            messagingSenderId: "194928117396",
+            appId: "1:194928117396:web:642612a60105add5639681",
+            measurementId: "G-L7Y106VT85"
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
+        // LOGIC ĐĂNG NHẬP VÀ KIỂM TRA XÁC THỰC
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const pass = document.getElementById('loginPass').value;
+            const btn = document.getElementById('btnLogin');
 
             try {
-                // Ép Firebase lưu trạng thái đăng nhập vào trình duyệt
+                btn.disabled = true;
+                btn.innerText = "ĐANG XỬ LÝ...";
+
+                // 1. Duy trì trạng thái đăng nhập
                 await setPersistence(auth, browserLocalPersistence);
-                await signInWithEmailAndPassword(auth, email, pass);
                 
-                // Chờ một chút để hệ thống ghi token rồi mới chuyển trang
-                setTimeout(() => {
-                    window.location.replace("dashboard.html");
-                }, 500);
+                // 2. Thực hiện đăng nhập
+                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+                const user = userCredential.user;
+
+                // 3. KIỂM TRA XÁC THỰC EMAIL
+                // Quan trọng: Firebase cần reload user để cập nhật trạng thái nếu họ vừa bấm link
+                await user.reload(); 
+                
+                if (auth.currentUser.emailVerified) {
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert("⚠️ Tài khoản chưa được kích hoạt! Hãy kiểm tra hộp thư email của bạn để xác thực.");
+                    await signOut(auth); // Đăng xuất để yêu cầu đăng nhập lại sau khi xác thực
+                    window.location.reload();
+                }
+
             } catch (error) {
-                console.error(error);
-                alert("Lỗi: " + error.message);
+                let errorMsg = "Lỗi đăng nhập!";
+                if(error.code === 'auth/invalid-credential') errorMsg = "Email hoặc mật khẩu không chính xác.";
+                if(error.code === 'auth/user-not-found') errorMsg = "Tài khoản không tồn tại.";
+                
+                alert(errorMsg);
+                btn.disabled = false;
+                btn.innerText = "XÁC MINH DANH TÍNH";
             }
         });
     </script>
