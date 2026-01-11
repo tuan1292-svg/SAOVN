@@ -13,9 +13,13 @@
             <span class="logo-text">SAOVN</span>
             <span class="logo-slogan">Special Actions Organization for Vietnam</span>
         </a>
+
         <div class="menu-toggle" id="mobile-menu">
-            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
         </div>
+
         <nav class="nav-container">
             <a href="index.html" class="nav-link active">Trang chủ</a>
             <a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
@@ -27,93 +31,228 @@
     </header>
 
     <section class="hero">
-        <div class="hero-content" data-aos="fade-up">
-            <h1>SÁNG TẠO <span class="highlight">KHÔNG GIỚI HẠN</span></h1>
-            <p>SAOVN - Nơi những ý tưởng điên rồ nhất trở thành hiện thực.</p>
-            <div class="hero-btns">
-                <a href="du-an.html" class="btn-primary">Xem dự án</a>
-                <a href="ve-saovn.html" class="btn-secondary">Tìm hiểu thêm</a>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 data-aos="zoom-in">SÁNG TẠO <br> <span class="outline">KHÔNG GIỚI HẠN</span></h1>
+            <p data-aos="fade-up" data-aos-delay="200">Tổ chức hoạt động đặc biệt vì Việt Nam</p>
+            <div class="scroll-down">Cuộn xuống để xem ↓</div>
+        </div>
+    </section>
+
+    <section class="section about-section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Về <span class="highlight">SAOVN</span></h2>
+            
+            <div class="about-brief">
+                <p class="about-intro" data-aos="fade-up" data-aos-delay="100">
+                    Từ những trăn trở về bão lũ, kẹt xe và vòng lặp nghèo khó... chúng tôi tin rằng chỉ có <strong>HÀNH ĐỘNG</strong> mới tạo nên thay đổi thực chất.
+                </p>
+                
+                <p class="about-text" data-aos="fade-up" data-aos-delay="200">
+                    SAOVN (Special Actions Organization for Vietnam) là cộng đồng tập hợp những con người sẵn sàng đóng góp trí tuệ và thời gian để giải quyết các vấn đề xã hội dựa trên dữ liệu thực tế.
+                </p>
+
+                <div class="about-action" data-aos="zoom-in" data-aos-delay="300">
+                    <a href="ve-saovn.html" class="btn-main">Khám phá sứ mệnh</a>
+                    <a href="lien-he.html" class="btn-sub">Gia nhập cộng đồng</a>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="stats-section">
-        <div class="stats-container">
-            <div class="stat-item" data-aos="zoom-in">
-                <h2 class="stat-number" id="real-time-members">0</h2>
-                <p class="stat-label">Thành viên</p>
-            </div>
-            <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
-                <h2 class="stat-number" data-target="15">0</h2>
-                <p class="stat-label">Dự án hoàn thành</p>
-            </div>
-            <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
-                <h2 class="stat-number" data-target="4.9" data-is-float="true">0</h2>
-                <p class="stat-label">Đánh giá trung bình</p>
+    <section class="section stats-section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Dữ Liệu <span class="highlight">Thực Tế</span></h2>
+            
+            <div class="dashboard-grid">
+                <div class="dash-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="card-header">
+                        <span class="dot-live"></span> <span class="card-label">Thành viên tham gia</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="stat-number" data-target="1250">0</h3>
+                        <div class="mini-chart bar-chart">
+                            <div class="bar-line"></div><div class="bar-line"></div>
+                            <div class="bar-line"></div><div class="bar-line"></div>
+                            <div class="bar-line"></div><div class="bar-line"></div>
+                        </div>
+                    </div>
+                    <p class="card-footer">↑ 12% so với tháng trước</p>
+                </div>
+
+                <div class="dash-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-header">
+                        <span class="status-icon">⚡</span> <span class="card-label">Dự án hoàn thành</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="stat-number" data-target="14">0</h3>
+                        <div class="mini-chart circle-chart">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path class="circle" stroke-dasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="card-footer">Đang triển khai: 03</p>
+                </div>
+
+                <div class="dash-card highlight-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card-header">
+                        <span class="money-icon">$</span> <span class="card-label">Quỹ huy động (VNĐ)</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="money-wrapper">
+                            <h3 class="stat-number" data-target="6.8" data-is-float="true">0</h3>
+                            <span class="unit">Tỷ+</span>
+                        </div>
+                        <div class="mini-chart line-chart">
+                            <svg viewBox="0 0 100 30" class="trending-line">
+                                <polyline fill="none" stroke="#00d2ff" stroke-width="2" points="0,25 20,20 40,22 60,10 80,15 100,5" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="card-footer live-text">Đang cập nhật real-time...</p>
+                </div>
             </div>
         </div>
     </section>
+
+    <section class="section projects-section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Dự Án <span class="highlight">Tiêu Biểu</span></h2>
+            
+            <div class="project-grid">
+                <div class="project-card" data-aos="fade-right">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1547619292-8816ee7cdd50?auto=format&fit=crop&w=600&q=80" alt="Hệ thống cảnh báo lũ">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Thiên tai</span>
+                        <h3>Giải Pháp Bão Lũ</h3>
+                        <p>Hệ thống giám sát lưu lượng xả lũ thủy điện và cảnh báo sớm dựa trên dữ liệu thực tế.</p>
+                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80" alt="Giao thông thông minh">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Giao thông</span>
+                        <h3>Giải pháp Ùn tắc Đô thị</h3>
+                        <p>Phân tích điểm nghẽn và đề xuất phương án phân luồng, quy hoạch hạ tầng khả thi.</p>
+                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-left" data-aos-delay="400">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80" alt="Hỗ trợ thoát nghèo">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">An sinh</span>
+                        <h3>Thoát nghèo bền vững</h3>
+                        <p>Xây dựng lộ trình hỗ trợ các hoàn cảnh khó khăn tìm hướng đi mới và ổn định cuộc sống.</p>
+                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid" data-aos="fade-up">
+            <div class="footer-brand">
+                <h3>SAOVN</h3>
+                <p>Special Actions Organization for Vietnam</p>
+                <p class="footer-slogan">Sáng tạo không giới hạn - Nâng tầm vị thế Việt.</p>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Liên Hệ</h4>
+                <p>📍 Địa chỉ: Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
+                <p>📞 Điện thoại: 090 xxx xxxx</p>
+                <p>✉️ Email: contact@saovn.org</p>
+            </div>
+
+            <div class="footer-socials">
+                <h4>Kết Nối</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-link">TikTok</a>
+                    <a href="#" class="social-link">YouTube</a>
+                    <a href="#" class="social-link">Discord</a>
+                    <a href="#" class="social-link">Facebook</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="copyright">&copy; 2026 SAOVN. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
-            authDomain: "saovn-project.firebaseapp.com",
-            projectId: "saovn-project",
-            storageBucket: "saovn-project.firebasestorage.app",
-            messagingSenderId: "194928117396",
-            appId: "1:194928117396:web:642612a60105add5639681",
-            measurementId: "G-L7Y106VT85"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
+    <script>
+        // Init AOS
         AOS.init({ duration: 1000, once: true });
 
-        // Real-time Counter từ Firestore
-        const memberElement = document.getElementById('real-time-members');
-        onSnapshot(doc(db, "metadata", "users_stats"), (doc) => {
-            const total = doc.data()?.totalMembers || 0;
-            animateValue(memberElement, parseInt(memberElement.innerText), total, 2000);
+        // Mobile Menu Toggle
+        const menu = document.querySelector('#mobile-menu');
+        const menuLinks = document.querySelector('.nav-container');
+
+        menu.addEventListener('click', function() {
+            menu.classList.toggle('is-active');
+            menuLinks.classList.toggle('active');
+        });
+        
+        // 1. HEADER SCROLL EFFECT
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         });
 
-        function animateValue(obj, start, end, duration) {
-            let startTimestamp = null;
-            const step = (timestamp) => {
-                if (!startTimestamp) startTimestamp = timestamp;
-                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                obj.innerHTML = Math.floor(progress * (end - start) + start);
-                if (progress < 1) window.requestAnimationFrame(step);
-            };
-            window.requestAnimationFrame(step);
-        }
+        // 2. COUNTER ANIMATION LOGIC
+        const stats = document.querySelectorAll('.stat-number');
+        let hasAnimated = false;
 
-        // Các counters khác
         const animateCounters = () => {
-            document.querySelectorAll('.stat-number[data-target]').forEach(counter => {
+            stats.forEach(counter => {
                 const target = +counter.getAttribute('data-target');
                 const isFloat = counter.getAttribute('data-is-float') === 'true';
+                const duration = 2000; 
+                const frameRate = 20; 
+                const totalFrames = duration / frameRate;
+                const increment = target / totalFrames;
+                
                 let current = 0;
+
                 const updateCount = () => {
-                    current += target / 100;
+                    current += increment;
                     if (current < target) {
                         counter.innerText = isFloat ? current.toFixed(1) : Math.ceil(current);
-                        setTimeout(updateCount, 20);
-                    } else { counter.innerText = target; }
+                        setTimeout(updateCount, frameRate);
+                    } else {
+                        counter.innerText = isFloat ? target : target;
+                    }
                 };
                 updateCount();
             });
         };
 
-        let hasAnimated = false;
+        // Kích hoạt khi cuộn đến section Stats
         window.addEventListener('scroll', () => {
             const statsSection = document.querySelector('.stats-section');
-            if(statsSection && window.scrollY > statsSection.offsetTop - 600 && !hasAnimated) {
-                animateCounters();
-                hasAnimated = true;
+            if(statsSection) {
+                const triggerPoint = window.innerHeight * 0.8; 
+                const sectionTop = statsSection.getBoundingClientRect().top;
+                if (sectionTop < triggerPoint && !hasAnimated) {
+                    animateCounters();
+                    hasAnimated = true;
+                }
             }
         });
     </script>
