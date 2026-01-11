@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
     <style>
-        /* CSS nội bộ để xử lý màn hình chờ mà không ảnh hưởng file chính */
+        /* CSS xử lý màn hình chờ */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; display: flex; flex-direction: column;
@@ -20,20 +20,18 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Đảm bảo khi load xong body hiện theo kiểu flex của sidebar */
-        body.loaded {
-            display: flex !important;
-        }
+        body.loaded { display: flex !important; }
 
-        /* --- CSS CHO VIỀN ROLE XỊN XÒ --- */
+        /* --- THIẾT KẾ VIỀN ROLE THANH MẢNH --- */
         #userRole {
-            padding: 2px 10px;
+            padding: 2px 12px;
             border-radius: 20px;
             font-size: 11px;
-            font-weight: 500;
+            font-weight: 600;
             border: 1px solid transparent;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: inline-block;
         }
         /* Admin màu đỏ */
         .role-admin {
@@ -143,17 +141,40 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- LOGIC TỰ ĐỘNG ĐĂNG XUẤT (TIMEOUT) ---
+        let idleTimeout;
+        const TIMEOUT_DURATION = 15 * 10 * 1000; // 15 Phút
+
+        function resetIdleTimer() {
+            clearTimeout(idleTimeout);
+            idleTimeout = setTimeout(() => {
+                alert("Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại!");
+                handleLogout();
+            }, TIMEOUT_DURATION);
+        }
+
+        async function handleLogout() {
+            try {
+                await signOut(auth);
+                window.location.href = "login.html";
+            } catch (error) { console.error(error); }
+        }
+
+        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+        events.forEach(name => document.addEventListener(name, resetIdleTimer, true));
+        // ------------------------------------------
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                resetIdleTimer();
                 try {
-                    // Lắng nghe thông tin người dùng
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
                         const data = userDoc.data();
                         document.getElementById('userName').innerText = data.fullName || "User";
                         document.getElementById('welcomeName').innerText = data.fullName || "User";
                         
-                        // Xử lý Role và màu sắc viền
+                        // Áp dụng Class màu cho Role
                         const roleEl = document.getElementById('userRole');
                         if (data.role === 'admin') {
                             roleEl.innerText = 'Admin';
@@ -167,14 +188,13 @@
                         }
                     }
 
-                    // Lắng nghe bộ đếm thành viên thực tế
+                    // Lấy số thành viên real-time
                     onSnapshot(doc(db, "metadata", "users_stats"), (snapshot) => {
                         if (snapshot.exists()) {
                             document.getElementById('real-time-total-members').innerText = snapshot.data().totalMembers || 0;
                         }
                     });
 
-                    // Kích hoạt giao diện
                     document.body.classList.add('loaded');
                     document.getElementById('dashBody').style.display = 'flex';
                     document.getElementById('loading-screen').style.display = 'none';
@@ -185,9 +205,7 @@
             }
         });
 
-        document.getElementById('btnLogout').addEventListener('click', () => {
-            signOut(auth).then(() => window.location.href = "login.html");
-        });
+        document.getElementById('btnLogout').addEventListener('click', handleLogout);
 
         function initChart() {
             const ctx = document.getElementById('statsChart').getContext('2d');
