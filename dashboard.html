@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
     <style>
-        /* CSS xử lý màn hình chờ */
+        /* Màn hình chờ */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; display: flex; flex-direction: column;
@@ -22,35 +22,31 @@
         
         body.loaded { display: flex !important; }
 
-        /* --- THIẾT KẾ VIỀN ROLE THANH MẢNH --- */
+        /* Role Badge Styles */
         #userRole {
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            border: 1px solid transparent;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-block;
+            padding: 2px 12px; border-radius: 20px; font-size: 11px;
+            font-weight: 600; border: 1px solid transparent;
+            text-transform: uppercase; letter-spacing: 0.5px; display: inline-block;
         }
-        /* Admin màu đỏ */
-        .role-admin {
-            color: #ff4d4d;
-            border-color: rgba(255, 77, 77, 0.4) !important;
-            background: rgba(255, 77, 77, 0.05);
+        .role-admin { color: #ff4d4d; border-color: rgba(255, 77, 77, 0.4) !important; background: rgba(255, 77, 77, 0.05); }
+        .role-mod { color: #adff2f; border-color: rgba(173, 255, 47, 0.4) !important; background: rgba(173, 255, 47, 0.05); }
+        .role-member { color: #2ecc71; border-color: rgba(46, 204, 113, 0.4) !important; background: rgba(46, 204, 113, 0.05); }
+
+        /* Modal Đổi Mật Khẩu */
+        .modal {
+            display:none; position: fixed; z-index: 10000; left: 0; top: 0; 
+            width: 100%; height: 100%; background: rgba(0,0,0,0.9); 
+            backdrop-filter: blur(5px); align-items: center; justify-content: center;
         }
-        /* Quản trị viên màu xanh nõn chuối */
-        .role-mod {
-            color: #adff2f;
-            border-color: rgba(173, 255, 47, 0.4) !important;
-            background: rgba(173, 255, 47, 0.05);
+        .modal-content {
+            background: #111; padding: 40px; border-radius: 20px; 
+            border: 1px solid #00d2ff; width: 90%; max-width: 400px; position: relative;
         }
-        /* Thành viên màu xanh lục */
-        .role-member {
-            color: #2ecc71;
-            border-color: rgba(46, 204, 113, 0.4) !important;
-            background: rgba(46, 204, 113, 0.05);
+        .modal-input {
+            width: 100%; padding: 12px; margin-bottom: 15px; background: #050505; 
+            border: 1px solid #333; color: #fff; border-radius: 8px; outline: none;
         }
+        .modal-input:focus { border-color: #00d2ff; }
     </style>
 </head>
 <body id="dashBody" style="display:none;">
@@ -98,14 +94,8 @@
                     <h3>Tổng thành viên</h3>
                     <div class="value" id="real-time-total-members">0</div>
                 </div>
-                <div class="stat-card">
-                    <h3>Tổng nhiệm vụ</h3>
-                    <div class="value">124</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Thời gian hoạt động</h3>
-                    <div class="value">48h</div>
-                </div>
+                <div class="stat-card"><h3>Tổng nhiệm vụ</h3><div class="value">124</div></div>
+                <div class="stat-card"><h3>Thời gian hoạt động</h3><div class="value">48h</div></div>
             </div>
 
             <div class="chart-section" style="margin-top: 30px; display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
@@ -121,10 +111,23 @@
         </div>
     </main>
 
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" style="position: absolute; right: 20px; top: 15px; color: #555; cursor: pointer; font-size: 24px;">&times;</span>
+            <h2 style="color: #00d2ff; margin-bottom: 20px; text-align: center;">ĐỔI MẬT KHẨU</h2>
+            <form id="changePassForm">
+                <input type="password" id="currentPass" class="modal-input" placeholder="Mật khẩu hiện tại" required>
+                <input type="password" id="newPass" class="modal-input" placeholder="Mật khẩu mới" required>
+                <input type="password" id="confirmNewPass" class="modal-input" placeholder="Xác nhận mật khẩu mới" required>
+                <button type="submit" id="btnUpdatePass" style="width: 100%; padding: 12px; background: #00d2ff; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #000;">CẬP NHẬT</button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -141,69 +144,67 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- LOGIC TỰ ĐỘNG ĐĂNG XUẤT (TIMEOUT) ---
+        // --- SESSION TIMEOUT (15 Phút) ---
         let idleTimeout;
-        const TIMEOUT_DURATION = 15 * 10 * 1000; // 15 Phút
-
-        function resetIdleTimer() {
+        const resetTimer = () => {
             clearTimeout(idleTimeout);
-            idleTimeout = setTimeout(() => {
-                alert("Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại!");
-                handleLogout();
-            }, TIMEOUT_DURATION);
-        }
+            idleTimeout = setTimeout(() => { alert("Hết phiên làm việc!"); handleLogout(); }, 15 * 60 * 1000);
+        };
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(e => document.addEventListener(e, resetTimer));
 
         async function handleLogout() {
-            try {
-                await signOut(auth);
-                window.location.href = "login.html";
-            } catch (error) { console.error(error); }
+            try { await signOut(auth); window.location.href = "login.html"; } catch (e) { console.error(e); }
         }
 
-        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-        events.forEach(name => document.addEventListener(name, resetIdleTimer, true));
-        // ------------------------------------------
-
+        // --- AUTH & DATA ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                resetIdleTimer();
+                resetTimer();
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
                         const data = userDoc.data();
                         document.getElementById('userName').innerText = data.fullName || "User";
                         document.getElementById('welcomeName').innerText = data.fullName || "User";
-                        
-                        // Áp dụng Class màu cho Role
-                        const roleEl = document.getElementById('userRole');
-                        if (data.role === 'admin') {
-                            roleEl.innerText = 'Admin';
-                            roleEl.className = 'role role-admin';
-                        } else if (data.role === 'mod') {
-                            roleEl.innerText = 'Quản trị viên';
-                            roleEl.className = 'role role-mod';
-                        } else {
-                            roleEl.innerText = 'Thành viên';
-                            roleEl.className = 'role role-member';
-                        }
+                        const r = document.getElementById('userRole');
+                        if (data.role === 'admin') { r.innerText = 'Admin'; r.className = 'role role-admin'; }
+                        else if (data.role === 'mod') { r.innerText = 'Quản trị viên'; r.className = 'role role-mod'; }
+                        else { r.innerText = 'Thành viên'; r.className = 'role role-member'; }
                     }
-
-                    // Lấy số thành viên real-time
-                    onSnapshot(doc(db, "metadata", "users_stats"), (snapshot) => {
-                        if (snapshot.exists()) {
-                            document.getElementById('real-time-total-members').innerText = snapshot.data().totalMembers || 0;
-                        }
+                    onSnapshot(doc(db, "metadata", "users_stats"), s => {
+                        if (s.exists()) document.getElementById('real-time-total-members').innerText = s.data().totalMembers || 0;
                     });
-
                     document.body.classList.add('loaded');
                     document.getElementById('dashBody').style.display = 'flex';
                     document.getElementById('loading-screen').style.display = 'none';
                     initChart();
                 } catch (error) { console.error(error); }
-            } else {
-                window.location.href = "login.html";
-            }
+            } else { window.location.href = "login.html"; }
         });
+
+        // --- ĐỔI MẬT KHẨU ---
+        const modal = document.getElementById("passwordModal");
+        document.getElementById("btnChangePass").onclick = () => modal.style.display = "flex";
+        document.getElementById("closeModal").onclick = () => modal.style.display = "none";
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+
+        document.getElementById("changePassForm").onsubmit = async (e) => {
+            e.preventDefault();
+            const curr = document.getElementById('currentPass').value;
+            const next = document.getElementById('newPass').value;
+            const conf = document.getElementById('confirmNewPass').value;
+            if(next !== conf) return alert("Mật khẩu không khớp!");
+            const btn = document.getElementById('btnUpdatePass');
+            try {
+                btn.disabled = true; btn.innerText = "ĐANG XỬ LÝ...";
+                const cred = EmailAuthProvider.credential(auth.currentUser.email, curr);
+                await reauthenticateWithCredential(auth.currentUser, cred);
+                await updatePassword(auth.currentUser, next);
+                alert("Đổi mật khẩu thành công!"); modal.style.display = "none";
+                document.getElementById("changePassForm").reset();
+            } catch (err) { alert("Lỗi: " + err.message); }
+            finally { btn.disabled = false; btn.innerText = "CẬP NHẬT"; }
+        };
 
         document.getElementById('btnLogout').addEventListener('click', handleLogout);
 
@@ -218,19 +219,10 @@
                         data: [10, 25, 45, 30],
                         borderColor: '#00d2ff',
                         backgroundColor: 'rgba(0, 210, 255, 0.05)',
-                        fill: true,
-                        tension: 0.4
+                        fill: true, tension: 0.4
                     }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#555' } },
-                        x: { grid: { display: false }, ticks: { color: '#555' } }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false }
             });
         }
     </script>
