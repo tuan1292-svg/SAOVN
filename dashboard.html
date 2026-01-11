@@ -6,11 +6,22 @@
     <title>Dashboard | SAOVN Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
+    <style>
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050505; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 9999;
+        }
+        .loader {
+            width: 40px; height: 40px; border: 3px solid #111;
+            border-top: 3px solid #00d2ff; border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 15px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
-    <div id="loading-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#050505; display:flex; align-items:center; justify-content:center; z-index:9999;">
-        <p style="color:#00d2ff;">ĐANG TẢI...</p>
-    </div>
+    <div id="loading-screen"><div class="loader"></div><p>ĐANG TẢI DỮ LIỆU...</p></div>
 
     <aside class="sidebar">
         <a href="index.html" class="sidebar-logo">SAOVN</a>
@@ -25,10 +36,10 @@
 
     <main class="main-content">
         <header class="top-bar">
-            <div class="page-title"><h1>Tổng quan</h1></div>
+            <div class="page-title"><h1>Tổng quan hệ thống</h1><p id="current-date"></p></div>
             <div class="user-profile">
-                <div class="user-info"><span class="name" id="user-display-name">Admin</span></div>
-                <div class="avatar" id="user-avatar">A</div>
+                <div class="user-info"><span class="name" id="user-display-name">Admin</span><span class="role">Quản trị viên</span></div>
+                <div class="avatar" id="user-avatar">S</div>
             </div>
         </header>
 
@@ -36,11 +47,11 @@
             <div class="stat-card">
                 <div class="stat-info">
                     <span class="label">Tổng thành viên</span>
-                    <h3 id="admin-total-members">0</h3>
+                    <h3 id="real-time-total">0</h3>
                 </div>
                 <i class="fas fa-users icon"></i>
             </div>
-        </section>
+            </section>
 
         <section class="chart-section">
             <div class="chart-container"><canvas id="statsChart"></canvas></div>
@@ -51,7 +62,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
@@ -62,28 +73,51 @@
             appId: "1:194928117396:web:642612a60105add5639681",
             measurementId: "G-L7Y106VT85"
         };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
-                document.getElementById('loading-screen').style.display = 'none';
-                // Lắng nghe số đếm thành viên
-                onSnapshot(doc(db, "metadata", "users_stats"), (snap) => {
-                    document.getElementById('admin-total-members').innerText = snap.data()?.totalMembers || 0;
-                });
-                initChart();
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        document.getElementById('user-display-name').innerText = userData.fullName;
+                        document.getElementById('user-avatar').innerText = userData.fullName.charAt(0).toUpperCase();
+                    }
+                    
+                    // Lắng nghe số lượng thành viên thực tế
+                    onSnapshot(doc(db, "metadata", "users_stats"), (docSnapshot) => {
+                        document.getElementById('real-time-total').innerText = docSnapshot.data()?.totalMembers || 0;
+                    });
+
+                    document.getElementById('loading-screen').style.display = 'none';
+                    initChart();
+                } catch (error) { console.error(error); }
             } else { window.location.href = "login.html"; }
         });
 
-        document.getElementById('btnLogout').addEventListener('click', () => { signOut(auth); });
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            signOut(auth).then(() => window.location.href = "login.html");
+        });
 
         function initChart() {
             const ctx = document.getElementById('statsChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
-                data: { labels: ['T1', 'T2', 'T3'], datasets: [{ label: 'Data', data: [5, 15, 10], borderColor: '#00d2ff' }] },
+                data: {
+                    labels: ['T3', 'T4', 'T5', 'T6'],
+                    datasets: [{
+                        label: 'Hoạt động',
+                        data: [10, 25, 45, 30],
+                        borderColor: '#00d2ff',
+                        backgroundColor: 'rgba(0, 210, 255, 0.05)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
                 options: { responsive: true, maintainAspectRatio: false }
             });
         }
