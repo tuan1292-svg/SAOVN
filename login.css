@@ -12,6 +12,7 @@ body {
     align-items: center;
     justify-content: center;
     background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
+    overflow: hidden;
 }
 
 .login-container {
@@ -20,71 +21,81 @@ body {
     padding: 20px;
 }
 
+/* --- CẤU TRÚC NEON 2 LUỒNG SÁNG --- */
 .login-box {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(15px);
+    position: relative;
+    background: #0a0a0a;
     padding: 40px;
     border-radius: 20px;
-    border: 1px solid rgba(0, 210, 255, 0.2);
     text-align: center;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.9);
 }
+
+/* Tạo 2 luồng sáng bằng cách chia gradient thành 2 đoạn đối xứng */
+.login-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        transparent, 
+        var(--accent-color), 
+        transparent 20%, 
+        transparent 50%, 
+        var(--accent-color), 
+        transparent 70%
+    );
+    animation: rotate-neon 3s linear infinite;
+    z-index: 0;
+}
+
+.login-box::after {
+    content: '';
+    position: absolute;
+    inset: 3px; /* Độ dày viền neon */
+    background: #0a0a0a;
+    border-radius: 17px;
+    z-index: 0;
+}
+
+@keyframes rotate-neon {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.login-box > * { position: relative; z-index: 1; }
 
 .login-logo {
     font-size: 32px;
     font-weight: 900;
     color: var(--accent-color);
     text-decoration: none;
-    letter-spacing: 5px;
+    letter-spacing: 2px;
     display: block;
-    margin-bottom: 20px;
-}
-
-.login-box h2 {
-    font-size: 14px;
-    letter-spacing: 3px;
-    color: #fff;
     margin-bottom: 10px;
+    text-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
 }
 
-.login-box p {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 30px;
-}
+h2 { color: #fff; font-size: 18px; margin-bottom: 5px; letter-spacing: 1px; }
+p { color: #666; font-size: 14px; margin-bottom: 30px; }
 
-/* Input Styles */
-.input-group {
-    position: relative;
-    margin-bottom: 20px;
-}
-
-.input-group i {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--accent-color);
-    font-size: 14px;
-}
-
+.input-group { position: relative; margin-bottom: 20px; }
+.input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #444; }
 .input-group input {
     width: 100%;
+    padding: 15px 15px 15px 45px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.1);
-    padding: 15px 15px 15px 45px;
     border-radius: 10px;
     color: #fff;
     outline: none;
     transition: 0.3s;
 }
+.input-group input:focus { border-color: var(--accent-color); background: rgba(0, 210, 255, 0.05); }
 
-.input-group input:focus {
-    border-color: var(--accent-color);
-    background: rgba(0, 210, 255, 0.05);
-}
-
-/* Button */
 .login-btn {
     width: 100%;
     padding: 15px;
@@ -93,63 +104,15 @@ body {
     border-radius: 10px;
     color: #000;
     font-weight: bold;
-    letter-spacing: 1px;
     cursor: pointer;
     transition: 0.3s;
     margin-top: 10px;
 }
+.login-btn:hover { box-shadow: 0 0 20px rgba(0, 210, 255, 0.5); transform: translateY(-2px); }
 
-.login-btn:hover {
-    background: #00b8e6;
-    box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
-    transform: translateY(-2px);
-}
-
-/* --- FOOTER LOGIN TỐI ƯU --- */
-.login-footer {
-    margin-top: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Khoảng cách giữa các dòng */
-}
-
-.footer-top {
-    display: flex;
-    justify-content: space-between; /* Đẩy 2 link sang 2 bên */
-    font-size: 13px;
-}
-
-.footer-top a {
-    color: #888;
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-.footer-top a:hover {
-    color: var(--accent-color);
-}
-
-.footer-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.1); /* Đường kẻ mờ ngăn cách */
-    width: 100%;
-}
-
-.footer-bottom {
-    font-size: 14px;
-}
-
-.footer-bottom span {
-    color: #666;
-    margin-right: 5px;
-}
-
-.footer-bottom a {
-    color: var(--accent-color);
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.footer-bottom a:hover {
-    text-decoration: underline;
-}
+.login-footer { margin-top: 25px; display: flex; flex-direction: column; gap: 15px; }
+.footer-top { display: flex; justify-content: space-between; font-size: 13px; }
+.footer-top a { color: #666; text-decoration: none; transition: 0.3s; }
+.footer-top a:hover { color: var(--accent-color); }
+.divider { height: 1px; background: rgba(255,255,255,0.1); position: relative; margin: 10px 0; }
+.divider::after { content: 'HOẶC'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #0a0a0a; padding: 0 10px; font-size: 10px; color: #444; }
