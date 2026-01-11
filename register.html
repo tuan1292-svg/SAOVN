@@ -50,7 +50,14 @@
             sendEmailVerification, 
             signOut 
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // Thêm runTransaction và increment để xử lý bộ đếm
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            runTransaction, 
+            increment 
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
@@ -80,26 +87,40 @@
                 btn.disabled = true;
                 btn.innerText = "ĐANG XỬ LÝ...";
 
-                // 1. Tạo tài khoản
+                // 1. Tạo tài khoản trong Firebase Auth
                 const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
                 const user = userCredential.user;
 
-                // 2. Gửi Email xác thực
-                await sendEmailVerification(user);
+                // 2. Sử dụng Transaction để cập nhật thông tin user và tăng bộ đếm tổng đồng thời
+                const statsDocRef = doc(db, "metadata", "users_stats");
 
-                // 3. Lưu thông tin vào Firestore
-                await setDoc(doc(db, "users", user.uid), {
-                    fullName: name,
-                    email: email,
-                    role: "member",
-                    emailVerified: false, // Trạng thái mặc định
-                    createdAt: new Date()
+                await runTransaction(db, async (transaction) => {
+                    const statsDoc = await transaction.get(statsDocRef);
+                    
+                    // Nếu chưa có tài liệu thống kê, khởi tạo nó là 1, nếu có rồi thì tăng thêm 1
+                    if (!statsDoc.exists()) {
+                        transaction.set(statsDocRef, { totalMembers: 1 });
+                    } else {
+                        transaction.update(statsDocRef, { totalMembers: increment(1) });
+                    }
+
+                    // Lưu thông tin chi tiết của User vào collection 'users'
+                    transaction.set(doc(db, "users", user.uid), {
+                        fullName: name,
+                        email: email,
+                        role: "member",
+                        emailVerified: false,
+                        createdAt: new Date()
+                    });
                 });
 
-                // 4. Đăng xuất ngay lập tức (để tránh user vào Dashboard khi chưa xác thực)
+                // 3. Gửi Email xác thực
+                await sendEmailVerification(user);
+
+                // 4. Đăng xuất để yêu cầu user xác thực email mới cho đăng nhập
                 await signOut(auth);
 
-                alert("🎉 Đăng ký thành công! Một email xác nhận đã được gửi tới " + email + ". Vui lòng kiểm tra hộp thư trước khi đăng nhập.");
+                alert("🎉 Đăng ký thành công! Một email xác nhận đã được gửi. Vui lòng kích hoạt trước khi đăng nhập.");
                 window.location.href = "login.html";
 
             } catch (error) {
