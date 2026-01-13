@@ -47,7 +47,7 @@ body {
         var(--accent-color), 
         transparent 70%
     );
-    animation: rotate-neon 4s linear infinite;
+    animation: rotate-neon 10s linear infinite;
 }
 
 .register-box::after {

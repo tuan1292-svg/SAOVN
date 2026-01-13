@@ -48,7 +48,7 @@ body {
         var(--accent-color), 
         transparent 70%
     );
-    animation: rotate-neon 3s linear infinite;
+    animation: rotate-neon 10s linear infinite;
     z-index: 0;
 }
 
