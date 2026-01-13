@@ -144,11 +144,11 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- SESSION TIMEOUT (15 Phút) ---
+        // --- SESSION TIMEOUT (5 Phút) ---
         let idleTimeout;
         const resetTimer = () => {
             clearTimeout(idleTimeout);
-            idleTimeout = setTimeout(() => { alert("Hết phiên làm việc!"); handleLogout(); }, 15 * 60 * 1000);
+            idleTimeout = setTimeout(() => { alert("Hết phiên làm việc!"); handleLogout(); }, 5 * 60 * 1000);
         };
         ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(e => document.addEventListener(e, resetTimer));
 
