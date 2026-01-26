@@ -16,14 +16,24 @@
         <div class="menu-toggle" id="mobile-menu">
             <span class="bar"></span><span class="bar"></span><span class="bar"></span>
         </div>
-        <nav class="nav-container">
-            <a href="index.html" class="nav-link">Trang chủ</a>
-            <a href="ve-saovn.html" class="nav-link active">Về SAOVN</a>
-            <a href="du-an.html" class="nav-link">Dự án</a>
-            <a href="lien-he.html" class="nav-link">Liên hệ</a>
-            <a href="register.html" class="nav-link">Đăng ký</a>
-            <button class="btn-login" onclick="window.location.href='login.html'">Đăng nhập</button>
-        </nav>
+<nav class="nav-container">
+    <a href="index.html" class="nav-link">Trang chủ</a>
+    <a href="ve-saovn.html" class="nav-link active">Về SAOVN</a>
+    <a href="du-an.html" class="nav-link">Dự án</a>
+    <a href="quy-tac.html" class="nav-link">Quy tắc</a>
+    
+    <a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
+    <button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
+    
+    <div class="user-profile" id="user-profile-box" style="display: none;">
+        <div class="user-info-text">
+            Chào, <a href="dashboard.html" class="user-name" id="display-user-link">
+                <span id="display-user-name">Đang tải...</span>
+            </a>
+        </div>
+        <button class="btn-logout" id="auth-logout-btn">Đăng xuất</button>
+    </div>
+</nav>
     </header>
 
     <section class="about-hero-pro">
@@ -144,5 +154,57 @@
             else { header.classList.remove('scrolled'); }
         });
     </script>
+	<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // Cấu hình Firebase của bạn
+    const firebaseConfig = {
+        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+        authDomain: "saovn-project.firebaseapp.com",
+        projectId: "saovn-project",
+        storageBucket: "saovn-project.firebasestorage.app",
+        messagingSenderId: "194928117396",
+        appId: "1:194928117396:web:642612a60105add5639681"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const userProfileBox = document.getElementById('user-profile-box');
+    const loginBtn = document.getElementById('nav-login-btn');
+    const registerLink = document.getElementById('nav-register');
+    const displayUserName = document.getElementById('display-user-name');
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // Hiện profile, ẩn nút login/register
+            userProfileBox.style.display = 'flex';
+            if(loginBtn) loginBtn.style.display = 'none';
+            if(registerLink) registerLink.style.display = 'none';
+
+            try {
+                const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                displayUserName.innerText = (userDocSnap.exists() && userDocSnap.data().fullName) 
+                    ? userDocSnap.data().fullName 
+                    : (user.displayName || user.email.split('@')[0]);
+            } catch (e) {
+                displayUserName.innerText = user.email.split('@')[0];
+            }
+        } else {
+            // Chưa đăng nhập: ẩn profile, hiện nút login/register
+            userProfileBox.style.display = 'none';
+            if(loginBtn) loginBtn.style.display = 'block';
+            if(registerLink) registerLink.style.display = 'block';
+        }
+    });
+
+    // Sự kiện đăng xuất
+    document.getElementById('auth-logout-btn').onclick = () => {
+        signOut(auth).then(() => window.location.reload());
+    };
+</script>
 </body>
 </html>

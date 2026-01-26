@@ -25,7 +25,13 @@ header.scrolled {
 .logo-wrapper:hover .logo-slogan { opacity: 1; }
 
 /* 3. NAV MENU */
-.nav-container { display: flex; align-items: center; }
+/* Tìm và thay thế đoạn .nav-container cũ */
+.nav-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Giảm gap một chút để đủ chỗ cho khung user */
+    margin-left: auto; /* Đẩy toàn bộ menu sang bên phải */
+}
 .nav-link { color: #fff; text-decoration: none; margin-left: 25px; font-size: 11px; font-weight: 600; text-transform: uppercase; opacity: 0.6; transition: 0.3s; }
 .nav-link:hover, .nav-link.active { opacity: 1; color: #00d2ff; }
 .btn-login { background: #fff; color: #000; border: none; padding: 8px 20px; font-weight: bold; margin-left: 20px; cursor: pointer; text-transform: uppercase; font-size: 11px; }
@@ -221,3 +227,73 @@ footer { padding: 80px 20px 30px; background: #000; border-top: 1px solid #222; 
     .submit-box { padding: 30px 20px; }
 }
 
+/* --- PHẦN MỚI: THÔNG TIN THÀNH VIÊN SAU ĐĂNG NHẬP --- */
+
+/* Khung bọc ngoài */
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.07); /* Nền mờ nhẹ */
+    padding: 6px 15px;
+    border-radius: 30px;
+    border: 1px solid rgba(0, 210, 255, 0.3); /* Viền màu xanh neon nhẹ */
+    transition: 0.3s;
+}
+
+.user-profile:hover {
+    background: rgba(0, 210, 255, 0.1);
+    border-color: #00d2ff;
+}
+
+/* Chữ "Chào, ..." */
+.user-info-text {
+    font-size: 12px;
+    color: #ccc;
+    text-transform: none; /* Giữ chữ thường để tên người dùng tự nhiên */
+}
+
+/* Tên thành viên (link) */
+.user-name {
+    font-weight: 700;
+    color: #00d2ff; /* Màu xanh đặc trưng của SAOVN */
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.user-name:hover {
+    text-decoration: underline;
+    color: #fff;
+}
+
+/* Nút Đăng xuất */
+.btn-logout {
+    background: transparent;
+    border: 1px solid #ff3e3e; /* Viền đỏ */
+    color: #ff3e3e;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background: #ff3e3e;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255, 62, 62, 0.4);
+}
+
+/* Điều chỉnh khi xem trên điện thoại */
+@media (max-width: 850px) {
+    .nav-container.active {
+        padding-bottom: 30px;
+    }
+    .user-profile {
+        width: 90%; /* Chiếm gần hết chiều ngang menu mobile */
+        justify-content: center;
+        margin: 10px auto;
+    }
+}

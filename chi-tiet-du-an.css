@@ -1,0 +1,110 @@
+/* Hero Section đồng bộ với du-an.html */
+.about-hero-pro {
+    padding: 160px 0 100px;
+    text-align: center;
+    /* Sử dụng file herobg.jpg nằm cùng thư mục */
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url('herobg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.highlight {
+    color: var(--accent-color);
+    text-transform: uppercase;
+}
+
+/* Bố cục nội dung dự án */
+.main-project-container {
+    max-width: 1000px;
+    margin: -80px auto 80px;
+    position: relative;
+    z-index: 10;
+    padding: 0 20px;
+}
+
+.p-content-card {
+    background: #0f0f0f;
+    padding: 50px;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+}
+
+.p-featured-img {
+    width: 100%;
+    height: auto;
+    max-height: 550px;
+    object-fit: cover;
+    border-radius: 15px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.p-content-wrapper {
+    line-height: 1.9;
+    font-size: 1.1rem;
+    color: #ddd;
+}
+
+/* Phần bình luận */
+.social-comment-section {
+    background: #080808;
+    padding: 60px 0 100px;
+}
+
+.comment-box {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.comment-input-group {
+    background: #151515;
+    padding: 25px;
+    border-radius: 20px;
+    border: 1px solid #222;
+    margin-bottom: 40px;
+}
+
+.comment-input-group textarea {
+    width: 100%;
+    background: #000;
+    border: 1px solid #333;
+    color: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    resize: none;
+    margin-bottom: 15px;
+}
+
+.comment-card {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.c-avatar {
+    width: 45px; height: 45px;
+    background: #222;
+    border-radius: 50%;
+    display: flex;
+    align-items: center; justify-content: center;
+    font-weight: bold; color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.c-content-bubble {
+    background: #111;
+    padding: 18px 22px;
+    border-radius: 0 20px 20px 20px;
+    flex: 1;
+    border: 1px solid #222;
+}
+
+/* User Widget trong Nav */
+.user-account-widget {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,0.05);
+    padding: 5px 15px; border-radius: 50px;
+}

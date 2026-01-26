@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quy Tắc Ứng Xử | SAOVN - Hành Động Vì Việt Nam</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <style>
+        /* Tích hợp CSS riêng cho các thẻ Quy tắc vào đây */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+            text-align: left;
+        }
+
+        .rule-card {
+            background: #111;
+            padding: 40px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+            transition: 0.3s;
+            height: 100%;
+        }
+
+        .rule-card:hover {
+            border-color: #00d2ff;
+            transform: translateY(-5px);
+            background: #151515;
+        }
+
+        .rule-num {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            font-weight: 900;
+            color: rgba(0, 210, 255, 0.1);
+        }
+
+        .rule-card h3 {
+            color: #00d2ff;
+            margin-bottom: 20px;
+            font-size: 22px;
+            text-transform: uppercase;
+        }
+
+        .rule-desc {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .rule-badge {
+            display: inline-block;
+            background: rgba(0, 210, 255, 0.1);
+            color: #00d2ff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            font-weight: 600;
+        }
+
+        .rule-list {
+            list-style: none;
+            color: #ccc;
+            padding: 0;
+        }
+
+        .rule-list li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 20px;
+            line-height: 1.5;
+        }
+
+        .rule-list li::before {
+            content: "•";
+            color: #00d2ff;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .rule-subtext {
+            font-size: 14px;
+            color: #888;
+            font-style: italic;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo-wrapper">
+            <span class="logo-text">SAOVN</span>
+            <span class="logo-slogan">Special Actions Organization for Vietnam</span>
+        </a>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+        <nav class="nav-container">
+            <a href="index.html" class="nav-link">Trang chủ</a>
+            <a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
+            <a href="du-an.html" class="nav-link">Dự án</a>
+            <a href="quy-tac.html" class="nav-link active">Quy tắc</a>
+            
+            <a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
+            <button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
+            
+            <div class="user-profile" id="user-profile-box" style="display: none;">
+                <div class="user-info-text">
+                    Chào, <a href="dashboard.html" class="user-name" id="display-user-link">
+                        <span id="display-user-name">Đang tải...</span>
+                    </a>
+                </div>
+                <button class="btn-logout" id="auth-logout-btn">Đăng xuất</button>
+            </div>
+        </nav>
+    </header>
+
+    <section class="about-hero-pro">
+        <div class="container">
+            <span class="sub-title" data-aos="fade-up">SAOVN CODE OF CONDUCT</span>
+            <h1 data-aos="fade-up" data-aos-delay="200">HÀNH ĐỘNG VĂN MINH <br>GẮN KẾT <span class="highlight">CỘNG ĐỒNG</span></h1>
+        </div>
+    </section>
+
+    <section class="section rules-section" style="background: #080808; border-top: 1px solid rgba(255,255,255,0.05);">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Bộ Quy Tắc SAOVN</h2>
+            
+            <div class="rules-grid">
+                <div class="rule-card" data-aos="fade-up">
+                    <div class="rule-num">01</div>
+                    <h3>Quỹ Hành Động <br>Minh Bạch & Tin Cậy</h3>
+                    <p class="rule-desc"><strong>Khôi phục niềm tin thông qua sự minh bạch tuyệt đối.</strong></p>
+                    <p class="rule-desc">Chúng ta thấu hiểu niềm tin của người Việt đang bị bào mòn bởi sự thiếu trung thực ngoài kia. SAOVN quyết tâm xây dựng một quỹ hoạt động chuẩn chỉnh, tuân thủ nghiêm ngặt pháp luật Việt Nam.</p>
+                    <div class="rule-badge">Mục tiêu: 1 tỷ VNĐ vốn điều lệ để lập Quỹ pháp nhân riêng</div>
+                    <p class="rule-subtext">Mọi khoản thu - chi đều được kiểm toán và công khai 100%. Hãy cùng xóa bỏ hoài nghi bằng sự đoàn kết.</p>
+                </div>
+
+                <div class="rule-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="rule-num">02</div>
+                    <h3>Thảo Luận <br>Văn Minh & Tôn Trọng</h3>
+                    <p class="rule-desc"><strong>Khác biệt trong tư duy – Thống nhất trong hành động.</strong></p>
+                    <ul class="rule-list">
+                        <li><strong>Tôn trọng:</strong> Thảo luận lịch sự, tử tế, không công kích cá nhân.</li>
+                        <li><strong>Phản biện khoa học:</strong> Ưu tiên sử dụng dữ liệu và lý lẽ thay vì cảm tính.</li>
+                        <li><strong>Cùng nhau xây dựng:</strong> Đừng chỉ dừng lại ở chỉ trích, hãy cùng đề xuất giải pháp.</li>
+                    </ul>
+                    <p class="rule-subtext">Chúng ta có thể có những tiếng nói khác nhau, nhưng luôn đi cùng một hướng vì Việt Nam.</p>
+                </div>
+
+                <div class="rule-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="rule-num">03</div>
+                    <h3>Không Ngừng <br>Hoàn Thiện</h3>
+                    <p class="rule-desc"><strong>Luôn lắng nghe cộng đồng.</strong></p>
+                    <p class="rule-desc">Bộ quy tắc này sẽ liên tục được cập nhật và điều chỉnh dựa trên sự đóng góp của cộng đồng và thực tiễn hoạt động. Chúng tôi luôn lắng nghe để SAOVN thực sự là tiếng nói của hành động và sự tử tế.</p>
+                    <p class="rule-subtext">Cập nhật lần cuối: Tháng 1 - Năm 2026</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid" data-aos="fade-up">
+            <div class="footer-brand">
+                <h3>SAOVN</h3>
+                <p>Special Actions Organization for Vietnam</p>
+                <p class="footer-slogan">Sáng tạo không giới hạn - Nâng tầm vị thế Việt.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Liên Hệ</h4>
+                <p>📍 Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
+                <p>📞 090 xxx xxxx</p>
+                <p>✉️ contact@saovn.org</p>
+            </div>
+            <div class="footer-socials">
+                <h4>Kết Nối</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-link">TikTok</a>
+                    <a href="#" class="social-link">YouTube</a>
+                    <a href="#" class="social-link">Facebook</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="copyright">&copy; 2026 SAOVN. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+        
+        const menu = document.querySelector('#mobile-menu');
+        const menuLinks = document.querySelector('.nav-container');
+        menu.addEventListener('click', () => {
+            menu.classList.toggle('is-active');
+            menuLinks.classList.toggle('active');
+        });
+
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) { header.classList.add('scrolled'); } 
+            else { header.classList.remove('scrolled'); }
+        });
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+            authDomain: "saovn-project.firebaseapp.com",
+            projectId: "saovn-project",
+            storageBucket: "saovn-project.firebasestorage.app",
+            messagingSenderId: "194928117396",
+            appId: "1:194928117396:web:642612a60105add5639681"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        const userProfileBox = document.getElementById('user-profile-box');
+        const loginBtn = document.getElementById('nav-login-btn');
+        const registerLink = document.getElementById('nav-register');
+        const displayUserName = document.getElementById('display-user-name');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userProfileBox.style.display = 'flex';
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(registerLink) registerLink.style.display = 'none';
+
+                try {
+                    const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                    displayUserName.innerText = (userDocSnap.exists() && userDocSnap.data().fullName) 
+                        ? userDocSnap.data().fullName 
+                        : (user.displayName || user.email.split('@')[0]);
+                } catch (e) {
+                    displayUserName.innerText = user.email.split('@')[0];
+                }
+            } else {
+                userProfileBox.style.display = 'none';
+                if(loginBtn) loginBtn.style.display = 'block';
+                if(registerLink) registerLink.style.display = 'block';
+            }
+        });
+
+        document.getElementById('auth-logout-btn').onclick = () => {
+            signOut(auth).then(() => window.location.reload());
+        };
+    </script>
+</body>
+</html>

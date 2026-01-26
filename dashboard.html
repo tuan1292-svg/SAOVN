@@ -3,132 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | SAOVN Admin</title>
+    <title>Hệ Thống Quản Trị | SAOVN</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
-    <style>
-        /* Màn hình chờ */
-        #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050505; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 9999;
-        }
-        .loader {
-            width: 40px; height: 40px; border: 3px solid #111;
-            border-top: 3px solid #00d2ff; border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 15px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        
-        body.loaded { display: flex !important; }
-
-        /* Role Badge Styles */
-        #userRole {
-            padding: 2px 12px; border-radius: 20px; font-size: 11px;
-            font-weight: 600; border: 1px solid transparent;
-            text-transform: uppercase; letter-spacing: 0.5px; display: inline-block;
-        }
-        .role-admin { color: #ff4d4d; border-color: rgba(255, 77, 77, 0.4) !important; background: rgba(255, 77, 77, 0.05); }
-        .role-mod { color: #adff2f; border-color: rgba(173, 255, 47, 0.4) !important; background: rgba(173, 255, 47, 0.05); }
-        .role-member { color: #2ecc71; border-color: rgba(46, 204, 113, 0.4) !important; background: rgba(46, 204, 113, 0.05); }
-
-        /* Modal Đổi Mật Khẩu */
-        .modal {
-            display:none; position: fixed; z-index: 10000; left: 0; top: 0; 
-            width: 100%; height: 100%; background: rgba(0,0,0,0.9); 
-            backdrop-filter: blur(5px); align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: #111; padding: 40px; border-radius: 20px; 
-            border: 1px solid #00d2ff; width: 90%; max-width: 400px; position: relative;
-        }
-        .modal-input {
-            width: 100%; padding: 12px; margin-bottom: 15px; background: #050505; 
-            border: 1px solid #333; color: #fff; border-radius: 8px; outline: none;
-        }
-        .modal-input:focus { border-color: #00d2ff; }
-    </style>
+    
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body id="dashBody" style="display:none;">
+<body style="display: none;">
 
-    <div id="loading-screen">
-        <div class="loader"></div>
-        <p style="color: #00d2ff; font-family: sans-serif; letter-spacing: 2px; font-size: 12px;">ĐANG ĐỒNG BỘ DỮ LIỆU...</p>
-    </div>
+    <div id="loading-screen"><div class="loader"></div><p style="margin-top:15px">HỆ THỐNG ĐANG TẢI...</p></div>
 
     <aside class="sidebar">
         <a href="index.html" class="sidebar-logo">SAOVN</a>
-        <nav class="nav-menu">
-            <a href="#" class="nav-item active"><i class="fas fa-th-large"></i> Tổng quan</a>
-            <a href="#" class="nav-item"><i class="fas fa-project-diagram"></i> Dự án đang chạy</a>
-            <a href="#" class="nav-item"><i class="fas fa-users"></i> Thành viên</a>
-            <a href="#" class="nav-item"><i class="fas fa-envelope"></i> Tin nhắn</a>
-            <a href="#" class="nav-item"><i class="fas fa-cog"></i> Cấu hình</a>
+        <nav class="sidebar-menu">
+            <a href="#" class="menu-item active" data-target="section-main"><i class="fas fa-th-large"></i> Tổng quan</a>
+            <div class="menu-item-wrapper">
+                <a href="#" class="menu-item" id="toggle-project-menu">
+                    <i class="fas fa-tasks"></i> Quản lý dự án 
+                    <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto;"></i>
+                </a>
+                <div class="submenu" id="project-submenu">
+                    <a href="#" class="submenu-item" data-target="section-add-category">Thêm danh mục</a>
+                    <a href="#" class="submenu-item" data-target="section-manage-category">Quản lý danh mục</a>
+                    <a href="#" class="submenu-item" data-target="section-add-project">Thêm bài viết mới</a>
+                    <a href="#" class="submenu-item" data-target="section-manage-project">Quản lý bài viết</a>
+                </div>
+            </div>
+            <a href="#" class="menu-item" data-target="section-members"><i class="fas fa-users"></i> Thành viên</a>
+            <a href="#" class="menu-item" data-target="section-messages"><i class="fas fa-envelope"></i> Tin nhắn</a>
+            <a href="#" class="menu-item" id="btnOpenPass"><i class="fas fa-key"></i> Đổi mật khẩu</a>
+            <div class="menu-item" id="btnLogout" style="margin-top:auto; color:#ff4444; cursor:pointer"><i class="fas fa-sign-out-alt"></i> Đăng xuất</div>
         </nav>
-        <button class="logout-btn" id="btnLogout"><i class="fas fa-sign-out-alt"></i> ĐĂNG XUẤT</button>
     </aside>
 
     <main class="main-content">
-        <header class="top-bar">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Tìm kiếm dữ liệu hệ thống...">
-            </div>
+        <header class="main-header">
+            <div><h2 id="welcome-text">Bảng Điều Khiển</h2><p id="nav-title" style="color:#888; font-size:14px">Tổng quan</p></div>
             <div class="user-profile">
-                <div class="user-info">
-                    <span id="userName" class="name">Đang tải...</span>
-                    <span id="userRole" class="role">Khách</span>
-                </div>
-                <div class="avatar" id="userAvatar">SV</div>
+                <div class="user-info"><span class="name" id="userNameDisplay">Admin</span><span class="role">Chỉ huy trưởng</span></div>
+                <div class="avatar" id="userAvatar">A</div>
             </div>
         </header>
 
-        <div class="content-wrapper" style="padding: 30px;">
-            <div class="welcome-section" style="margin-bottom: 40px;">
-                <h1 style="font-size: 32px;">Chào mừng trở lại, <span id="welcomeName" style="color: #00d2ff;">Thành viên</span>!</h1>
-                <p style="color: #888; margin-top: 10px;">Hệ thống SAOVN đã sẵn sàng cho các hành động mới của bạn.</p>
+        <div id="section-main" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value" id="totalMembers">0</div><div class="stat-label">Thành viên thực</div></div>
+                <div class="stat-card"><div class="stat-value" id="totalProjectsCount">0</div><div class="stat-label">Tổng bài viết</div></div>
             </div>
-
-            <div class="stats-grid" id="statsGrid">
-                <div class="stat-card">
-                    <h3>Tổng thành viên</h3>
-                    <div class="value" id="real-time-total-members">0</div>
-                </div>
-                <div class="stat-card"><h3>Tổng nhiệm vụ</h3><div class="value">124</div></div>
-                <div class="stat-card"><h3>Thời gian hoạt động</h3><div class="value">48h</div></div>
-            </div>
-
-            <div class="chart-section" style="margin-top: 30px; display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
-                <div class="chart-container" style="background: #111; padding: 25px; border-radius: 20px; height: 350px;">
-                    <canvas id="statsChart"></canvas>
-                </div>
-                <div class="action-panel" style="background: #111; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px;">
-                    <h3 style="margin-bottom: 10px; font-size: 16px;">Thao tác nhanh</h3>
-                    <button class="action-btn" id="btnChangePass" style="width: 100%; padding: 12px; background: rgba(0,210,255,0.1); border: 1px solid #00d2ff; color: #00d2ff; border-radius: 10px; cursor: pointer;">Đổi mật khẩu</button>
-                    <button class="action-btn" style="width: 100%; padding: 12px; background: transparent; border: 1px solid #333; color: #fff; border-radius: 10px; cursor: pointer;">Xuất báo cáo</button>
-                </div>
+            <div class="admin-card" style="margin-top:25px; height: 400px;">
+                <h3><i class="fas fa-chart-line"></i> Phân tích lưu lượng</h3>
+                <div style="height: 300px;"><canvas id="statsChart"></canvas></div>
             </div>
         </div>
+
+        <div id="section-add-category" class="content-section">
+            <div class="admin-card" style="max-width: 500px;">
+                <h3><i class="fas fa-folder-plus"></i> Tạo danh mục mới</h3>
+                <form id="category-form" style="margin-top: 20px;">
+                    <input type="hidden" id="catId">
+                    <div class="input-group-custom">
+                        <label>Tên danh mục</label>
+                        <input type="text" id="catName" class="input-control" placeholder="Ví dụ: Hoạt động xã hội..." required>
+                    </div>
+                    <button type="submit" class="login-btn" id="btnSaveCat">LƯU DANH MỤC</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="section-manage-category" class="content-section">
+            <div class="admin-card">
+                <h3><i class="fas fa-list"></i> Danh sách danh mục</h3>
+                <div id="category-list" style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;"></div>
+            </div>
+        </div>
+
+        <div id="section-add-project" class="content-section">
+            <div class="admin-card">
+                <h3><i class="fas fa-file-signature"></i> Soạn thảo nội dung dự án</h3>
+                <form id="project-form" style="margin-top: 20px;">
+                    <input type="hidden" id="projectId">
+                    <div class="input-group-custom">
+                        <label>Tiêu đề bài viết</label>
+                        <input type="text" id="pTitle" class="input-control" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;" class="input-group-custom">
+                        <div><label>Danh mục</label><select id="pCategory" class="input-control" required></select></div>
+                        <div><label>Ảnh đại diện (Thumbnail)</label><input type="file" id="pThumbnail" class="input-control"></div>
+                    </div>
+                    
+                    <div id="editor-container"></div>
+                    
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button type="submit" class="login-btn" id="btnSaveProject">XUẤT BẢN BÀI VIẾT</button>
+                        <button type="button" id="btnCancelEdit" class="login-btn" style="background:#333; display:none;">HỦY CHỈNH SỬA</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="section-manage-project" class="content-section">
+            <div class="admin-card">
+                <h3><i class="fas fa-copy"></i> Bài viết đã đăng</h3>
+                <table class="project-table">
+                    <thead><tr><th>Ảnh</th><th>Tiêu đề</th><th>Danh mục</th><th>Thao tác</th></tr></thead>
+                    <tbody id="project-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="section-members" class="content-section"><div class="admin-card"><h3>Quản lý thành viên</h3></div></div>
+        <div id="section-messages" class="content-section"><div class="admin-card"><h3>Hòm thư tin nhắn</h3></div></div>
     </main>
 
-    <div id="passwordModal" class="modal">
+    <div id="passModal" class="modal">
         <div class="modal-content">
-            <span id="closeModal" style="position: absolute; right: 20px; top: 15px; color: #555; cursor: pointer; font-size: 24px;">&times;</span>
-            <h2 style="color: #00d2ff; margin-bottom: 20px; text-align: center;">ĐỔI MẬT KHẨU</h2>
-            <form id="changePassForm">
-                <input type="password" id="currentPass" class="modal-input" placeholder="Mật khẩu hiện tại" required>
-                <input type="password" id="newPass" class="modal-input" placeholder="Mật khẩu mới" required>
-                <input type="password" id="confirmNewPass" class="modal-input" placeholder="Xác nhận mật khẩu mới" required>
-                <button type="submit" id="btnUpdatePass" style="width: 100%; padding: 12px; background: #00d2ff; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; color: #000;">CẬP NHẬT</button>
+            <h3>ĐỔI MẬT KHẨU</h3>
+            <form id="changePassForm" style="margin-top:20px">
+                <input type="password" id="currPass" class="input-control" placeholder="Mật khẩu hiện tại" required style="margin-bottom:10px">
+                <input type="password" id="nextPass" class="input-control" placeholder="Mật khẩu mới" required style="margin-bottom:10px">
+                <input type="password" id="confirmPass" class="input-control" placeholder="Xác nhận mật khẩu mới" required style="margin-bottom:20px">
+                <button type="submit" class="login-btn" style="width: 100%;">CẬP NHẬT</button>
+                <button type="button" id="btnClosePass" style="width:100%; background:none; border:none; color:#555; margin-top:10px; cursor:pointer">Đóng</button>
             </form>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
@@ -143,88 +152,191 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
-        // --- SESSION TIMEOUT (5 Phút) ---
-        let idleTimeout;
-        const resetTimer = () => {
-            clearTimeout(idleTimeout);
-            idleTimeout = setTimeout(() => { alert("Hết phiên làm việc!"); handleLogout(); }, 5 * 60 * 1000);
+        // --- CẤU HÌNH QUILL EDITOR NÂNG CAO ---
+        // Cấu hình toolbar đầy đủ chức năng
+        const toolbarOptions = [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            ['bold', 'italic', 'underline', 'strike'],        // định dạng chữ
+            [{ 'color': [] }, { 'background': [] }],          // màu sắc
+            [{ 'script': 'sub'}, { 'script': 'super' }],      // chỉ số trên/dưới
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'align': [] }],                                // CĂN LỀ
+            ['link', 'image', 'video'],                       // media
+            ['clean']                                         // xóa định dạng
+        ];
+
+        const quill = new Quill('#editor-container', {
+            theme: 'snow',
+            modules: {
+                toolbar: toolbarOptions,
+                imageResize: { // KÍCH THƯỚC ẢNH
+                    modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
+                }
+            }
+        });
+
+        // Xử lý Upload ảnh lên Firebase trong trình soạn thảo
+        quill.getModule('toolbar').addHandler('image', () => {
+            const input = document.createElement('input');
+            input.type = 'file'; input.accept = 'image/*'; input.click();
+            input.onchange = async () => {
+                const file = input.files[0];
+                if(!file) return;
+                const sRef = ref(storage, `content/${Date.now()}_${file.name}`);
+                const snap = await uploadBytes(sRef, file);
+                const url = await getDownloadURL(snap.ref);
+                const range = quill.getSelection();
+                quill.insertEmbed(range.index, 'image', url);
+            };
+        });
+
+        // --- NAVIGATION & FIREBASE LOGIC (Giữ nguyên từ bản trước) ---
+        document.getElementById('toggle-project-menu').onclick = (e) => {
+            e.preventDefault();
+            document.getElementById('project-submenu').classList.toggle('show');
         };
-        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(e => document.addEventListener(e, resetTimer));
 
-        async function handleLogout() {
-            try { await signOut(auth); window.location.href = "login.html"; } catch (e) { console.error(e); }
-        }
+        const navLinks = document.querySelectorAll('[data-target]');
+        navLinks.forEach(link => {
+            link.onclick = (e) => {
+                e.preventDefault();
+                const target = link.dataset.target;
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(target).classList.add('active');
+                document.querySelectorAll('.menu-item, .submenu-item').forEach(i => i.classList.remove('active'));
+                link.classList.add('active');
+                document.getElementById('nav-title').innerText = link.innerText.trim();
+            };
+        });
 
-        // --- AUTH & DATA ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                resetTimer();
-                try {
-                    const userDoc = await getDoc(doc(db, "users", user.uid));
-                    if (userDoc.exists()) {
-                        const data = userDoc.data();
-                        document.getElementById('userName').innerText = data.fullName || "User";
-                        document.getElementById('welcomeName').innerText = data.fullName || "User";
-                        const r = document.getElementById('userRole');
-                        if (data.role === 'admin') { r.innerText = 'Admin'; r.className = 'role role-admin'; }
-                        else if (data.role === 'mod') { r.innerText = 'Quản trị viên'; r.className = 'role role-mod'; }
-                        else { r.innerText = 'Thành viên'; r.className = 'role role-member'; }
-                    }
-                    onSnapshot(doc(db, "metadata", "users_stats"), s => {
-                        if (s.exists()) document.getElementById('real-time-total-members').innerText = s.data().totalMembers || 0;
-                    });
-                    document.body.classList.add('loaded');
-                    document.getElementById('dashBody').style.display = 'flex';
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists() && userDoc.data().role === 'admin') {
+                    document.getElementById('userNameDisplay').innerText = userDoc.data().fullName;
+                    document.getElementById('userAvatar').innerText = userDoc.data().fullName.charAt(0);
+                    document.body.style.display = 'flex';
                     document.getElementById('loading-screen').style.display = 'none';
                     initChart();
-                } catch (error) { console.error(error); }
+                    loadData();
+                } else { window.location.href = "login.html"; }
             } else { window.location.href = "login.html"; }
         });
 
-        // --- ĐỔI MẬT KHẨU ---
-        const modal = document.getElementById("passwordModal");
-        document.getElementById("btnChangePass").onclick = () => modal.style.display = "flex";
-        document.getElementById("closeModal").onclick = () => modal.style.display = "none";
-        window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+        function loadData() {
+            onSnapshot(collection(db, "users"), s => document.getElementById('totalMembers').innerText = s.size);
+            onSnapshot(collection(db, "categories"), snap => {
+                const list = document.getElementById('category-list');
+                const select = document.getElementById('pCategory');
+                list.innerHTML = ""; select.innerHTML = '<option value="">Chọn danh mục</option>';
+                snap.forEach(d => {
+                    const name = d.data().name;
+                    list.innerHTML += `<div class="cat-item" style="background:#1a1a1a; padding:15px; border-radius:10px; border:1px solid #333; display:flex; justify-content:space-between;">
+                        <span>${name}</span>
+                        <div>
+                            <i class="fas fa-edit" style="cursor:pointer; color:var(--accent-color)" onclick="editCat('${d.id}','${name}')"></i>
+                            <i class="fas fa-trash" style="cursor:pointer; color:#ff4444; margin-left:15px" onclick="deleteCat('${d.id}')"></i>
+                        </div>
+                    </div>`;
+                    select.innerHTML += `<option value="${name}">${name}</option>`;
+                });
+            });
+            onSnapshot(query(collection(db, "projects"), orderBy("createdAt", "desc")), snap => {
+                const list = document.getElementById('project-list');
+                list.innerHTML = "";
+                document.getElementById('totalProjectsCount').innerText = snap.size;
+                snap.forEach(d => {
+                    const p = d.data();
+                    list.innerHTML += `<tr>
+                        <td><img src="${p.thumbnail || ''}" width="50" style="border-radius:5px"></td>
+                        <td>${p.title}</td>
+                        <td><span style="color:#888; font-size:12px">${p.category}</span></td>
+                        <td>
+                            <i class="fas fa-edit" style="color:var(--accent-color); cursor:pointer" onclick="editProject('${d.id}')"></i>
+                            <i class="fas fa-trash" style="color:#ff4444; cursor:pointer; margin-left:15px" onclick="deleteProject('${d.id}')"></i>
+                        </td>
+                    </tr>`;
+                });
+            });
+        }
 
-        document.getElementById("changePassForm").onsubmit = async (e) => {
+        window.editCat = (id, name) => {
+            document.getElementById('catId').value = id;
+            document.getElementById('catName').value = name;
+            document.querySelector('[data-target="section-add-category"]').click();
+        };
+        window.deleteCat = async (id) => { if(confirm("Xóa danh mục này?")) await deleteDoc(doc(db, "categories", id)); };
+        window.editProject = async (id) => {
+            const d = await getDoc(doc(db, "projects", id));
+            const data = d.data();
+            document.getElementById('projectId').value = id;
+            document.getElementById('pTitle').value = data.title;
+            document.getElementById('pCategory').value = data.category;
+            quill.root.innerHTML = data.content;
+            document.getElementById('btnSaveProject').innerText = "CẬP NHẬT BÀI VIẾT";
+            document.getElementById('btnCancelEdit').style.display = "block";
+            document.querySelector('[data-target="section-add-project"]').click();
+        };
+        window.deleteProject = async (id) => { if(confirm("Xóa bài viết?")) await deleteDoc(doc(db, "projects", id)); };
+
+        document.getElementById('category-form').onsubmit = async (e) => {
             e.preventDefault();
-            const curr = document.getElementById('currentPass').value;
-            const next = document.getElementById('newPass').value;
-            const conf = document.getElementById('confirmNewPass').value;
-            if(next !== conf) return alert("Mật khẩu không khớp!");
-            const btn = document.getElementById('btnUpdatePass');
-            try {
-                btn.disabled = true; btn.innerText = "ĐANG XỬ LÝ...";
-                const cred = EmailAuthProvider.credential(auth.currentUser.email, curr);
-                await reauthenticateWithCredential(auth.currentUser, cred);
-                await updatePassword(auth.currentUser, next);
-                alert("Đổi mật khẩu thành công!"); modal.style.display = "none";
-                document.getElementById("changePassForm").reset();
-            } catch (err) { alert("Lỗi: " + err.message); }
-            finally { btn.disabled = false; btn.innerText = "CẬP NHẬT"; }
+            const id = document.getElementById('catId').value;
+            const name = document.getElementById('catName').value;
+            if(id) await updateDoc(doc(db, "categories", id), { name });
+            else await addDoc(collection(db, "categories"), { name });
+            e.target.reset(); document.getElementById('catId').value = "";
+            alert("Đã lưu danh mục!");
         };
 
-        document.getElementById('btnLogout').addEventListener('click', handleLogout);
+        document.getElementById('project-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnSaveProject');
+            btn.disabled = true; btn.innerText = "ĐANG XỬ LÝ...";
+            try {
+                const id = document.getElementById('projectId').value;
+                const file = document.getElementById('pThumbnail').files[0];
+                let thumbUrl = null;
+                if(file) {
+                    const sRef = ref(storage, `thumbs/${Date.now()}_${file.name}`);
+                    const snap = await uploadBytes(sRef, file);
+                    thumbUrl = await getDownloadURL(snap.ref);
+                }
+                const data = {
+                    title: document.getElementById('pTitle').value,
+                    category: document.getElementById('pCategory').value,
+                    content: quill.root.innerHTML,
+                    updatedAt: serverTimestamp()
+                };
+                if(thumbUrl) data.thumbnail = thumbUrl;
+                if(id) await updateDoc(doc(db, "projects", id), data);
+                else { data.createdAt = serverTimestamp(); await addDoc(collection(db, "projects"), data); }
+                alert("Đã đăng bài thành công!");
+                e.target.reset(); quill.setContents([]);
+                document.getElementById('projectId').value = "";
+                document.getElementById('btnCancelEdit').style.display = "none";
+                btn.innerText = "XUẤT BẢN BÀI VIẾT";
+            } catch (err) { alert(err.message); }
+            finally { btn.disabled = false; }
+        };
 
         function initChart() {
             const ctx = document.getElementById('statsChart').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['T3', 'T4', 'T5', 'T6'],
-                    datasets: [{
-                        label: 'Hoạt động',
-                        data: [10, 25, 45, 30],
-                        borderColor: '#00d2ff',
-                        backgroundColor: 'rgba(0, 210, 255, 0.05)',
-                        fill: true, tension: 0.4
-                    }]
+                    labels: ['T2','T3','T4','T5','T6','T7','CN'],
+                    datasets: [{ label: 'Lượt xem', data: [10, 45, 30, 70, 60, 90, 120], borderColor: '#00d2ff', tension: 0.4 }]
                 },
                 options: { responsive: true, maintainAspectRatio: false }
             });
         }
+        document.getElementById('btnOpenPass').onclick = () => document.getElementById('passModal').style.display='flex';
+        document.getElementById('btnClosePass').onclick = () => document.getElementById('passModal').style.display='none';
+        document.getElementById('btnLogout').onclick = () => signOut(auth);
     </script>
 </body>
 </html>
