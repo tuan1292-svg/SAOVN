@@ -297,3 +297,28 @@ footer { padding: 80px 20px 30px; background: #000; border-top: 1px solid #222; 
         margin: 10px auto;
     }
 }
+
+/* Khống chế khung hiển thị số tiền */
+.money-wrapper {
+    display: flex;
+    align-items: baseline;
+    justify-content: center; /* Căn giữa số tiền */
+    gap: 5px;
+    width: 100%;
+    overflow: hidden; /* Không cho tràn ra ngoài */
+}
+
+#fund_stats {
+    font-size: clamp(1.5rem, 5vw, 2.5rem); /* Tự động co giãn cỡ chữ */
+    white-space: nowrap; /* Không cho xuống dòng */
+    overflow: hidden;
+    text-overflow: clip; /* Cắt bỏ phần thừa nếu quá lớn */
+    font-weight: bold;
+    letter-spacing: -1px; /* Thu hẹp khoảng cách các chữ số để tiết kiệm không gian */
+}
+
+.unit {
+    font-size: 1rem;
+    color: #888;
+    flex-shrink: 0; /* Giữ cho chữ VNĐ không bị thu nhỏ quá mức */
+}
