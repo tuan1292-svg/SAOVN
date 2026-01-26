@@ -244,3 +244,27 @@ body {
         display: none; /* Ẩn search trên mobile để đỡ chật, hoặc tùy bạn */
     }
 }
+
+.nav-dropdown {
+    display: flex;
+    flex-direction: column;
+}
+
+.sub-menu {
+    transition: var(--transition);
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    margin-top: 5px;
+}
+
+.sub-menu .nav-item {
+    padding: 10px 20px;
+}
+
+.dropdown-toggle i:last-child {
+    transition: transform 0.3s;
+}
+
+.dropdown-toggle.open i:last-child {
+    transform: rotate(180deg);
+}

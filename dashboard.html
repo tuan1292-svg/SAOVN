@@ -59,12 +59,23 @@
     <aside class="sidebar">
         <a href="index.html" class="sidebar-logo">SAOVN</a>
         <nav class="nav-menu">
-            <a href="#" class="nav-item active"><i class="fas fa-th-large"></i> Tổng quan</a>
-            <a href="#" class="nav-item"><i class="fas fa-project-diagram"></i> Dự án đang chạy</a>
-            <a href="#" class="nav-item"><i class="fas fa-users"></i> Thành viên</a>
-            <a href="#" class="nav-item"><i class="fas fa-envelope"></i> Tin nhắn</a>
-            <a href="#" class="nav-item"><i class="fas fa-cog"></i> Cấu hình</a>
-        </nav>
+    <a href="#" class="nav-item active"><i class="fas fa-th-large"></i> Tổng quan</a>
+    <a href="#" class="nav-item"><i class="fas fa-project-diagram"></i> Dự án đang chạy</a>
+    <a href="#" class="nav-item"><i class="fas fa-users"></i> Thành viên</a>
+    
+    <div class="nav-dropdown">
+        <a href="javascript:void(0)" class="nav-item dropdown-toggle">
+            <i class="fas fa-user-cog"></i> Tài khoản <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: auto;"></i>
+        </a>
+        <div class="sub-menu" id="accountSubMenu" style="display: none; padding-left: 30px;">
+            <a href="#" class="nav-item" id="btnChangePassMenu" style="font-size: 14px;">
+                <i class="fas fa-key"></i> Đổi mật khẩu
+            </a>
+        </div>
+    </div>
+
+    <a href="#" class="nav-item"><i class="fas fa-cog"></i> Cấu hình</a>
+</nav>
         <button class="logout-btn" id="btnLogout"><i class="fas fa-sign-out-alt"></i> ĐĂNG XUẤT</button>
     </aside>
 
@@ -107,7 +118,7 @@
                 </div>
                 <div class="action-panel" style="background: #111; padding: 25px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px;">
                     <h3 style="margin-bottom: 10px; font-size: 16px;">Thao tác nhanh</h3>
-                    <button class="action-btn" id="btnChangePass" style="width: 100%; padding: 12px; background: rgba(0,210,255,0.1); border: 1px solid #00d2ff; color: #00d2ff; border-radius: 10px; cursor: pointer;">Đổi mật khẩu</button>
+                    
                     <button class="action-btn" style="width: 100%; padding: 12px; background: transparent; border: 1px solid #333; color: #fff; border-radius: 10px; cursor: pointer;">Xuất báo cáo</button>
                 </div>
             </div>
@@ -180,6 +191,24 @@
         }
 
         // --- AUTH & DATA ---
+		
+		// --- LOGIC SUB-MENU TÀI KHOẢN ---
+const dropdownToggle = document.querySelector('.dropdown-toggle');
+const subMenu = document.getElementById('accountSubMenu');
+
+if (dropdownToggle && subMenu) {
+    dropdownToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isOpen = subMenu.style.display === 'block';
+        
+        // Đóng/mở menu con
+        subMenu.style.display = isOpen ? 'none' : 'block';
+        
+        // Xoay mũi tên (cần class 'open' đã thêm ở CSS)
+        dropdownToggle.classList.toggle('open');
+    });
+}
+		
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 resetTimer();
@@ -207,7 +236,19 @@
 
         // --- ĐỔI MẬT KHẨU ---
         const modal = document.getElementById("passwordModal");
-        document.getElementById("btnChangePass").onclick = () => modal.style.display = "flex";
+        // Gán sự kiện cho nút Đổi mật khẩu trong menu mới
+const btnInMenu = document.getElementById("btnChangePassMenu");
+if (btnInMenu) {
+    btnInMenu.onclick = (e) => {
+        e.preventDefault();
+        modal.style.display = "flex";
+        
+        // Nếu đang ở giao diện mobile, sau khi chọn thì đóng luôn Sidebar cho đỡ vướng
+        if (window.innerWidth <= 768) {
+            document.querySelector('.sidebar').classList.remove('active');
+        }
+    };
+}
         document.getElementById("closeModal").onclick = () => modal.style.display = "none";
         window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
 
