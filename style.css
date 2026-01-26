@@ -322,3 +322,18 @@ footer { padding: 80px 20px 30px; background: #000; border-top: 1px solid #222; 
     color: #888;
     flex-shrink: 0; /* Giữ cho chữ VNĐ không bị thu nhỏ quá mức */
 }
+
+/* Khống chế kích thước vòng tròn chart và icon */
+.circular-chart {
+    max-width: 80px; /* Giới hạn độ rộng icon/chart */
+    max-height: 80px;
+    margin: 0 auto;
+    display: block;
+}
+
+.circle-chart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Đảm bảo nằm giữa card-body */
+}
