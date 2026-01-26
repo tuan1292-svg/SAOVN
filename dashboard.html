@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | SAOVN </title>
+    <title>Dashboard | SAOVN Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="dashboard.css">
     <style>
@@ -70,6 +70,9 @@
 
     <main class="main-content">
         <header class="top-bar">
+			<button class="mobile-toggle" id="mobileToggle">
+				<i class="fas fa-bars"></i>
+			</button>
             <div class="search-box">
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Tìm kiếm dữ liệu hệ thống...">
@@ -143,6 +146,26 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+		
+		// Xử lý đóng/mở Sidebar trên Mobile
+		const mobileToggle = document.getElementById('mobileToggle');
+		const sidebar = document.querySelector('.sidebar');
+
+		if (mobileToggle) {
+			mobileToggle.addEventListener('click', (e) => {
+				e.stopPropagation(); // Ngăn sự kiện bị gửi lên các phần tử cha
+				sidebar.classList.toggle('active');
+			});
+		}
+
+		// Click ra ngoài vùng Sidebar thì tự động đóng menu (tiện lợi cho mobile)
+		document.addEventListener('click', (e) => {
+			if (sidebar && sidebar.classList.contains('active')) {
+				if (!sidebar.contains(e.target) && e.target !== mobileToggle) {
+					sidebar.classList.remove('active');
+				}
+			}
+		});
 
         // --- SESSION TIMEOUT (5 Phút) ---
         let idleTimeout;
