@@ -35,70 +35,93 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { 
-            getAuth, 
-            signInWithEmailAndPassword, 
-            setPersistence, 
-            browserLocalPersistence,
-            signOut 
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+        getAuth, 
+        signInWithEmailAndPassword, 
+        setPersistence, 
+        browserLocalPersistence,
+        signOut 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    // IMPORT THÊM CÁC HÀM CẦN THIẾT CHO TRANSACTION
+    import { 
+        getFirestore, doc, getDoc, runTransaction, increment 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Cấu hình Firebase giữ nguyên theo dự án của bạn
-        const firebaseConfig = {
-            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
-            authDomain: "saovn-project.firebaseapp.com",
-            projectId: "saovn-project",
-            storageBucket: "saovn-project.firebasestorage.app",
-            messagingSenderId: "194928117396",
-            appId: "1:194928117396:web:642612a60105add5639681",
-            measurementId: "G-L7Y106VT85"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+        authDomain: "saovn-project.firebaseapp.com",
+        projectId: "saovn-project",
+        storageBucket: "saovn-project.firebasestorage.app",
+        messagingSenderId: "194928117396",
+        appId: "1:194928117396:web:642612a60105add5639681",
+        measurementId: "G-L7Y106VT85"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        // LOGIC ĐĂNG NHẬP
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
-            const btn = document.getElementById('btnLogin');
+    // HÀM XỬ LÝ TĂNG SỐ THÀNH VIÊN (+1)
+    async function updateMemberCount(user) {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
 
+        // Kiểm tra nếu user đã xác minh email và chưa được đếm (isCounted === false)
+        if (userSnap.exists() && userSnap.data().isCounted === false) {
+            const statsRef = doc(db, "metadata", "users_stats");
             try {
-                btn.disabled = true;
-                btn.innerText = "ĐANG XỬ LÝ...";
-
-                // 1. Duy trì trạng thái đăng nhập trên trình duyệt
-                await setPersistence(auth, browserLocalPersistence);
-                
-                // 2. Thực hiện đăng nhập
-                const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
-
-                // 3. Kiểm tra xác thực Email trước khi cho phép vào hệ thống
-                await user.reload(); 
-                
-                if (auth.currentUser.emailVerified) {
-                    // CHUYỂN HƯỚNG VỀ TRANG CHỦ THEO YÊU CẦU MỚI
-                    window.location.href = "index.html"; 
-                } else {
-                    alert("⚠️ Tài khoản chưa được kích hoạt! Hãy kiểm tra hộp thư email của bạn để xác thực.");
-                    await signOut(auth); 
-                    window.location.reload();
-                }
-
-            } catch (error) {
-                let errorMsg = "Lỗi đăng nhập!";
-                if(error.code === 'auth/invalid-credential') errorMsg = "Email hoặc mật khẩu không chính xác.";
-                if(error.code === 'auth/user-not-found') errorMsg = "Tài khoản không tồn tại.";
-                
-                alert(errorMsg);
-                btn.disabled = false;
-                btn.innerText = "XÁC MINH DANH TÍNH";
+                await runTransaction(db, async (transaction) => {
+                    const statsDoc = await transaction.get(statsRef);
+                    if (!statsDoc.exists()) {
+                        transaction.set(statsRef, { totalMembers: 1 });
+                    } else {
+                        transaction.update(statsRef, { totalMembers: increment(1) });
+                    }
+                    // Đánh dấu đã đếm thành công để lần sau đăng nhập không +1 nữa
+                    transaction.update(userRef, { isCounted: true });
+                });
+                console.log("Hệ thống: Đã xác nhận thành viên mới (+1)");
+            } catch (e) {
+                console.error("Lỗi cập nhật bộ đếm:", e);
             }
-        });
-    </script>
+        }
+    }
+
+    // LOGIC ĐĂNG NHẬP
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
+        const btn = document.getElementById('btnLogin');
+
+        try {
+            btn.disabled = true;
+            btn.innerText = "ĐANG XỬ LÝ...";
+
+            await setPersistence(auth, browserLocalPersistence);
+            const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+            const user = userCredential.user;
+
+            await user.reload(); 
+            
+            if (user.emailVerified) {
+                // THỰC HIỆN CỘNG SỐ THÀNH VIÊN TRƯỚC KHI VÀO TRANG CHỦ
+                await updateMemberCount(user);
+                window.location.href = "index.html"; 
+            } else {
+                alert("⚠️ Tài khoản chưa kích hoạt! Hãy kiểm tra Email của bạn.");
+                await signOut(auth); 
+                window.location.reload();
+            }
+
+        } catch (error) {
+            alert("Lỗi: Email hoặc mật khẩu không chính xác.");
+            btn.disabled = false;
+            btn.innerText = "XÁC MINH DANH TÍNH";
+        }
+    });
+</script>
 </body>
 </html>

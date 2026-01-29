@@ -42,93 +42,86 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { 
-            getAuth, 
-            createUserWithEmailAndPassword, 
-            sendEmailVerification, 
-            signOut 
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        // Thêm runTransaction và increment để xử lý bộ đếm
-        import { 
-            getFirestore, 
-            doc, 
-            setDoc, 
-            runTransaction, 
-            increment 
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+        getAuth, 
+        createUserWithEmailAndPassword, 
+        sendEmailVerification, 
+        signOut,
+        deleteUser 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { 
+        getFirestore, 
+        doc, 
+        setDoc 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
-            authDomain: "saovn-project.firebaseapp.com",
-            projectId: "saovn-project",
-            storageBucket: "saovn-project.firebasestorage.app",
-            messagingSenderId: "194928117396",
-            appId: "1:194928117396:web:642612a60105add5639681",
-            measurementId: "G-L7Y106VT85"
-        };
+    // ĐOẠN NÀY LÀ QUAN TRỌNG NHẤT - KHÔNG ĐƯỢC THIẾU
+    const firebaseConfig = {
+        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+        authDomain: "saovn-project.firebaseapp.com",
+        projectId: "saovn-project",
+        storageBucket: "saovn-project.firebasestorage.app",
+        messagingSenderId: "194928117396",
+        appId: "1:194928117396:web:642612a60105add5639681",
+        measurementId: "G-L7Y106VT85"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnRegister');
-            const name = document.getElementById('regName').value;
-            const email = document.getElementById('regEmail').value;
-            const pass = document.getElementById('regPass').value;
-            const confirmPass = document.getElementById('regConfirmPass').value;
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        // Khai báo biến btn ngay lập tức để không bị lỗi "initialization"
+        const btn = document.getElementById('btnRegister'); 
+        
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+        const confirmPass = document.getElementById('regConfirmPass').value;
 
-            if(pass !== confirmPass) return alert("Mật khẩu không khớp!");
+        if(pass !== confirmPass) return alert("Mật khẩu không khớp!");
 
-            try {
-                btn.disabled = true;
-                btn.innerText = "ĐANG XỬ LÝ...";
+        let user = null;
 
-                // 1. Tạo tài khoản trong Firebase Auth
-                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-                const user = userCredential.user;
+        try {
+            btn.disabled = true;
+            btn.innerText = "ĐANG XỬ LÝ...";
 
-                // 2. Sử dụng Transaction để cập nhật thông tin user và tăng bộ đếm tổng đồng thời
-                const statsDocRef = doc(db, "metadata", "users_stats");
+            // 1. Tạo tài khoản
+            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+            user = userCredential.user;
 
-                await runTransaction(db, async (transaction) => {
-                    const statsDoc = await transaction.get(statsDocRef);
-                    
-                    // Nếu chưa có tài liệu thống kê, khởi tạo nó là 1, nếu có rồi thì tăng thêm 1
-                    if (!statsDoc.exists()) {
-                        transaction.set(statsDocRef, { totalMembers: 1 });
-                    } else {
-                        transaction.update(statsDocRef, { totalMembers: increment(1) });
-                    }
+            // 2. Lưu hồ sơ (Đã import setDoc)
+            await setDoc(doc(db, "users", user.uid), {
+                fullName: name,
+                email: email,
+                role: "member",
+                isCounted: false, 
+                createdAt: new Date()
+            });
 
-                    // Lưu thông tin chi tiết của User vào collection 'users'
-                    transaction.set(doc(db, "users", user.uid), {
-                        fullName: name,
-                        email: email,
-                        role: "member",
-                        emailVerified: false,
-                        createdAt: new Date()
-                    });
-                });
+            // 3. Gửi Email và thoát
+            await sendEmailVerification(user);
+            await signOut(auth);
 
-                // 3. Gửi Email xác thực
-                await sendEmailVerification(user);
+            alert("🎉 Đăng ký thành công! Hãy xác minh email trước khi đăng nhập.");
+            window.location.href = "login.html";
 
-                // 4. Đăng xuất để yêu cầu user xác thực email mới cho đăng nhập
-                await signOut(auth);
-
-                alert("🎉 Đăng ký thành công! Một email xác nhận đã được gửi. Vui lòng kích hoạt trước khi đăng nhập.");
-                window.location.href = "login.html";
-
-            } catch (error) {
-                alert("Lỗi: " + error.message);
-                btn.disabled = false;
-                btn.innerText = "BẮT ĐẦU GIA NHẬP";
+        } catch (error) {
+            console.error("Lỗi:", error);
+            if (user) {
+                // Xóa user thừa nếu lỗi lưu database
+                await deleteUser(user).catch(err => console.log("Đã dọn dẹp user."));
             }
-        });
-    </script>
+            alert("Lỗi: " + error.message);
+            btn.disabled = false;
+            btn.innerText = "BẮT ĐẦU GIA NHẬP";
+        }
+    });
+</script>
 </body>
 </html>
