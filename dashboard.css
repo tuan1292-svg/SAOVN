@@ -268,3 +268,30 @@ body {
 .dropdown-toggle.open i:last-child {
     transform: rotate(180deg);
 }
+
+
+/* Hiệu ứng cho Avatar có thể click */
+.avatar {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+}
+
+.avatar:hover::after {
+    content: 'ĐỔI ẢNH';
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 9px;
+    padding: 2px 0;
+    text-align: center;
+}
+
+/* Ẩn input file gốc */
+#avatarInput {
+    display: none;
+}

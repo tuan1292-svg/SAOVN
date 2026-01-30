@@ -94,6 +94,7 @@
                     <span id="userRole" class="role">Khách</span>
                 </div>
                 <div class="avatar" id="userAvatar">SV</div>
+				<input type="file" id="avatarInput" accept="image/*">
             </div>
         </header>
 
@@ -141,22 +142,104 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// Thêm import Storage
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
-            authDomain: "saovn-project.firebaseapp.com",
-            projectId: "saovn-project",
-            storageBucket: "saovn-project.firebasestorage.app",
-            messagingSenderId: "194928117396",
-            appId: "1:194928117396:web:642612a60105add5639681",
-            measurementId: "G-L7Y106VT85"
-        };
+const firebaseConfig = {
+    apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+    authDomain: "saovn-project.firebaseapp.com",
+    projectId: "saovn-project",
+    storageBucket: "saovn-project.firebasestorage.app", // Đảm bảo bucket này chính xác
+    messagingSenderId: "194928117396",
+    appId: "1:194928117396:web:642612a60105add5639681",
+    measurementId: "G-L7Y106VT85"
+};
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app); // Khởi tạo Storage
+
+// --- CẬP NHẬT AVATAR ---
+const avatarDiv = document.getElementById('userAvatar');
+const avatarInput = document.getElementById('avatarInput');
+
+// Khi click vào hình tròn avatar thì kích hoạt chọn file
+avatarDiv.onclick = () => avatarInput.click();
+
+avatarInput.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Kiểm tra định dạng và dung lượng (VD: < 2MB)
+    if (file.size > 2 * 1024 * 1024) return alert("Ảnh quá lớn, vui lòng chọn ảnh < 2MB");
+
+    const user = auth.currentUser;
+    if (!user) return;
+
+    try {
+        avatarDiv.innerText = "..."; // Hiệu ứng đang tải
+        
+        // 1. Tải lên Storage
+        const storageRef = ref(storage, `avatars/${user.uid}`);
+        await uploadBytes(storageRef, file);
+        
+        // 2. Lấy URL ảnh
+        const photoURL = await getDownloadURL(storageRef);
+        
+        // 3. Cập nhật Firestore
+        await updateDoc(doc(db, "users", user.uid), {
+            photoURL: photoURL
+        });
+
+        // 4. Hiển thị lên giao diện
+        avatarDiv.innerText = "";
+        avatarDiv.style.backgroundImage = `url('${photoURL}')`;
+        alert("Cập nhật ảnh đại diện thành công!");
+
+    } catch (error) {
+        console.error("Lỗi upload:", error);
+        alert("Có lỗi xảy ra khi tải ảnh lên.");
+        avatarDiv.innerText = "SV";
+    }
+};
+
+// --- AUTH & DATA (Giữ nguyên và bổ sung hiển thị ảnh) ---
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                document.getElementById('userName').innerText = data.fullName || "User";
+                document.getElementById('welcomeName').innerText = data.fullName || "User";
+                
+                // Hiển thị Avatar nếu có link ảnh
+                if (data.photoURL) {
+                    avatarDiv.innerText = "";
+                    avatarDiv.style.backgroundImage = `url('${data.photoURL}')`;
+                }
+
+                const r = document.getElementById('userRole');
+                if (data.role === 'admin') { r.innerText = 'Admin'; r.className = 'role role-admin'; }
+                else if (data.role === 'mod') { r.innerText = 'Quản trị viên'; r.className = 'role role-mod'; }
+                else { r.innerText = 'Thành viên'; r.className = 'role role-member'; }
+            }
+            
+            // Lắng nghe stats thời gian thực
+            onSnapshot(doc(db, "metadata", "users_stats"), s => {
+                if (s.exists()) document.getElementById('real-time-total-members').innerText = s.data().totalMembers || 0;
+            });
+
+            document.body.classList.add('loaded');
+            document.getElementById('dashBody').style.display = 'flex';
+            document.getElementById('loading-screen').style.display = 'none';
+            initChart();
+        } catch (error) { console.error(error); }
+    } else { window.location.href = "login.html"; }
+});
 		
 		// Xử lý đóng/mở Sidebar trên Mobile
 		const mobileToggle = document.getElementById('mobileToggle');

@@ -97,18 +97,23 @@
             gap: 10px;
         }
 
-        .c-avatar-small {
-            width: 35px;
-            height: 35px;
-            background: #30363d;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ff3e3e;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
+				/* Avatar trong comment: Ưu tiên hiển thị ảnh */
+		.c-avatar-small {
+			width: 38px;
+			height: 38px;
+			background: #30363d;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #00d2ff; /* Màu xanh đồng bộ dashboard */
+			font-weight: bold;
+			font-size: 0.9rem;
+			background-size: cover;
+			background-position: center;
+			border: 1px solid rgba(0, 210, 255, 0.2);
+			flex-shrink: 0;
+		}
 
         .c-actions {
             display: flex;
@@ -357,6 +362,7 @@
                     projectId, 
                     userId: currentUserData.uid, 
                     userName: currentUserData.fullName, 
+					userAvatar: currentUserData.photoURL || "",
                     content, 
                     createdAt: serverTimestamp() 
                 });
@@ -367,6 +373,30 @@
                 document.getElementById('cm-input').value = "";
             };
         }
+		
+		function timeAgo(timestamp) {
+			if (!timestamp) return "Mới";
+			const now = new Date();
+			const past = timestamp.toDate(); // Chuyển từ Firestore Timestamp sang JS Date
+			const diffInSeconds = Math.floor((now - past) / 1000);
+
+			const units = [
+				{ name: "năm", seconds: 31536000 },
+				{ name: "tháng", seconds: 2592000 },
+				{ name: "ngày", seconds: 86400 },
+				{ name: "giờ", seconds: 3600 },
+				{ name: "phút", seconds: 60 },
+				{ name: "giây", seconds: 1 }
+			];
+
+			for (const unit of units) {
+				const interval = Math.floor(diffInSeconds / unit.seconds);
+				if (interval >= 1) {
+					return `${interval} ${unit.name} trước`;
+				}
+			}
+			return "Vừa xong";
+}
 
         function loadComments() {
             const q = query(collection(db, "comments"), where("projectId", "==", projectId), orderBy("createdAt", "desc"));
@@ -376,6 +406,10 @@
                 list.innerHTML = "";
                 snap.forEach(d => {
                     const c = d.data();
+					
+					// Xác định xem có dùng ảnh hay dùng chữ cái đầu
+					const avatarStyle = c.userAvatar ? `style="background-image: url('${c.userAvatar}'); background-size: cover; background-position: center;"` : "";
+					const avatarContent = c.userAvatar ? "" : (c.userName ? c.userName.charAt(0).toUpperCase() : '?');
                     
                     // Kiểm tra quyền: Admin hoặc chủ sở hữu bình luận
                     const isOwner = currentUserData && currentUserData.uid === c.userId;
@@ -390,23 +424,26 @@
                     }
 
                     list.innerHTML += `
-                        <div class="comment-card" id="card-${d.id}">
-                            <div class="c-header">
-                                <div class="c-user-info">
-                                    <div class="c-avatar-small">${c.userName ? c.userName.charAt(0).toUpperCase() : '?'}</div>
-                                    <span style="font-weight:600; color:#e6edf3;">${c.userName}</span>
-                                </div>
-                            </div>
-                            <div id="text-${d.id}" class="c-text">${c.content}</div>
-                            <div id="edit-box-${d.id}" style="display:none">
-                                <textarea id="input-${d.id}" class="edit-area">${c.content}</textarea>
-                                <div style="display:flex; gap:10px;">
-                                    <button onclick="saveEdit('${d.id}')" style="background:#ff3e3e; color:#fff; border:none; padding:6px 15px; border-radius:4px; cursor:pointer; font-weight:600;">Lưu</button>
-                                    <button onclick="toggleEdit('${d.id}')" style="background:transparent; color:#8b949e; border:1px solid #30363d; padding:6px 15px; border-radius:4px; cursor:pointer;">Hủy</button>
-                                </div>
-                            </div>
-                            <div class="c-actions">${actions}</div>
-                        </div>`;
+						<div class="comment-card" id="card-${d.id}">
+							<div class="c-header">
+    <div class="c-user-info">
+        <div class="c-avatar-small" ${avatarStyle}>${avatarContent}</div>
+        <div>
+            <span style="font-weight:600; color:#e6edf3; display:block;">${c.userName}</span>
+            <span style="font-size: 0.7rem; color: #8b949e;">${timeAgo(c.createdAt)}</span>
+        </div>
+    </div>
+</div>
+							<div id="text-${d.id}" class="c-text">${c.content}</div>
+							<div id="edit-box-${d.id}" style="display:none">
+								<textarea id="input-${d.id}" class="edit-area">${c.content}</textarea>
+								<div style="display:flex; gap:10px;">
+									<button onclick="saveEdit('${d.id}')" style="background:#ff3e3e; color:#fff; border:none; padding:6px 15px; border-radius:4px; cursor:pointer; font-weight:600;">Lưu</button>
+									<button onclick="toggleEdit('${d.id}')" style="background:transparent; color:#8b949e; border:1px solid #30363d; padding:6px 15px; border-radius:4px; cursor:pointer;">Hủy</button>
+								</div>
+							</div>
+							<div class="c-actions">${actions}</div>
+						</div>`;
                 });
             });
         }
