@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác thực tài khoản | SAOVN</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 100px; background: #1a1a1a; color: white; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #e74c3c; border-radius: 50%; width: 40px; height: 40px; animation: spin 2s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div id="status">
+        <h2>ĐANG XÁC THỰC TÀI KHOẢN...</h2>
+        <div class="loader"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, applyActionCode } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = { /* COPY CONFIG CỦA BẠN VÀO ĐÂY */ };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Lấy mã oobCode từ URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const oobCode = urlParams.get('oobCode');
+
+        if (oobCode) {
+            applyActionCode(auth, oobCode)
+                .then(() => {
+                    document.getElementById('status').innerHTML = "<h2>XÁC THỰC THÀNH CÔNG!</h2><p>Đang chuyển hướng về trang đăng nhập...</p>";
+                    setTimeout(() => { window.location.href = "login.html"; }, 3000);
+                })
+                .catch((error) => {
+                    document.getElementById('status').innerHTML = "<h2>LỖI: LIÊN KẾT ĐÃ HẾT HẠN</h2><p>Vui lòng thử đăng ký lại.</p>";
+                });
+        }
+    </script>
+</body>
+</html>
