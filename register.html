@@ -103,6 +103,9 @@
                 isCounted: false, 
                 createdAt: new Date()
             });
+			
+			// 1. Ép Firebase sử dụng ngôn ngữ Tiếng Việt cho các hành động gửi mail
+			auth.languageCode = 'vi';
 
             // 3. Gửi Email và thoát
             await sendEmailVerification(user);
