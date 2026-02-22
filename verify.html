@@ -19,7 +19,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, applyActionCode } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = { /* COPY CONFIG CỦA BẠN VÀO ĐÂY */ };
+        const firebaseConfig = {
+        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+        authDomain: "saovn-project.firebaseapp.com",
+        projectId: "saovn-project",
+        storageBucket: "saovn-project.firebasestorage.app",
+        messagingSenderId: "194928117396",
+        appId: "1:194928117396:web:642612a60105add5639681"
+    };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
