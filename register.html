@@ -112,15 +112,37 @@
             window.location.href = "login.html";
 
         } catch (error) {
-            console.error("Lỗi:", error);
-            if (user) {
-                // Xóa user thừa nếu lỗi lưu database
-                await deleteUser(user).catch(err => console.log("Đã dọn dẹp user."));
-            }
-            alert("Lỗi: " + error.message);
-            btn.disabled = false;
-            btn.innerText = "BẮT ĐẦU GIA NHẬP";
-        }
+    console.error("Lỗi:", error);
+    if (user) {
+        await deleteUser(user).catch(err => console.log("Đã dọn dẹp user."));
+    }
+
+    // --- ĐOẠN VIỆT HÓA BẮT ĐẦU ---
+    let message = "Đã xảy ra lỗi không xác định. Vui lòng thử lại.";
+    
+    switch (error.code) {
+        case 'auth/email-already-in-use':
+            message = "Email này đã được sử dụng bởi một tài khoản khác.";
+            break;
+        case 'auth/invalid-email':
+            message = "Địa chỉ email không hợp lệ.";
+            break;
+        case 'auth/operation-not-allowed':
+            message = "Hệ thống đăng ký hiện đang tạm khóa.";
+            break;
+        case 'auth/weak-password':
+            message = "Mật khẩu quá yếu (phải có ít nhất 6 ký tự).";
+            break;
+        case 'auth/network-request-failed':
+            message = "Lỗi kết nối mạng. Vui lòng kiểm tra lại internet.";
+            break;
+    }
+    alert("⚠️ " + message);
+    // --- ĐOẠN VIỆT HÓA KẾT THÚC ---
+
+    btn.disabled = false;
+    btn.innerText = "GIA NHẬP NGAY";
+}
     });
 </script>
 </body>
