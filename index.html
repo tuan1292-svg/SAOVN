@@ -5,7 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAOVN | Sáng Tạo Không Giới Hạn</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        /* --- STYLE CHO AVATAR TRÊN NAV --- */
+        .user-profile-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 5px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            transition: 0.3s;
+            margin-left: 15px;
+        }
+        .user-profile-nav:hover {
+            border-color: #00d2ff;
+            background: rgba(0, 210, 255, 0.05);
+        }
+        .nav-avatar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+        }
+        .nav-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #111;
+            background-size: cover;
+            background-position: center;
+            border: 1.5px solid #00d2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #00d2ff;
+            overflow: hidden;
+        }
+        #display-user-name {
+            font-size: 14px;
+            font-weight: 500;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-logout-mini {
+            background: none;
+            border: none;
+            color: #ff4d4d;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+        }
+        .btn-logout-mini:hover { transform: scale(1.1); }
+        
+        /* Đảm bảo nav-container căn chỉnh đúng khi có profile */
+        .nav-container { display: flex; align-items: center; }
+    </style>
 </head>
 <body>
     <header>
@@ -29,14 +94,15 @@
 			<a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
 			<button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
 			
-			<div class="user-profile" id="user-profile-box" style="display: none;">
-				<div class="user-info-text">
-					Chào, <a href="dashboard.html" class="user-name" id="display-user-link">
-						<span id="display-user-name">Đang tải...</span>
-					</a>
-				</div>
-				<button class="btn-logout" id="auth-logout-btn">Đăng xuất</button>
-			</div>
+			<div id="user-profile-box" class="user-profile-nav" style="display: none;">
+                <a href="dashboard.html" class="nav-avatar-link" title="Đi tới bảng điều khiển">
+                    <div id="display-avatar" class="nav-avatar">SV</div>
+                    <span id="display-user-name">Đang tải...</span>
+                </a>
+                <button id="auth-logout-btn" class="btn-logout-mini" title="Đăng xuất">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
 		</nav>
     </header>
 
@@ -182,8 +248,8 @@
             <div class="footer-contact">
                 <h4>Liên Hệ</h4>
                 <p>📍 Địa chỉ: Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
-                <p>📞 Điện thoại: 0867 179 857</p>
-                <p>✉️ Email: tuan1294@gmail.com</p>
+                <p>📞 Điện thoại: 090 xxx xxxx</p>
+                <p>✉️ Email: contact@saovn.org</p>
             </div>
 
             <div class="footer-socials">
@@ -269,10 +335,10 @@
     </script>
 	<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // Cấu hình Firebase của bạn
+    // Cấu hình Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
         authDomain: "saovn-project.firebaseapp.com",
@@ -286,96 +352,84 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 	
-	// --- HÀM LẤY SỐ THÀNH VIÊN THEO CẤU TRÚC MỚI ---
-async function fetchMemberStats() {
-    try {
-        // 1. Chỉnh sửa: Collection là "metadata", Document ID là "users_stats"
-        const statsDocRef = doc(db, "metadata", "users_stats"); 
-        const statsDocSnap = await getDoc(statsDocRef);
-
-        if (statsDocSnap.exists()) {
-            const data = statsDocSnap.data();
-            
-            // 2. Chỉnh sửa: Field bạn đặt tên là "totalMembers"
-            const total = data.totalMembers || 0; 
-
-            const memberElement = document.getElementById('member-count');
-            if (memberElement) {
-                // Cập nhật giá trị đích cho hiệu ứng chạy số
-                memberElement.setAttribute('data-target', total);
-                
-                // Lưu ý: Nếu trang web đã cuộn qua section này trước khi dữ liệu tải xong,
-                // ta nên cập nhật trực tiếp nội dung để số không bị đứng ở mức 0.
-                if (window.scrollY > memberElement.offsetTop - window.innerHeight) {
-                    memberElement.innerText = total;
+	// --- HÀM LẤY SỐ THÀNH VIÊN ---
+    async function fetchMemberStats() {
+        try {
+            const statsDocRef = doc(db, "metadata", "users_stats"); 
+            const statsDocSnap = await getDoc(statsDocRef);
+            if (statsDocSnap.exists()) {
+                const data = statsDocSnap.data();
+                const total = data.totalMembers || 0; 
+                const memberElement = document.getElementById('member-count');
+                if (memberElement) {
+                    memberElement.setAttribute('data-target', total);
+                    if (window.scrollY > memberElement.offsetTop - window.innerHeight) {
+                        memberElement.innerText = total;
+                    }
                 }
             }
-        } else {
-            console.error("Không tìm thấy tài liệu: metadata/users_stats");
-        }
-    } catch (e) {
-        console.error("Lỗi khi truy xuất Firebase:", e);
+        } catch (e) { console.error(e); }
     }
-}
+    fetchMemberStats();
 
-// Gọi hàm chạy
-fetchMemberStats();
-
+    // --- LOGIC AUTH & AVATAR ĐỒNG BỘ ---
     const userProfileBox = document.getElementById('user-profile-box');
     const loginBtn = document.getElementById('nav-login-btn');
     const registerLink = document.getElementById('nav-register');
     const displayUserName = document.getElementById('display-user-name');
+    const displayAvatar = document.getElementById('display-avatar');
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // Hiện profile, ẩn nút login/register
             userProfileBox.style.display = 'flex';
             if(loginBtn) loginBtn.style.display = 'none';
             if(registerLink) registerLink.style.display = 'none';
 
             try {
                 const userDocSnap = await getDoc(doc(db, "users", user.uid));
-                displayUserName.innerText = (userDocSnap.exists() && userDocSnap.data().fullName) 
-                    ? userDocSnap.data().fullName 
-                    : (user.displayName || user.email.split('@')[0]);
+                if (userDocSnap.exists()) {
+                    const data = userDocSnap.data();
+                    displayUserName.innerText = data.fullName || user.email.split('@')[0];
+                    
+                    // Hiển thị Avatar (Ưu tiên ảnh từ Firestore)
+                    if (data.photoURL) {
+                        displayAvatar.innerText = "";
+                        displayAvatar.style.backgroundImage = `url('${data.photoURL}')`;
+                    } else {
+                        // Backup nếu không có ảnh
+                        displayAvatar.innerText = (data.fullName || "U").charAt(0).toUpperCase();
+                        displayAvatar.style.backgroundImage = "none";
+                    }
+                }
             } catch (e) {
                 displayUserName.innerText = user.email.split('@')[0];
             }
         } else {
-            // Chưa đăng nhập: ẩn profile, hiện nút login/register
             userProfileBox.style.display = 'none';
             if(loginBtn) loginBtn.style.display = 'block';
             if(registerLink) registerLink.style.display = 'block';
         }
     });
 
-    // Sự kiện đăng xuất
     document.getElementById('auth-logout-btn').onclick = () => {
         signOut(auth).then(() => window.location.reload());
     };
 	
-// Số Quỹ
-// 2. Hàm lấy số tiền quỹ và hiển thị
-async function loadFundStatus() {
-    const fundRef = doc(db, "metadata", "fund_stats");
-
-    onSnapshot(fundRef, (docSnap) => {
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            const amount = data.amount || 0;
-            
-            const displayElem = document.getElementById('fund_stats');
-            if (displayElem) {
-                // Cập nhật target để script hiệu ứng chạy số nhận diện
-                displayElem.setAttribute('data-target', amount);
-                
-                // Nếu trang đã cuộn đến phần này rồi, cập nhật trực tiếp số đã định dạng
-                displayElem.innerText = amount.toLocaleString('vi-VN');
+    async function loadFundStatus() {
+        const fundRef = doc(db, "metadata", "fund_stats");
+        onSnapshot(fundRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const amount = data.amount || 0;
+                const displayElem = document.getElementById('fund_stats');
+                if (displayElem) {
+                    displayElem.setAttribute('data-target', amount);
+                    displayElem.innerText = amount.toLocaleString('vi-VN');
+                }
             }
-        }
-    });
-}
-loadFundStatus();
+        });
+    }
+    loadFundStatus();
 </script>
 </body>
 </html>
