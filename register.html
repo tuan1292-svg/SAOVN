@@ -8,76 +8,87 @@
     <link rel="stylesheet" href="register.css">
 </head>
 <body>
-    <div class="register-container">
-        <div class="register-box">
-            <a href="index.html" class="register-logo">SAOVN</a>
-            <h2>GIA NHẬP TỔ CHỨC</h2>
-            <p>Hoàn thiện hồ sơ để bắt đầu hành động</p>
-            
-            <form id="registerForm">
-                <div class="form-grid">
-                    <div class="input-group full-width">
-                        <i class="fas fa-user-tag"></i>
-                        <input type="text" id="regName" placeholder="Họ và tên" required>
+    <div id="content-wrapper"> 
+        <div class="register-container">
+            <div class="register-box">
+                <a href="index.html" class="register-logo">SAOVN</a>
+                <h2>GIA NHẬP TỔ CHỨC</h2>
+                <p>Hoàn thiện hồ sơ để bắt đầu hành động</p>
+                
+                <form id="registerForm">
+                    <div class="form-grid">
+                        <div class="input-group full-width">
+                            <i class="fas fa-user-tag"></i>
+                            <input type="text" id="regName" placeholder="Họ và tên" required>
+                        </div>
+                        <div class="input-group full-width">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="regEmail" placeholder="Email liên lạc" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="regPass" placeholder="Mật khẩu" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-shield-alt"></i>
+                            <input type="password" id="regConfirmPass" placeholder="Nhập lại mật khẩu" required>
+                        </div>
                     </div>
-                    <div class="input-group full-width">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="regEmail" placeholder="Email liên lạc" required>
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="regPass" placeholder="Mật khẩu" required>
-                    </div>
-                    <div class="input-group">
-                        <i class="fas fa-shield-alt"></i>
-                        <input type="password" id="regConfirmPass" placeholder="Nhập lại mật khẩu" required>
-                    </div>
+                    <button type="submit" class="register-btn" id="btnRegister">BẮT ĐẦU GIA NHẬP</button>
+                </form>
+                
+                <div class="register-footer" style="margin-top: 20px; font-size: 14px; color: #666;">
+                    Đã có tài khoản? <a href="login.html" style="color: var(--accent-color); text-decoration: none;">Đăng nhập tại đây</a>
                 </div>
-                <button type="submit" class="register-btn" id="btnRegister">BẮT ĐẦU GIA NHẬP</button>
-            </form>
-            
-            <div class="register-footer" style="margin-top: 20px; font-size: 14px; color: #666;">
-                Đã có tài khoản? <a href="login.html" style="color: var(--accent-color); text-decoration: none;">Đăng nhập tại đây</a>
             </div>
         </div>
     </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { 
-        getAuth, 
-        createUserWithEmailAndPassword, 
-        sendEmailVerification, 
-        signOut,
-        deleteUser 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { 
-        getFirestore, 
-        doc, 
-        setDoc 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    sendEmailVerification, 
+    signOut,
+    deleteUser,
+    onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+    getFirestore, 
+    doc, 
+    setDoc 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // ĐOẠN NÀY LÀ QUAN TRỌNG NHẤT - KHÔNG ĐƯỢC THIẾU
     const firebaseConfig = {
         apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
         authDomain: "saovn-project.firebaseapp.com",
         projectId: "saovn-project",
         storageBucket: "saovn-project.firebasestorage.app",
         messagingSenderId: "194928117396",
-        appId: "1:194928117396:web:642612a60105add5639681",
-        measurementId: "G-L7Y106VT85"
+        appId: "1:194928117396:web:642612a60105add5639681"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    // XỬ LÝ CHẶN VÀ HIỂN THỊ TRANG
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // Đã login thì đi thẳng vào dashboard
+            window.location.href = "dashboard.html";
+        } else {
+            // Chưa login thì mới hiện nội dung
+            const wrapper = document.getElementById('content-wrapper');
+            if (wrapper) wrapper.style.display = 'block';
+        }
+    });
+
+    // XỬ LÝ ĐĂNG KÝ
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        // Khai báo biến btn ngay lập tức để không bị lỗi "initialization"
         const btn = document.getElementById('btnRegister'); 
-        
         const name = document.getElementById('regName').value;
         const email = document.getElementById('regEmail').value;
         const pass = document.getElementById('regPass').value;
@@ -86,66 +97,32 @@
         if(pass !== confirmPass) return alert("Mật khẩu không khớp!");
 
         let user = null;
-
         try {
             btn.disabled = true;
             btn.innerText = "ĐANG XỬ LÝ...";
-
-            // 1. Tạo tài khoản
             const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
             user = userCredential.user;
 
-            // 2. Lưu hồ sơ (Đã import setDoc)
             await setDoc(doc(db, "users", user.uid), {
                 fullName: name,
                 email: email,
                 role: "member",
-                isCounted: false, 
                 createdAt: new Date()
             });
 			
-			// 1. Ép Firebase sử dụng ngôn ngữ Tiếng Việt cho các hành động gửi mail
 			auth.languageCode = 'vi';
-
-            // 3. Gửi Email và thoát
             await sendEmailVerification(user);
             await signOut(auth);
 
             alert("🎉 Đăng ký thành công! Hãy xác minh email trước khi đăng nhập.");
             window.location.href = "login.html";
-
         } catch (error) {
-    console.error("Lỗi:", error);
-    if (user) {
-        await deleteUser(user).catch(err => console.log("Đã dọn dẹp user."));
-    }
-
-    // --- ĐOẠN VIỆT HÓA BẮT ĐẦU ---
-    let message = "Đã xảy ra lỗi không xác định. Vui lòng thử lại.";
-    
-    switch (error.code) {
-        case 'auth/email-already-in-use':
-            message = "Email này đã được sử dụng bởi một tài khoản khác.";
-            break;
-        case 'auth/invalid-email':
-            message = "Địa chỉ email không hợp lệ.";
-            break;
-        case 'auth/operation-not-allowed':
-            message = "Hệ thống đăng ký hiện đang tạm khóa.";
-            break;
-        case 'auth/weak-password':
-            message = "Mật khẩu quá yếu (phải có ít nhất 6 ký tự).";
-            break;
-        case 'auth/network-request-failed':
-            message = "Lỗi kết nối mạng. Vui lòng kiểm tra lại internet.";
-            break;
-    }
-    alert("⚠️ " + message);
-    // --- ĐOẠN VIỆT HÓA KẾT THÚC ---
-
-    btn.disabled = false;
-    btn.innerText = "GIA NHẬP NGAY";
-}
+            console.error("Lỗi:", error);
+            if (user) await deleteUser(user);
+            alert("⚠️ Lỗi: " + error.message);
+            btn.disabled = false;
+            btn.innerText = "BẮT ĐẦU GIA NHẬP";
+        }
     });
 </script>
 </body>

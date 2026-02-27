@@ -110,3 +110,6 @@ body {
     transition: 0.3s;
 }
 .register-btn:hover { box-shadow: 0 0 20px rgba(0, 210, 255, 0.5); transform: translateY(-2px); }
+
+/* Ẩn toàn bộ nội dung khi trang vừa tải */
+    #content-wrapper { display: none; }
