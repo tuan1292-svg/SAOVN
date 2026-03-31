@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <style>
-        /* --- STYLE CHO AVATAR TRÊN NAV (BÊ TỪ INDEX QUA) --- */
+        /* --- STYLE CHO AVATAR TRÊN NAV --- */
         .user-profile-nav {
             display: flex; align-items: center; gap: 12px; padding: 5px 15px;
             background: rgba(255, 255, 255, 0.05); border-radius: 30px;
@@ -23,7 +23,7 @@
             font-weight: bold; color: #00d2ff; overflow: hidden;
         }
         #display-user-name {
-            font-size: 14px; font-weight: 500; max-width: 150px; /* Nới rộng một chút để hiện chữ Chào */
+            font-size: 14px; font-weight: 500; max-width: 150px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .btn-logout-mini {
@@ -93,6 +93,330 @@
         .lesson-item.locked:hover { transform: none; background: rgba(255,255,255,0.02); }
 
         .lesson-item.active-unlock { border-left-color: #00d2ff; background: linear-gradient(90deg, rgba(0,210,255,0.05) 0%, transparent 100%);}
+
+        /* --- NÂNG CẤP FUNNEL BOX THÀNH HUD TERMINAL --- */
+        .funnel-box {
+            background: linear-gradient(135deg, rgba(0, 20, 30, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            box-shadow: inset 0 0 20px rgba(0, 210, 255, 0.05), 0 0 15px rgba(0, 210, 255, 0.1);
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 210, 255, 0.03) 2px, rgba(0, 210, 255, 0.03) 4px);
+            border-left: 4px solid #00d2ff;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 40px;
+            position: relative;
+            transition: 0.3s;
+        }
+        .funnel-box:hover {
+            border-color: rgba(0, 210, 255, 0.5);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.1);
+        }
+        .funnel-box::before {
+            content: "MISSION_OBJECTIVES";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #00d2ff;
+            color: #000;
+            font-size: 10px;
+            font-family: 'Orbitron', sans-serif;
+            padding: 2px 10px;
+            font-weight: bold;
+            border-radius: 2px;
+            letter-spacing: 1px;
+        }
+        .hud-progress-container {
+            margin-top: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed rgba(0, 210, 255, 0.3);
+        }
+        .hud-progress-text {
+            color: #00d2ff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .hud-progress-bar-bg {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .hud-progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: #00d2ff;
+            box-shadow: 0 0 10px #00d2ff;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .question-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 12px;
+            background: rgba(0, 210, 255, 0.02);
+            border-radius: 4px;
+            border-left: 2px solid transparent;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .question-item:hover {
+            background: rgba(0, 210, 255, 0.05);
+            border-left-color: #00d2ff;
+        }
+        .question-item.selected {
+            background: rgba(0, 210, 255, 0.1);
+            border-left-color: #00ff00;
+        }
+        .question-item.selected .question-text { color: #fff; }
+        .question-item.selected .cyber-checkbox { border-color: #00ff00; background: rgba(0, 255, 0, 0.2); }
+        .question-item.selected .cyber-checkbox::after { content: '✔'; color: #00ff00; font-size: 12px; }
+        .cyber-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #00d2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            font-family: sans-serif;
+            transition: 0.3s;
+        }
+        .question-text {
+            color: #aaa;
+            font-size: 14.5px;
+            line-height: 1.5;
+            transition: 0.3s;
+        }
+        .funnel-result {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            text-align: center;
+            color: #00ff00;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            animation: pulseGlow 1.5s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 5px rgba(0, 255, 0, 0.2); }
+            to { box-shadow: 0 0 20px rgba(0, 255, 0, 0.6); }
+        }
+
+        /* --- SCROLLBAR TERMINAL HUD CHO KHU VỰC CÂU HỎI --- */
+#diagnostic-questions {
+    max-height: 380px; /* Bạn có thể tăng giảm số này tùy ý */
+    overflow-y: auto;
+    padding-right: 10px; /* Tạo khoảng trống để text không đè lên thanh cuộn */
+    margin-bottom: 20px;
+    /* Hiệu ứng mờ dần (fade out) ở đáy danh sách tạo cảm giác màn hình console */
+    mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+}
+
+/* Tùy chỉnh dải thanh cuộn (Webkit) */
+#diagnostic-questions::-webkit-scrollbar {
+    width: 4px; /* Thanh cuộn mỏng, tinh tế */
+}
+
+/* Track (Đường ray của thanh cuộn) */
+#diagnostic-questions::-webkit-scrollbar-track {
+    background: rgba(0, 210, 255, 0.05); 
+    border-radius: 4px;
+}
+
+/* Thumb (Phần tay cầm cuộn) */
+#diagnostic-questions::-webkit-scrollbar-thumb {
+    background: #00d2ff; 
+    border-radius: 4px;
+    box-shadow: 0 0 10px #00d2ff; /* Hiệu ứng phát sáng */
+    transition: 0.3s;
+}
+
+/* Khi di chuột vào tay cầm cuộn */
+#diagnostic-questions::-webkit-scrollbar-thumb:hover {
+    background: #00ff00; 
+    box-shadow: 0 0 15px #00ff00;
+}
+
+/* --- KHỐI CẢNH BÁO & CAM KẾT (CLASSIFIED INTEL) --- */
+.classified-alert-box {
+    background: rgba(15, 10, 20, 0.8);
+    border: 1px solid rgba(255, 77, 77, 0.4);
+    border-left: 4px solid #ff4d4d;
+    border-radius: 8px;
+    padding: 25px 30px;
+    margin-bottom: 50px;
+    position: relative;
+    box-shadow: 0 5px 20px rgba(255, 77, 77, 0.05);
+    transition: all 0.3s ease;
+}
+
+.classified-alert-box:hover {
+    box-shadow: 0 5px 30px rgba(255, 77, 77, 0.15);
+    border-color: rgba(255, 77, 77, 0.6);
+}
+
+.classified-alert-box::before {
+    content: "SYSTEM_WARNING // TRUTH_REVEALED";
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: #ff4d4d;
+    color: #000;
+    font-size: 10px;
+    font-family: 'Orbitron', sans-serif;
+    padding: 2px 10px;
+    font-weight: bold;
+    border-radius: 2px;
+    letter-spacing: 1px;
+}
+
+.alert-enemy-tactics {
+    color: #ff9999;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed rgba(255, 77, 77, 0.2);
+}
+
+.alert-saovn-truth {
+    color: #fff;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.highlight-price {
+    color: #00ff00;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+    padding: 0 5px;
+}
+
+.guarantee-box {
+    background: linear-gradient(90deg, rgba(0, 210, 255, 0.1) 0%, transparent 100%);
+    border-left: 3px solid #00d2ff;
+    padding: 15px 20px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    border-radius: 4px;
+}
+
+.guarantee-box i {
+    color: #00d2ff;
+    font-size: 24px;
+    margin-top: 2px;
+    filter: drop-shadow(0 0 5px #00d2ff);
+}
+
+.guarantee-text {
+    color: #e0e0e0;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.guarantee-text strong {
+    color: #00d2ff;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+}
+
+/* --- NÚT THANH TOÁN & BẢNG QR --- */
+.btn-cyber-pay {
+    background: linear-gradient(45deg, rgba(0, 210, 255, 0.1), rgba(0, 255, 0, 0.1));
+    border: 1px solid #00d2ff;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 18px 35px;
+    cursor: pointer;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+    animation: pulseBorder 2s infinite alternate;
+}
+
+@keyframes pulseBorder {
+    0% { box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); border-color: rgba(0, 210, 255, 0.5); }
+    100% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.4); border-color: rgba(0, 255, 0, 0.8); }
+}
+
+.btn-cyber-pay:hover {
+    background: #00d2ff;
+    color: #000;
+    box-shadow: 0 0 40px #00d2ff;
+    transform: scale(1.05);
+}
+
+.cyber-modal {
+    display: none; position: fixed; z-index: 9999; left: 0; top: 0;
+    width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.cyber-modal-content {
+    background: linear-gradient(135deg, rgba(10, 15, 20, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
+    margin: 8% auto; padding: 35px;
+    border: 1px solid rgba(0, 210, 255, 0.4); 
+    border-top: 4px solid #00ff00; 
+    border-radius: 8px;
+    width: 90%; max-width: 450px; text-align: center; position: relative;
+    box-shadow: 0 0 40px rgba(0, 255, 0, 0.15);
+    animation: modalFadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalFadeIn { 
+    from { opacity: 0; transform: translateY(-50px) scale(0.9); } 
+    to { opacity: 1; transform: translateY(0) scale(1); } 
+}
+
+.cyber-close {
+    color: #555; position: absolute; top: 15px; right: 20px;
+    font-size: 28px; font-weight: bold; cursor: pointer; transition: 0.3s;
+}
+
+.cyber-close:hover { color: #ff4d4d; text-shadow: 0 0 10px #ff4d4d; }
+
+.modal-header-cyber {
+    color: #00d2ff; font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: bold;
+    letter-spacing: 2px; margin-bottom: 20px; border-bottom: 1px dashed rgba(0,210,255,0.3); padding-bottom: 15px;
+}
+
+.qr-container {
+    position: relative; display: inline-block; padding: 15px; background: #fff; 
+    border-radius: 8px; margin-top: 10px; border: 2px solid #00d2ff;
+}
+
+.qr-image { width: 220px; height: 220px; display: block; }
+
+.qr-scan-line {
+    position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: #00ff00;
+    box-shadow: 0 0 15px #00ff00, 0 0 5px #fff; animation: scanAnim 2.5s infinite linear;
+}
+
+@keyframes scanAnim { 
+    0% { top: 0; opacity: 0; } 
+    10% { opacity: 1; } 
+    90% { opacity: 1; } 
+    100% { top: 100%; opacity: 0; } 
+}
     </style>
 </head>
 <body>
@@ -109,18 +433,18 @@
             <span class="bar"></span>
         </div>
 
-		<nav class="nav-container">
-			<a href="index.html" class="nav-link">Trang chủ</a>
-			<a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
-			<a href="du-an.html" class="nav-link">Dự án</a>
-			<a href="quy-tac.html" class="nav-link">Quy tắc</a>
+        <nav class="nav-container">
+            <a href="index.html" class="nav-link">Trang chủ</a>
+            <a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
+            <a href="du-an.html" class="nav-link">Dự án</a>
+            <a href="quy-tac.html" class="nav-link">Quy tắc</a>
             <a href="quy.html" class="nav-link">Qũy</a>
             <a href="academy.html" class="nav-link active">Học viện</a>
-			
-			<a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
-			<button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
-			
-			<div id="user-profile-box" class="user-profile-nav" style="display: none;">
+            
+            <a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
+            <button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
+            
+            <div id="user-profile-box" class="user-profile-nav" style="display: none;">
                 <a href="dashboard.html" class="nav-avatar-link" title="Đi tới bảng điều khiển">
                     <div id="display-avatar" class="nav-avatar">SV</div>
                     <span id="display-user-name">Đang tải...</span>
@@ -129,7 +453,7 @@
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
-		</nav>
+        </nav>
     </header>
 
     <div class="academy-container">
@@ -137,6 +461,79 @@
             <h1>SAOVN ACADEMY</h1>
             <p>LỘ TRÌNH HUẤN LUYỆN TÀI CHÍNH ĐẶC VỤ</p>
         </header>
+
+        <div class="funnel-box" data-aos="fade-up">
+            <div class="funnel-title" style="font-family: 'Orbitron'; color: #00d2ff; font-size: 16px; letter-spacing: 1px;">
+                <i class="fas fa-terminal"></i> HỆ THỐNG KIỂM TRA MỨC ĐỘ PHÙ HỢP
+            </div>
+            
+            <div class="hud-progress-container">
+                <div class="hud-progress-text">
+                    <span>TIẾN TRÌNH QUÉT DỮ LIỆU...</span>
+                    <span id="scan-percentage">0%</span>
+                </div>
+                <div class="hud-progress-bar-bg">
+                    <div class="hud-progress-bar-fill" id="scan-progress"></div>
+                </div>
+            </div>
+
+            <div id="diagnostic-questions">
+                </div>
+
+            <div class="funnel-result" id="funnel-success-msg">
+                <i class="fas fa-unlock-alt" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+                QUYỀN TRUY CẬP ĐƯỢC CHẤP THUẬN.<br>
+                <span style="font-family: sans-serif; font-size: 14px; color: #fff; margin-top: 10px; display: block; text-transform: none; letter-spacing: 0;">
+                    Dữ liệu cho thấy bạn hoàn toàn phù hợp. Lộ trình dưới đây được thiết kế chính xác để giải quyết các vấn đề của bạn!
+                </span>
+            </div>
+        </div>
+
+<div class="classified-alert-box" data-aos="fade-up" data-aos-delay="100">
+            <div class="alert-enemy-tactics">
+                <i class="fas fa-biohazard"></i> <strong>THỰC TRẠNG:</strong> Ngoài kia, các "khóa học làm giàu" đang vẽ ra những lý thuyết suông và thu của bạn từ vài triệu, chục triệu, thậm chí hàng trăm triệu đồng mà không mang lại một lộ trình thực chiến nào.
+            </div>
+            <div class="alert-saovn-truth">
+                Tại SAOVN, bạn chỉ cần tiết kiệm 1.000đ mỗi ngày (tương đương <span class="highlight-price">365.000 VNĐ/năm</span> làm học phí), bạn sẽ được <strong>CẦM TAY CHỈ VIỆC</strong> chi tiết đến khi bạn thực sự tạo ra được nguồn thu nhập thụ động hàng tháng. Đặc biệt, sẽ có <strong>BẢNG THEO DÕI & SO SÁNH THU NHẬP</strong> trước và sau khi học để bạn thấy rõ mình đã thực sự kiếm được tiền như thế nào!
+            </div>
+            <div class="guarantee-box">
+                <i class="fas fa-shield-alt"></i>
+                <div class="guarantee-text">
+                    <strong>SAOVN KHẲNG ĐỊNH:</strong> Nếu bạn tuyệt đối tuân thủ kỷ luật và làm theo chính xác bản đồ chiến thuật này, ngoài tiền lương hàng tháng, từ nay bạn sẽ thiết lập thêm một dòng <strong>thu nhập thụ động</strong>. Và quan trọng nhất: Con số đó sẽ <strong>tăng dần đều lên theo thời gian</strong>.
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 35px;">
+                <button class="btn-cyber-pay" onclick="openPaymentModal()">
+                    <i class="fas fa-fingerprint"></i> XÁC NHẬN KÍCH HOẠT LỘ TRÌNH (365K/NĂM)
+                </button>
+            </div>
+        </div>
+
+        <div id="payment-modal" class="cyber-modal">
+            <div class="cyber-modal-content">
+                <span class="cyber-close" onclick="closePaymentModal()">&times;</span>
+                <div class="modal-header-cyber">
+                    <i class="fas fa-qrcode"></i> CỔNG THANH TOÁN BẢO MẬT
+                </div>
+                <p style="color: #aaa; font-size: 14.5px; margin-bottom: 20px; line-height: 1.5;">
+                    Vui lòng quét mã QR dưới đây để thanh toán <strong style="color: #00ff00; font-size: 16px;">365.000 VNĐ</strong> (Phí duy trì 1 năm). 
+                    Hệ thống sẽ tự động duyệt quyền truy cập toàn bộ học viện sau khi giao dịch hoàn tất.
+                </p>
+                
+                <div class="qr-container">
+                    <img src="images/timo.png" alt="QR Code" class="qr-image">
+                    <div class="qr-scan-line"></div>
+                </div>
+                
+                <p style="color: #00d2ff; font-family: 'Orbitron'; font-size: 13px; margin-top: 25px; letter-spacing: 1px;">
+                    CÚ PHÁP CHUYỂN KHOẢN: <br>
+                    <span style="color: #fff; font-size: 18px; font-weight: bold; background: #111; padding: 8px 15px; border: 1px dashed #333; display: inline-block; margin-top: 10px;">
+                        SAOVN + SỐ ĐIỆN THOẠI
+                    </span>
+                </p>
+            </div>
+        </div>
 
         <div id="curriculum-container">
             <div style="text-align:center; padding: 50px; color: #00d2ff;">
@@ -149,7 +546,7 @@
     <script>
         AOS.init({ duration: 1000, once: true });
 
-        // Mobile Menu Toggle (Bê từ index qua)
+        // Mobile Menu Toggle
         const menu = document.querySelector('#mobile-menu');
         const menuLinks = document.querySelector('.nav-container');
 
@@ -166,6 +563,102 @@
             if (window.scrollY > 50) header.classList.add('scrolled');
             else header.classList.remove('scrolled');
         });
+    </script>
+
+    <script>
+        // Web Audio API tạo tiếng "Bíp" giả lập HUD
+        let audioCtx;
+        function playCyberTick() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'square'; // Âm thanh retro/cyberpunk
+            oscillator.frequency.setValueAtTime(600, audioCtx.currentTime); 
+            oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.05);
+            
+            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); // Âm lượng nhỏ vừa đủ nghe
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.05);
+        }
+
+        const questions = [
+            `Bạn có cảm thấy mình chỉ đang "tồn tại" để làm việc trả hóa đơn, thay vì thực sự "sống"?`,
+            `Nếu ngày mai bạn có việc gấp cần nghỉ làm 1 tuần, điều đầu tiên bạn lo lắng là sức khỏe, gia đình hay... số tiền bị trừ lương?`,
+            `Bạn đã làm việc chăm chỉ suốt 3-5 năm qua, nhưng khi nhìn lại quỹ thời gian rảnh rỗi cho bản thân và gia đình, nó có thực sự tăng lên chút nào không?`,
+            `Nếu ngay lúc này nguồn thu nhập chính của bạn biến mất, số tiền tiết kiệm có thể giúp bạn duy trì mức sống hiện tại được bao nhiêu tháng?`,
+            `Bạn đang làm việc để tiền đẻ ra tiền, hay tiền tiết kiệm của bạn đang nằm im và từ từ mất giá bởi lạm phát mỗi ngày?`,
+            `Bạn có biết chính xác mình cần bao nhiêu tiền để đạt được "Tự do tài chính", hay đó chỉ là một con số mơ hồ trong đầu?`,
+            `Bạn đã từng thử đầu tư hoặc kinh doanh nhưng thất bại, mất tiền chỉ vì làm theo cảm tính mà không có một chiến lược rõ ràng?`,
+            `Bạn có đang thiếu một "bản đồ" chi tiết từng bước, đã được kiểm chứng, để đưa bạn từ vạch xuất phát đến sự độc lập tài chính?`,
+            `Bạn có ước mơ được xách balo lên đi du lịch trải nghiệm bất cứ lúc nào, thay vì phải chắt bóp từng đồng và chờ đợi sự phê duyệt cho vài ngày phép ngắn ngủi?`,
+            `Khi nghĩ về việc chăm lo y tế tốt nhất cho cha mẹ hay tạo dựng tương lai vững chắc cho người thân, bạn có chạnh lòng vì tài chính hiện tại chưa cho phép mình làm trọn vẹn điều đó?`
+        ];
+
+        const questionsContainer = document.getElementById('diagnostic-questions');
+        const progressBar = document.getElementById('scan-progress');
+        const progressText = document.getElementById('scan-percentage');
+        const successMsg = document.getElementById('funnel-success-msg');
+
+        // Render danh sách câu hỏi
+        questions.forEach((q, index) => {
+            const div = document.createElement('div');
+            div.className = 'question-item';
+            div.innerHTML = `
+                <div class="cyber-checkbox"></div>
+                <div class="question-text">${index + 1}. ${q}</div>
+            `;
+            
+            div.addEventListener('click', function() {
+                playCyberTick(); // Phát âm thanh khi click
+                this.classList.toggle('selected');
+                
+                // Tính toán progress
+                const selectedItems = document.querySelectorAll('.question-item.selected').length;
+                const percentage = Math.round((selectedItems / questions.length) * 100);
+                
+                progressBar.style.width = percentage + '%';
+                progressText.innerText = percentage + '%';
+
+                // Nếu check từ 5 câu trở lên, hiển thị thông điệp thành công
+                if (selectedItems >= 5) {
+                    successMsg.style.display = 'block';
+                } else {
+                    successMsg.style.display = 'none';
+                }
+            });
+            
+            questionsContainer.appendChild(div);
+        });
+
+        // Xử lý bật/tắt Modal QR Code
+        function openPaymentModal() {
+            document.getElementById('payment-modal').style.display = 'block';
+            // Gọi âm thanh tick (nếu bạn vẫn đang dùng hàm playCyberTick ở trên)
+            if(typeof playCyberTick === "function") playCyberTick(); 
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+
+        // Bấm ra ngoài vùng Modal sẽ tự động đóng
+        window.onclick = function(event) {
+            const modal = document.getElementById('payment-modal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
     </script>
 
     <script type="module">
@@ -202,7 +695,7 @@
                 lessons: [
                     "5zwh2YlRhUTPCjLvhInZ", 
                     "xmlHJa6onEoLReQXEfgf", 
-                    "942keRcwOtEnxjEK41sr"
+                    "942keRcwOtEnxjEK41sr" // ID bài mới
                 ]
             },
             {
@@ -211,7 +704,7 @@
                     "FXSQ5T10jcTPMGAHWmJW",
                     "kDHD00T5gC7sOr52Rfai",
                     "aAZ0xfOiULHf4W4x7xlv",
-                    "sQ9tLeFK1hrIBiDH7imj"
+                    "sQ9tLeFK1hrIBiDH7imj" // ID bài mới
                 ]
             }
         ];
