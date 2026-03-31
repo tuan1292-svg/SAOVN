@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>SAOVN | STARK COMMAND INTERFACE v7.5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --stark-cyan: #00f2ff;
+            --stark-orange: #ff9d00;
+            --bg-dark: #01080e;
+            --glass-cyan: rgba(0, 242, 255, 0.08);
+            --border-dim: rgba(0, 242, 255, 0.2);
+            --separator-line: rgba(0, 242, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.05) 0%, transparent 80%),
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 45px 45px, 45px 45px;
+        }
+
+        header {
+            border-bottom: 1px solid var(--stark-cyan);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            position: fixed; width: 90%; top: 0; z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        .logo { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 4px; color: var(--stark-cyan); }
+        .nav-links a { color: #fff; text-decoration: none; margin-left: 25px; font-size: 12px; opacity: 0.6; }
+
+        .wrapper {
+            display: grid; 
+            grid-template-columns: 2fr 20px 1.2fr; /* Dải phân cách to 20px như ảnh */
+            gap: 20px; padding: 120px 5% 50px;
+        }
+
+        /* --- DẢI PHÂN CÁCH (THEO ẢNH CỦA BẠN) --- */
+        .v-separator {
+            background: rgba(0, 242, 255, 0.03);
+            border-left: 1px solid var(--separator-line);
+            border-right: 1px solid var(--separator-line);
+            position: relative;
+        }
+        .v-separator::before {
+            content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 2px; height: 100%; background: linear-gradient(transparent, var(--stark-cyan), transparent);
+            opacity: 0.2;
+        }
+
+        /* --- CHỈ SỐ QUỸ (v3.0 Style) --- */
+        .stat-board {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 40px;
+        }
+        .stat-card {
+            background: var(--glass-cyan); border-left: 3px solid var(--stark-cyan);
+            padding: 15px; position: relative; transition: 0.3s;
+        }
+        /* Hiệu ứng trỏ chuột v7.0 */
+        .stat-card:hover {
+            background: var(--stark-cyan); 
+        }
+        .stat-card:hover .stat-value, .stat-card:hover .stat-label { color: #000; }
+
+        .stat-label { font-size: 10px; color: var(--stark-cyan); }
+        .stat-value { font-family: 'Orbitron'; font-size: 20px; color: #fff; margin-top: 5px; }
+
+        /* --- NHIỆM VỤ --- */
+        .mission-section { position: relative; }
+        #task-cursor {
+            position: absolute; left: -25px; width: 10px; height: 50px;
+            background: var(--stark-cyan); box-shadow: 0 0 15px var(--stark-cyan);
+            pointer-events: none; transition: top 0.15s ease-out; z-index: 5;
+        }
+        .mission-item {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border-dim);
+            padding: 20px; margin-bottom: 15px; transition: 0.3s;
+        }
+        .mission-item:hover { background: rgba(0, 242, 255, 0.05); border-color: var(--stark-cyan); }
+        
+        /* Nút hành động xịn */
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .stark-btn {
+            background: transparent; border: 1px solid var(--stark-cyan); color: var(--stark-cyan);
+            padding: 5px 12px; font-family: 'Share Tech Mono'; font-size: 11px; cursor: pointer;
+            text-transform: uppercase;
+        }
+        .stark-btn:hover { background: var(--stark-cyan); color: #000; box-shadow: 0 0 10px var(--stark-cyan); }
+
+        /* --- KHUNG ĐẶC VỤ (GIỮ NGUYÊN QUY4.HTML) --- */
+        .agent-hud {
+            background: rgba(2, 15, 30, 0.95); border: 1px solid var(--stark-cyan);
+            padding: 30px; position: relative; min-height: 800px;
+        }
+
+        .brick {
+            position: absolute; width: 10px; height: 40px;
+            background: var(--stark-cyan); opacity: 0.4;
+        }
+
+        .stark-clock-panel {
+            position: absolute; top: 0; right: 30px;
+            background: var(--stark-orange); color: #fff;
+            padding: 5px 20px; font-family: 'Orbitron'; font-size: 14px; font-weight: bold;
+        }
+
+        .bio-header { display: flex; gap: 20px; margin-bottom: 25px; margin-top: 10px; }
+        .avatar-box {
+            width: 120px; height: 150px; border: 1px solid var(--stark-cyan);
+            position: relative; background: #000;
+        }
+        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .bio-list { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; }
+        .bio-row {
+            background: var(--glass-cyan); border-left: 3px solid var(--stark-cyan);
+            padding: 6px 12px; transition: 0.3s;
+        }
+        /* Hiệu ứng trỏ chuột v7.0 */
+        .bio-row:hover { background: var(--stark-cyan); }
+        .bio-row:hover span { color: #000; }
+
+        .label { font-size: 9px; color: var(--stark-cyan); display: block; }
+        .val { font-size: 13px; font-weight: bold; color: #fff; }
+
+        /* --- TIẾN TRÌNH LV & ĐÓNG GÓP --- */
+        .progress-module { margin-top: 25px; }
+        .progress-container { height: 6px; background: rgba(0,0,0,0.5); border: 1px solid var(--border-dim); margin: 8px 0; }
+        .progress-fill { height: 100%; background: var(--stark-cyan); box-shadow: 0 0 8px var(--stark-cyan); }
+        .milestones { display: flex; justify-content: space-between; font-size: 8px; color: var(--stark-cyan); opacity: 0.7; }
+
+        /* --- HOLOGRAM EARTH SCANNER --- */
+        .hologram-module {
+            margin-top: 20px; height: 200px; border: 1px solid rgba(0, 242, 255, 0.2);
+            position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.1) 0%, transparent 70%);
+        }
+        .earth-sphere {
+            width: 120px; height: 120px; border-radius: 50%;
+            border: 1px dashed var(--stark-cyan); animation: rotate 15s linear infinite;
+        }
+        .radar-circle {
+            position: absolute; width: 180px; height: 180px;
+            border: 1px solid rgba(0, 242, 255, 0.1); border-radius: 50%;
+        }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
+        /* Giao diện Header mới */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 5%;
+}
+
+.logo-wrapper {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-text {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--stark-cyan);
+    letter-spacing: 2px;
+}
+
+.logo-slogan {
+    font-size: 9px;
+    color: var(--stark-orange);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 12px;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--stark-cyan);
+    text-shadow: 0 0 10px var(--stark-cyan);
+}
+
+/* Nút bấm kiểu Stark */
+.btn-login, .btn-logout {
+    background: transparent;
+    border: 1px solid var(--stark-cyan);
+    color: var(--stark-cyan);
+    padding: 5px 15px;
+    font-family: 'Share Tech Mono';
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background: var(--stark-cyan);
+    color: #000;
+    box-shadow: 0 0 15px var(--stark-cyan);
+}
+
+/* Menu Mobile (ẩn trên PC) */
+.menu-toggle { display: none; cursor: pointer; }
+.bar {
+    display: block; width: 25px; height: 2px;
+    background: var(--stark-cyan); margin: 5px auto;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+    .nav-container { display: none; } /* Cần JS để bật menu này */
+}
+
+/* --- STYLE CHO AVATAR TRÊN NAV (ĐỒNG BỘ INDEX) --- */
+        .user-profile-nav {
+            display: flex; align-items: center; gap: 12px; padding: 5px 15px;
+            background: rgba(255, 255, 255, 0.05); border-radius: 30px;
+            border: 1px solid rgba(0, 242, 255, 0.2); transition: 0.3s; margin-left: 15px;
+        }
+        .user-profile-nav:hover { border-color: var(--stark-cyan); background: rgba(0, 242, 255, 0.05); }
+        .nav-avatar-link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
+        .nav-avatar {
+            width: 35px; height: 35px; border-radius: 50%; background-color: #111;
+            background-size: cover; background-position: center; border: 1.5px solid var(--stark-cyan);
+            display: flex; align-items: center; justify-content: center; font-size: 12px;
+            font-weight: bold; color: var(--stark-cyan); overflow: hidden;
+        }
+        #display-user-name { font-size: 14px; font-weight: 500; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: 'Share Tech Mono', monospace;}
+        .btn-logout-mini { background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 16px; padding: 5px; transition: 0.2s; display: flex; align-items: center; }
+        .btn-logout-mini:hover { transform: scale(1.1); text-shadow: 0 0 10px #ff4d4d;}
+
+/* --- STYLE CHO THÔNG TIN CHI TIẾT (QUY4.HTML) --- */        
+.skill-container {
+    display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px;
+}
+.skill-tag {
+    background: rgba(0, 242, 255, 0.1);
+    border: 1px solid var(--stark-cyan);
+    color: var(--stark-cyan);
+    padding: 2px 8px;
+    font-size: 10px;
+    text-transform: uppercase;
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0% 30%); /* Cắt góc kiểu quân đội */
+    transition: 0.3s;
+}
+.skill-tag:hover {
+    background: var(--stark-cyan);
+    color: #000;
+}        
+        
+    </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo-wrapper">
+        <span class="logo-text">SAOVN</span>
+        <span class="logo-slogan">Special Actions Organization for Vietnam</span>
+    </a>
+
+    <div class="menu-toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+
+    <nav class="nav-container">
+        <a href="index.html" class="nav-link">Trang chủ</a>
+        <a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
+        <a href="du-an.html" class="nav-link">Dự án</a>
+        <a href="quy-tac.html" class="nav-link">Quy tắc</a>
+        <a href="quy.html" class="nav-link active">Quỹ</a>
+        <a href="academy.html" class="nav-link">Học viện</a>
+        
+        <a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
+        <button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
+        
+        <div id="user-profile-box" class="user-profile-nav" style="display: none;">
+            <a href="dashboard.html" class="nav-avatar-link" title="Đi tới bảng điều khiển">
+                <div id="display-avatar" class="nav-avatar">SV</div>
+                <span id="display-user-name">Đang tải...</span>
+            </a>
+            <button id="auth-logout-btn" class="btn-logout-mini" title="Đăng xuất">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </nav>
+</header>
+
+    <div class="wrapper">
+        <div class="content-left">
+            <div class="stat-board">
+                <div class="stat-card"><div class="stat-label">TỔNG QUỸ HUY ĐỘNG</div><div class="stat-value"><span id="fund_stats" data-target="0" data-is-float="false">0</span><span style="font-size: 10px; opacity: 0.5;">VND</span></div></div>
+                <div class="stat-card"><div class="stat-label">TỔNG ĐÃ CHI</div><div class="stat-value" style="color: var(--stark-orange);"><span id="fund_spent">0</span> <small style="font-size: 12px; opacity: 0.5;">VND</small></div></div>
+                <div class="stat-card"><div class="stat-label">SỐ DƯ CÒN LẠI</div><div class="stat-value" style="color: #fff;"><span id="fund_remain">0</span> <small style="font-size: 12px; opacity: 0.5;">VND</small></div></div>
+                <div class="stat-card"><div class="stat-label">THÀNH VIÊN</div><div class="stat-value"><span id="member_count">0</span>
+    <span style="font-size: 14px; color: var(--stark-cyan); margin-left: 5px;">ĐẶC VỤ</span></div></div>
+                <div class="stat-card"><div class="stat-label">TỔNG DỰ ÁN</div><div class="stat-value">12</div></div>
+                <div class="stat-card"><div class="stat-label">HOÀN THÀNH</div><div class="stat-value" style="color:#00ff88">08</div></div>
+            </div>
+
+            <div class="mission-section" id="mission-box">
+                <div id="task-cursor"></div>
+                
+                <h2 style="font-family:'Orbitron'; color:var(--stark-orange); font-size:14px;">// DỰ ÁN ĐÓNG GÓP</h2>
+                
+                <div class="mission-item" style="border-left: 3px solid var(--stark-orange);">
+                    <h3>DAILY: CLICK LINK TÀI TRỢ SHOPEE</h3>
+                    <p style="font-size:12px; opacity:0.6;">Xác thực link mỗi ngày để duy trì trạng thái đặc vụ.</p>
+                    <div class="btn-group">
+                        <button class="stark-btn">Tiếp nhận</button>
+                        <button class="stark-btn">Báo cáo hoàn thành</button>
+                    </div>
+                </div>
+
+                <div class="mission-item">
+                    <div style="display:flex; justify-content:space-between; font-size:14px;">
+                        <span>DỰ ÁN: TRAO CẦN CÂU THOÁT NGHÈO</span>
+                        <span style="color:var(--stark-cyan)">MỨC 2: 75%</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" style="width: 75%;"></div></div>
+                    <div class="milestones"><span>MỨC 1</span><span>MỨC 2</span><span>MỨC 3 (MAX)</span></div>
+                    <div class="btn-group">
+                        <button class="stark-btn">Xem chi tiết</button>
+                        <button class="stark-btn" style="border-color:var(--stark-orange); color:var(--stark-orange);">Đóng góp</button>
+                    </div>
+                </div>
+
+                <h2 style="font-family:'Orbitron'; color:var(--stark-orange); font-size:14px; margin-top:30px;">// NHIỆM VỤ CTV</h2>
+                
+                <div class="mission-item" style="border-left: 3px solid var(--stark-orange);">
+                    <h3>DAILY: CLICK LINK TÀI TRỢ SHOPEE</h3>
+                    <p style="font-size:12px; opacity:0.6;">Xác thực link mỗi ngày để duy trì trạng thái đặc vụ.</p>
+                    <div class="btn-group">
+                        <button class="stark-btn">Tiếp nhận</button>
+                        <button class="stark-btn">Báo cáo hoàn thành</button>
+                    </div>
+                </div>
+
+                <div class="mission-item">
+                    <h3>TRUYỀN THÔNG: SAOVN WIKI BROADCAST</h3>
+                    <div class="btn-group">
+                        <button class="stark-btn">Tiếp nhận</button>
+                        <button class="stark-btn">Xem chi tiết</button>
+                    </div>
+                </div>
+
+                                <div class="mission-item" style="border-left: 3px solid var(--stark-orange);">
+                    <h3>DAILY: ĐĂNG KÝ MỞ TÀI KHOẢN</h3>
+                    <p style="font-size:12px; opacity:0.6;">Xác thực link mỗi ngày để duy trì trạng thái đặc vụ.</p>
+                    <div class="btn-group">
+                        <button class="stark-btn">Tiếp nhận</button>
+                        <button class="stark-btn">Báo cáo hoàn thành</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="v-separator"></div>
+
+        <div class="content-right" style="position: relative;">
+            <div class="brick" id="brick-left" style="left: -25px;"></div>
+            <div class="brick" id="brick-right" style="right: -25px;"></div>
+
+            <div class="agent-hud">
+                <div class="stark-clock-panel" id="clock">00:00:00</div>
+
+                <div class="bio-header">
+                    <div class="avatar-box">
+                        <img src="images/wait.png" alt="Agent">
+                        <div style="position:absolute; top:0; width:100%; height:2px; background:var(--stark-cyan); animation: scan 3s infinite;"></div>
+                    </div>
+                    <div class="bio-list">
+                        <div class="bio-row"><span class="label">ĐẶC VỤ</span><span class="val">NGUYỄN ANH TUẤN</span></div>
+                        <div class="bio-row"><span class="label">NGÀY THÁNG NĂM SINH</span><span class="val">01/02/1992</span></div>
+                        <div class="bio-row"><span class="label">ĐIỆN THOẠI</span><span class="val">0867.179.857</span></div>
+                        <div class="bio-row"><span class="label">ĐỊA CHỈ</span><span class="val">TP.HO CHI MINH</span></div>
+                        <div class="bio-row"><span class="label">NGÔN NGỮ</span><span class="val">VIETNAMESE, ENGLISH, CHINESE</span></div>
+                        <div class="bio-row"><span class="label">LĨNH VỰC CHUYÊN MÔN</span><span class="val">IT, EDITOR, DESIGN, DRIVER, </span></div>
+                    </div>
+                </div>
+
+                <div class="progress-module">
+                    <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--stark-cyan);">
+                        <span>EXPERIENCE LEVEL</span><span>LV.42</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" style="width: 82%;"></div></div>
+                </div>
+
+                <div class="hologram-module">
+                    <div style="position: absolute; top: 10px; left: 15px; font-size: 10px; color: var(--stark-cyan);">SATELLITE VIEW</div>
+                    <div class="radar-circle" style="width: 140px; height: 140px;"></div>
+                    <svg class="earth-sphere" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="var(--stark-cyan)" stroke-width="0.5" stroke-dasharray="2 2" />
+                        <ellipse cx="50" cy="50" rx="48" ry="15" fill="none" stroke="var(--stark-cyan)" stroke-width="0.3" />
+                        <ellipse cx="50" cy="50" rx="15" ry="48" fill="none" stroke="var(--stark-cyan)" stroke-width="0.3" />
+                    </svg>
+                    <div style="position: absolute; bottom: 10px; font-size: 9px;">SCANNING GLOBAL DATA...</div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="bio-row" style="text-align:center;"><span class="label">HẠNG</span><span class="val" style="font-size:20px; color:var(--stark-orange);">#01</span></div>
+                    <div class="bio-row" style="text-align:center;"><span class="label">XP</span><span class="val" style="font-size:20px;">45.2K</span></div>
+                </div>
+
+                <div style="margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border-dim); height: 280px; position: relative; background: rgba(0,0,0,0.3);">
+    
+    <div id="globe-viewport" style="border-right: 1px solid var(--border-dim); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 5px; left: 8px; font-size: 8px; color: var(--stark-cyan); z-index: 5; opacity: 0.7;">GLOBE_SCAN</div>
+    </div>
+
+    <div id="map-viewport" style="position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 5px; left: 8px; font-size: 8px; color: var(--stark-cyan); z-index: 5; opacity: 0.7;">LOCAL_TRACKING</div>
+        <canvas id="vnMapSmall"></canvas>
+        
+        <div id="map-target" style="position: absolute; width: 12px; height: 12px; border: 1px solid var(--stark-cyan); transition: 0.5s; pointer-events: none;"></div>
+        
+        <div id="map-data" style="position: absolute; color: var(--stark-cyan); font-size: 7px; background: rgba(0, 242, 255, 0.1); padding: 3px; border-left: 1px solid var(--stark-cyan); pointer-events: none; width: 80px;">
+            <span id="target-name" style="font-weight: bold;">SCANNING...</span>
+        </div>
+    </div>
+</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.getHours().toString().padStart(2,'0') + ":" + 
+                                                        now.getMinutes().toString().padStart(2,'0') + ":" + 
+                                                        now.getSeconds().toString().padStart(2,'0');
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        const missionBox = document.getElementById('mission-box');
+        const taskCursor = document.getElementById('task-cursor');
+        missionBox.addEventListener('mousemove', (e) => {
+            const rect = missionBox.getBoundingClientRect();
+            taskCursor.style.top = (e.clientY - rect.top - 25) + 'px';
+        });
+
+        // Ping-Pong Bricks (Giữ nguyên tốc độ & màu, thêm logic đảo chiều)
+        let pos = 0;
+        let dir = 1;
+        const bLeft = document.getElementById('brick-left');
+        const bRight = document.getElementById('brick-right');
+        
+        function animateBricks() {
+            pos += dir * 1; // Tốc độ giữ nguyên như bản cũ
+            if (pos > 750 || pos < 0) dir *= -1; // Chạm biên 750px sẽ đảo chiều
+            
+            bLeft.style.top = pos + 'px';
+            bRight.style.bottom = pos + 'px'; // Chạy ngược chiều nhau
+            requestAnimationFrame(animateBricks);
+        }
+        animateBricks();
+
+        document.getElementById('mobile-menu').addEventListener('click', function() {
+    const nav = document.querySelector('.nav-container');
+    nav.style.display = (nav.style.display === 'flex') ? 'none' : 'flex';
+    nav.style.flexDirection = 'column';
+    nav.style.position = 'absolute';
+    nav.style.top = '70px';
+    nav.style.right = '5%';
+    nav.style.background = 'rgba(1, 8, 14, 0.95)';
+    nav.style.padding = '20px';
+    nav.style.border = '1px solid var(--stark-cyan)';
+});
+
+// --- KHỞI TẠO QUẢ CẦU (BÊN TRÁI) ---
+let gScene, gCamera, gRenderer, gParticles;
+function initGlobe() {
+    const box = document.getElementById('globe-viewport');
+    gScene = new THREE.Scene();
+    gCamera = new THREE.PerspectiveCamera(45, box.clientWidth / box.clientHeight, 0.1, 100);
+    gCamera.position.z = 6.5;
+
+    gRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    gRenderer.setSize(box.clientWidth, box.clientHeight);
+    box.appendChild(gRenderer.domElement);
+
+    const loader = new THREE.TextureLoader();
+    loader.crossOrigin = "anonymous";
+    loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_specular_2048.jpg', (tex) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 512; canvas.height = 256;
+        ctx.drawImage(tex.image, 0, 0, 512, 256);
+        const data = ctx.getImageData(0, 0, 512, 256).data;
+        const pts = [];
+        for (let y = 0; y < 256; y += 5) { // Tăng bước nhảy để đỡ lag
+            for (let x = 0; x < 512; x += 5) {
+                if (data[(y * 512 + x) * 4] > 40) {
+                    const phi = (y / 256) * Math.PI;
+                    const theta = (x / 512) * (Math.PI * 2);
+                    const r = 1.8; // Bán kính quả cầu
+                    pts.push(-r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta));
+                }
+            }
+        }
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+        gParticles = new THREE.Points(geo, new THREE.PointsMaterial({ size: 0.04, color: 0x00f2ff, transparent: true, opacity: 0.6 }));
+        gScene.add(gParticles);
+    });
+}
+
+function animateG() {
+    requestAnimationFrame(animateG);
+    if (gParticles) gParticles.rotation.y += 0.002;
+    gRenderer.render(gScene, gCamera);
+}
+
+// --- KHỞI TẠO BẢN ĐỒ VN (BÊN PHẢI) ---
+function initVNMap() {
+    const mCanvas = document.getElementById('vnMapSmall');
+    const mCtx = mCanvas.getContext('2d');
+    const box = document.getElementById('map-viewport');
+    const mImg = new Image();
+    mImg.crossOrigin = "anonymous";
+    mImg.src = "https://saovn.vercel.app/images/bandovn.jpg";
+
+    mImg.onload = function() {
+        mCanvas.width = box.clientWidth; 
+        mCanvas.height = box.clientHeight;
+        const temp = document.createElement('canvas');
+        const tCtx = temp.getContext('2d');
+        temp.width = mImg.width; temp.height = mImg.height;
+        tCtx.drawImage(mImg, 0, 0);
+        const pxl = tCtx.getImageData(0, 0, mImg.width, mImg.height).data;
+
+        function drawMap() {
+            mCtx.clearRect(0, 0, mCanvas.width, mCanvas.height);
+            for (let y = 0; y < mImg.height; y += 6) {
+                for (let x = 0; x < mImg.width; x += 6) {
+                    if (pxl[(y * mImg.width + x) * 4] > 60) {
+                        const px = (x * (mCanvas.width * 1 / mImg.width)) + 20;
+                        const py = (y * (mCanvas.height * 1 / mImg.height)) + 10;
+                        mCtx.fillStyle = "#00f2ff"; mCtx.globalAlpha = 0.4;
+                        mCtx.fillRect(px, py, 1, 1);
+                    }
+                }
+            }
+        }
+        setInterval(drawMap, 150);
+        startMapTracking();
+    };
+}
+
+const mapPoints = [
+    { name: "HÀ NỘI", x: 80, y: 55 },
+    { name: "ĐÀ NẴNG", x: 110, y: 130 },
+    { name: "TP. HỒ CHÍ MINH", x: 110, y: 220 }
+];
+let pIdx = 0;
+function startMapTracking() {
+    const pt = mapPoints[pIdx];
+    const target = document.getElementById('map-target');
+    const data = document.getElementById('map-data');
+    target.style.left = pt.x + 'px'; target.style.top = pt.y + 'px';
+    data.style.left = (pt.x + 15) + 'px'; data.style.top = (pt.y - 5) + 'px';
+    document.getElementById('target-name').innerText = pt.name;
+    pIdx = (pIdx + 1) % mapPoints.length;
+    setTimeout(startMapTracking, 4000);
+}
+
+// Chạy tất cả
+initGlobe(); animateG(); initVNMap();
+    </script>
+    <style>
+        @keyframes scan { 0%, 100% { top:0; } 50% { top:100%; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+        authDomain: "saovn-project.firebaseapp.com",
+        projectId: "saovn-project",
+        storageBucket: "saovn-project.firebasestorage.app",
+        messagingSenderId: "194928117396",
+        appId: "1:194928117396:web:642612a60105add5639681"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // --- HÀM NHẢY SỐ (ANIMATE COUNTER) ---
+    function startAnimate(element, target) {
+        if (!element) return;
+        const duration = 1500; 
+        const frameRate = 20;
+        const totalFrames = duration / frameRate;
+        const increment = target / totalFrames;
+        let current = 0;
+
+        const updateCount = () => {
+            current += increment;
+            if (current < target) {
+                element.innerText = Math.ceil(current).toLocaleString('vi-VN');
+                setTimeout(updateCount, frameRate);
+            } else {
+                element.innerText = target.toLocaleString('vi-VN');
+            }
+        };
+        updateCount();
+    }
+
+    // --- LẮNG NGHE FIREBASE TÀI CHÍNH ---
+    async function loadFundStatus() {
+        const fundRef = doc(db, "metadata", "fund_stats");
+        onSnapshot(fundRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                if (document.getElementById('fund_stats')) startAnimate(document.getElementById('fund_stats'), data.amount || 0);
+                if (document.getElementById('fund_spent')) startAnimate(document.getElementById('fund_spent'), data.spent || 0);
+                if (document.getElementById('fund_remain')) startAnimate(document.getElementById('fund_remain'), (data.amount || 0) - (data.spent || 0));
+            }
+        });
+
+        const userRef = doc(db, "metadata", "users_stats");
+        onSnapshot(userRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const members = docSnap.data().totalMembers || 0; 
+                if (document.getElementById('member_count')) startAnimate(document.getElementById('member_count'), members);
+            }
+        });
+    }
+    loadFundStatus();
+
+    // --- LOGIC AUTH & ĐỔ DỮ LIỆU ---
+    const userProfileBox = document.getElementById('user-profile-box');
+    const loginBtn = document.getElementById('nav-login-btn');
+    const registerLink = document.getElementById('nav-register');
+    const displayUserName = document.getElementById('display-user-name');
+    const displayAvatar = document.getElementById('display-avatar');
+    const logoutBtn = document.getElementById('auth-logout-btn');
+
+    // Sự kiện Đăng xuất
+    if (logoutBtn) {
+        logoutBtn.onclick = () => {
+            signOut(auth).then(() => {
+                window.location.reload();
+            }).catch((error) => {
+                console.error("Lỗi đăng xuất:", error);
+            });
+        };
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            userProfileBox.style.display = 'flex';
+            if(loginBtn) loginBtn.style.display = 'none';
+            if(registerLink) registerLink.style.display = 'none';
+
+            try {
+                const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                if (userDocSnap.exists()) {
+                    const data = userDocSnap.data();
+
+                    // 1. Đồng bộ Avatar
+                    if (data.photoURL) {
+                        displayAvatar.innerText = "";
+                        displayAvatar.style.backgroundImage = `url('${data.photoURL}')`;
+                        const mainAvatarImg = document.querySelector('.avatar-box img');
+                        if(mainAvatarImg) mainAvatarImg.src = data.photoURL;
+                    }
+
+                    // 2. Tên Nav
+                    displayUserName.innerText = "Chào, " + (data.fullName || user.email.split('@')[0]);
+                    
+                    // 3. Ánh xạ trực tiếp vào hồ sơ (Bỏ skill tags, bỏ chữ chạy)
+                    const rows = document.querySelectorAll('.bio-row .val');
+                    if(rows[0]) rows[0].innerText = (data.fullName || "CHƯA CẬP NHẬT").toUpperCase();
+                    if(rows[1]) rows[1].innerText = data.birth || "XX/XX/XXXX";
+                    if(rows[2]) rows[2].innerText = data.phone || "N/A";
+                    if(rows[3]) rows[3].innerText = (data.address || "CLASSIFIED").toUpperCase();
+                    if(rows[4]) rows[4].innerText = (data.languages || "VIETNAMESE").toUpperCase();
+                    if(rows[5]) rows[5].innerText = (data.expertise || "NEW AGENT").toUpperCase();
+
+                    // 4. Hạng và XP (Dựa trên 2 ô cuối cùng có class .val)
+                    // Lưu ý: extraStats lấy toàn bộ class .val trong agent-hud
+                    const hudVals = document.querySelectorAll('.agent-hud .val');
+                    // Index 6 là Hạng, Index 7 là XP theo cấu trúc file của bạn
+                    if(hudVals[6]) hudVals[6].innerText = data.rank || "#--";
+                    if(hudVals[7]) hudVals[7].innerText = data.xp ? (data.xp >= 1000 ? (data.xp/1000).toFixed(1) + 'K' : data.xp) : "0";
+                }
+            } catch (e) {
+                console.error("Lỗi lấy dữ liệu:", e);
+            }
+        } else {
+            // 1. Ẩn profile trên Nav, hiện nút Login/Register
+            userProfileBox.style.display = 'none';
+            if(loginBtn) loginBtn.style.display = 'block';
+            if(registerLink) registerLink.style.display = 'block';
+
+            // 2. RESET ẢNH AVATAR HÌNH CHỮ NHẬT VỀ MẶC ĐỊNH
+            const mainAvatarImg = document.querySelector('.avatar-box img');
+            if(mainAvatarImg) {
+                // Bạn có thể thay link ảnh mặc định của hệ thống vào đây
+                mainAvatarImg.src = "images/wait.png"; 
+            }
+
+            // 3. RESET THÔNG TIN HỒ SƠ VỀ TRẠNG THÁI ẨN DANH (GUEST)
+            const rows = document.querySelectorAll('.bio-row .val');
+            if(rows[0]) rows[0].innerText = "GUEST AGENT";
+            if(rows[1]) rows[1].innerText = "XX/XX/XXXX";
+            if(rows[2]) rows[2].innerText = "XXX.XXX.XXX";
+            if(rows[3]) rows[3].innerText = "CLASSIFIED";
+            if(rows[4]) rows[4].innerText = "NOT AVAILABLE";
+            if(rows[5]) rows[5].innerText = "NO DATA";
+
+            // 4. RESET HẠNG VÀ XP
+            const hudVals = document.querySelectorAll('.agent-hud .val');
+            if(hudVals[6]) hudVals[6].innerText = "#--";
+            if(hudVals[7]) hudVals[7].innerText = "0";
+        }
+    });
+</script>
+</script>
+</script>
+</body>
+</html>

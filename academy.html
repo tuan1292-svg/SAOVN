@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAOVN ACADEMY | Hệ Thống Đào Tạo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        /* --- STYLE CHO AVATAR TRÊN NAV (BÊ TỪ INDEX QUA) --- */
+        .user-profile-nav {
+            display: flex; align-items: center; gap: 12px; padding: 5px 15px;
+            background: rgba(255, 255, 255, 0.05); border-radius: 30px;
+            border: 1px solid rgba(0, 210, 255, 0.2); transition: 0.3s; margin-left: 15px;
+        }
+        .user-profile-nav:hover { border-color: #00d2ff; background: rgba(0, 210, 255, 0.05); }
+        .nav-avatar-link { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
+        .nav-avatar {
+            width: 35px; height: 35px; border-radius: 50%; background-color: #111;
+            background-size: cover; background-position: center; border: 1.5px solid #00d2ff;
+            display: flex; align-items: center; justify-content: center; font-size: 12px;
+            font-weight: bold; color: #00d2ff; overflow: hidden;
+        }
+        #display-user-name {
+            font-size: 14px; font-weight: 500; max-width: 150px; /* Nới rộng một chút để hiện chữ Chào */
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .btn-logout-mini {
+            background: none; border: none; color: #ff4d4d; cursor: pointer;
+            font-size: 16px; padding: 5px; transition: 0.2s; display: flex; align-items: center;
+        }
+        .btn-logout-mini:hover { transform: scale(1.1); }
+        .nav-container { display: flex; align-items: center; }
+
+        /* --- GIAO DIỆN HỌC VIỆN (ACADEMY) --- */
+        .academy-container { max-width: 900px; margin: 0 auto; padding-top: 130px; padding-bottom: 60px; } 
+        .academy-header { text-align: center; margin-bottom: 50px; position: relative; } 
+        .academy-header h1 { color: #00d2ff; letter-spacing: 8px; font-size: 36px; text-transform: uppercase; text-shadow: 0 0 20px rgba(0,210,255,0.6); margin: 0 0 10px 0; font-family: 'Orbitron', sans-serif;}
+        .academy-header p { color: #888; font-family: sans-serif; letter-spacing: 2px; font-size: 14px; text-transform: uppercase;}
+
+        /* GIAO DIỆN CHƯƠNG */
+        .chapter-box { 
+            margin-bottom: 20px; border: 1px solid rgba(0, 210, 255, 0.2); border-radius: 10px; 
+            background: rgba(10, 15, 20, 0.8); overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        .chapter-box:hover { border-color: rgba(0, 210, 255, 0.5); box-shadow: 0 5px 20px rgba(0, 210, 255, 0.1); }
+        .chapter-header {
+            padding: 18px 25px; background: linear-gradient(90deg, rgba(0,210,255,0.1) 0%, rgba(0,0,0,0) 100%); 
+            cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+            font-size: 18px; color: #00d2ff; font-weight: bold; letter-spacing: 1px; transition: 0.3s;
+        }
+        .chapter-header:hover { background: linear-gradient(90deg, rgba(0,210,255,0.2) 0%, rgba(0,0,0,0) 100%); padding-left: 30px; }
+        .chapter-header i { transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .chapter-header.active i { transform: rotate(180deg); color: #fff; }
+        
+        /* DANH SÁCH BÀI HỌC */
+        .lesson-list { display: none; padding: 15px; background: rgba(0,0,0,0.6); border-top: 1px solid rgba(0,210,255,0.1); }
+        .lesson-list.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* TỪNG BÀI HỌC */
+        .lesson-item {
+            display: flex; align-items: center; gap: 20px; padding: 15px; margin-bottom: 12px;
+            background: rgba(255,255,255,0.02); border-left: 3px solid transparent; border-radius: 6px; 
+            transition: all 0.3s ease; position: relative;
+        }
+        .lesson-item:hover { background: rgba(255,255,255,0.05); transform: translateX(5px); }
+        
+        .lesson-thumb { width: 110px; height: 65px; object-fit: cover; border-radius: 6px; border: 1px solid #333; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .lesson-info { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .lesson-info h4 { margin: 0 0 8px 0; font-size: 16px; color: #fff; font-family: sans-serif; line-height: 1.4; letter-spacing: 0.5px;}
+        .lesson-status { font-size: 11px; font-weight: bold; letter-spacing: 1px; }
+
+        .stark-btn-small {
+            background: transparent; border: 1px solid #00d2ff; color: #00d2ff;
+            padding: 8px 18px; border-radius: 4px; cursor: pointer; font-family: 'Orbitron'; font-size: 12px;
+            white-space: nowrap; transition: 0.3s; text-transform: uppercase; font-weight: bold;
+        }
+        .stark-btn-small:hover { background: #00d2ff; color: black; box-shadow: 0 0 15px #00d2ff; }
+
+        /* CÁC TRẠNG THÁI KHÓA/MỞ HIỆU ỨNG CAO CẤP */
+        .lesson-item.completed { border-left-color: #00ff00; background: linear-gradient(90deg, rgba(0,255,0,0.05) 0%, transparent 100%); }
+        .lesson-item.completed .lesson-thumb { border-color: #00ff00; box-shadow: 0 0 10px rgba(0,255,0,0.2); }
+        .lesson-item.completed .lesson-status { color: #00ff00; }
+        .lesson-item.completed .stark-btn-small { border-color: #00ff00; color: #00ff00; }
+        .lesson-item.completed .stark-btn-small:hover { background: #00ff00; color: #000; box-shadow: 0 0 15px #00ff00; }
+
+        .lesson-item.locked { opacity: 0.5; border-left-color: #ff4444; filter: grayscale(50%); }
+        .lesson-item.locked .lesson-status { color: #ff4444; }
+        .lesson-item.locked .stark-btn-small { border-color: #444; color: #666; cursor: not-allowed; background: rgba(0,0,0,0.5); }
+        .lesson-item.locked:hover { transform: none; background: rgba(255,255,255,0.02); }
+
+        .lesson-item.active-unlock { border-left-color: #00d2ff; background: linear-gradient(90deg, rgba(0,210,255,0.05) 0%, transparent 100%);}
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo-wrapper">
+            <span class="logo-text">SAOVN</span>
+            <span class="logo-slogan">Special Actions Organization for Vietnam</span>
+        </a>
+
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+		<nav class="nav-container">
+			<a href="index.html" class="nav-link">Trang chủ</a>
+			<a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
+			<a href="du-an.html" class="nav-link">Dự án</a>
+			<a href="quy-tac.html" class="nav-link">Quy tắc</a>
+            <a href="quy.html" class="nav-link">Qũy</a>
+            <a href="academy.html" class="nav-link active">Học viện</a>
+			
+			<a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
+			<button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
+			
+			<div id="user-profile-box" class="user-profile-nav" style="display: none;">
+                <a href="dashboard.html" class="nav-avatar-link" title="Đi tới bảng điều khiển">
+                    <div id="display-avatar" class="nav-avatar">SV</div>
+                    <span id="display-user-name">Đang tải...</span>
+                </a>
+                <button id="auth-logout-btn" class="btn-logout-mini" title="Đăng xuất">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+		</nav>
+    </header>
+
+    <div class="academy-container">
+        <header class="academy-header">
+            <h1>SAOVN ACADEMY</h1>
+            <p>LỘ TRÌNH HUẤN LUYỆN TÀI CHÍNH ĐẶC VỤ</p>
+        </header>
+
+        <div id="curriculum-container">
+            <div style="text-align:center; padding: 50px; color: #00d2ff;">
+                <i class="fas fa-spinner fa-spin fa-2x"></i><br><br>HỆ THỐNG ĐANG ĐỒNG BỘ LỘ TRÌNH...
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        // Mobile Menu Toggle (Bê từ index qua)
+        const menu = document.querySelector('#mobile-menu');
+        const menuLinks = document.querySelector('.nav-container');
+
+        if(menu) {
+            menu.addEventListener('click', function() {
+                menu.classList.toggle('is-active');
+                menuLinks.classList.toggle('active');
+            });
+        }
+        
+        // Scroll Effect cho Header
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+            authDomain: "saovn-project.firebaseapp.com",
+            projectId: "saovn-project",
+            storageBucket: "saovn-project.firebasestorage.app",
+            messagingSenderId: "194928117396",
+            appId: "1:194928117396:web:642612a60105add5639681"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ==========================================
+        // CẤU HÌNH ID BÀI HỌC DÀNH CHO ADMIN
+        // ==========================================
+        const curriculum = [
+            {
+                chapter: "I. QUẢN LÝ TÀI CHÍNH CÁ NHÂN",
+                lessons: [
+                    "zzBEF6yQGPLwq54EhL8B", 
+                    "nrsfwVlLk6p6au0xBGln"  
+                ]
+            },
+            {
+                chapter: "II. KIẾM THÊM THU NHẬP TỪ SỨC MẠNH CỘNG ĐỒNG",
+                lessons: [
+                    "5zwh2YlRhUTPCjLvhInZ", 
+                    "xmlHJa6onEoLReQXEfgf", 
+                    "942keRcwOtEnxjEK41sr"
+                ]
+            },
+            {
+                chapter: "III. ĐẦU TƯ TẠO THU NHẬP THỤ ĐỘNG",
+                lessons: [
+                    "FXSQ5T10jcTPMGAHWmJW",
+                    "kDHD00T5gC7sOr52Rfai",
+                    "aAZ0xfOiULHf4W4x7xlv",
+                    "sQ9tLeFK1hrIBiDH7imj"
+                ]
+            }
+        ];
+
+        const globalLessonPath = [];
+        curriculum.forEach(ch => ch.lessons.forEach(id => globalLessonPath.push(id)));
+
+        let userCompletedLessons = [];
+        let isUserApproved = false;
+
+        const userProfileBox = document.getElementById('user-profile-box');
+        const loginBtn = document.getElementById('nav-login-btn');
+        const registerLink = document.getElementById('nav-register');
+        const displayUserName = document.getElementById('display-user-name');
+        const displayAvatar = document.getElementById('display-avatar');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userProfileBox.style.display = 'flex';
+                if(loginBtn) loginBtn.style.display = 'none';
+                if(registerLink) registerLink.style.display = 'none';
+
+                const userRef = doc(db, "users", user.uid);
+                onSnapshot(userRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        
+                        // HIỂN THỊ: Chào, Tên Thành Viên
+                        const userName = data.fullName || user.email.split('@')[0];
+                        displayUserName.innerText = "Chào, " + userName;
+
+                        if (data.photoURL) {
+                            displayAvatar.innerText = "";
+                            displayAvatar.style.backgroundImage = `url('${data.photoURL}')`;
+                        } else {
+                            displayAvatar.innerText = userName.charAt(0).toUpperCase();
+                            displayAvatar.style.backgroundImage = "none";
+                        }
+
+                        userCompletedLessons = data.completedLessons || [];
+                        isUserApproved = data.role === 'admin' || data.isApproved === true;
+                        renderCurriculum();
+                    }
+                });
+            } else {
+                userProfileBox.style.display = 'none';
+                if(loginBtn) loginBtn.style.display = 'block';
+                if(registerLink) registerLink.style.display = 'block';
+                
+                isUserApproved = false;
+                renderCurriculum();
+            }
+        });
+
+        async function renderCurriculum() {
+            const container = document.getElementById('curriculum-container');
+            container.innerHTML = "";
+
+            for (const ch of curriculum) {
+                const chapterBox = document.createElement('div');
+                chapterBox.className = 'chapter-box';
+                const isFirstChapter = curriculum.indexOf(ch) === 0;
+                
+                chapterBox.innerHTML = `
+                    <div class="chapter-header ${isFirstChapter ? 'active' : ''}" onclick="toggleChapter(this)">
+                        <span>${ch.chapter}</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="lesson-list ${isFirstChapter ? 'active' : ''}"></div>
+                `;
+                
+                const lessonListElem = chapterBox.querySelector('.lesson-list');
+
+                for (let i = 0; i < ch.lessons.length; i++) {
+                    const lessonId = ch.lessons[i];
+                    const globalIndex = globalLessonPath.indexOf(lessonId);
+                    
+                    try {
+                        const docRef = doc(db, "projects", lessonId);
+                        const docSnap = await getDoc(docRef);
+                        
+                        if (docSnap.exists()) {
+                            const lessonData = docSnap.data();
+                            
+                            let isLocked = false;
+                            let isCompleted = userCompletedLessons.includes(lessonId);
+
+                            if (globalIndex > 0) {
+                                const prevLessonId = globalLessonPath[globalIndex - 1];
+                                if (!userCompletedLessons.includes(prevLessonId)) {
+                                    isLocked = true;
+                                }
+                            }
+                            if (!isUserApproved) isLocked = true;
+
+                            let cardClass = "lesson-item";
+                            let statusHtml = "";
+                            let btnHtml = "";
+                            let thumbUrl = lessonData.thumbnail || 'https://via.placeholder.com/110x65?text=SAOVN';
+
+                            if (isLocked) {
+                                cardClass += " locked";
+                                statusHtml = `<span class="lesson-status"><i class="fas fa-lock"></i> YÊU CẦU HOÀN THÀNH BÀI TRƯỚC</span>`;
+                                btnHtml = `<button class="stark-btn-small" disabled>ĐÃ KHÓA</button>`;
+                            } else if (isCompleted) {
+                                cardClass += " completed";
+                                statusHtml = `<span class="lesson-status"><i class="fas fa-check"></i> ĐÃ HOÀN THÀNH</span>`;
+                                btnHtml = `<button class="stark-btn-small" onclick="handleAccess('${lessonId}')">HỌC LẠI</button>`;
+                            } else {
+                                cardClass += " active-unlock";
+                                statusHtml = `<span class="lesson-status" style="color: #00d2ff;"><i class="fas fa-unlock"></i> ĐANG MỞ KHÓA</span>`;
+                                btnHtml = `<button class="stark-btn-small" onclick="handleAccess('${lessonId}')">VÀO HỌC NGAY</button>`;
+                            }
+
+                            lessonListElem.innerHTML += `
+                                <div class="${cardClass}">
+                                    <img src="${thumbUrl}" alt="Thumbnail" class="lesson-thumb">
+                                    <div class="lesson-info">
+                                        <h4>Bài ${i + 1}: ${lessonData.title}</h4>
+                                        ${statusHtml}
+                                    </div>
+                                    <div class="lesson-action">
+                                        ${btnHtml}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    } catch (error) {
+                        console.error("Lỗi tải bài học:", error);
+                    }
+                }
+                container.appendChild(chapterBox);
+            }
+        }
+
+        document.getElementById('auth-logout-btn').onclick = () => {
+            signOut(auth).then(() => { window.location.reload(); });
+        };
+
+        window.toggleChapter = function(headerElem) {
+            headerElem.classList.toggle('active');
+            const listElem = headerElem.nextElementSibling;
+            listElem.classList.toggle('active');
+        };
+
+        window.handleAccess = function(lessonId) {
+            window.location.href = `lesson_detail.html?id=${lessonId}`;
+        };
+    </script>
+</body>
+</html>

@@ -205,6 +205,9 @@
             <a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
             <a href="du-an.html" class="nav-link active">Dự án</a>
             <a href="quy-tac.html" class="nav-link">Quy tắc</a>
+            <a href="quy.html" class="nav-link">Qũy</a>
+            <a href="academy.html" class="nav-link">Học viện</a>
+
             <a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
             <button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
             
@@ -268,8 +271,8 @@
             <div class="footer-contact">
                 <h4>Liên Hệ</h4>
                 <p>📍 Địa chỉ: Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
-                <p>📞 Điện thoại: 0867 179 857</p>
-                <p>✉️ Email: tuan1294@gmail.com</p>
+                <p>📞 Điện thoại: 090 xxx xxxx</p>
+                <p>✉️ Email: contact@saovn.org</p>
             </div>
 
             <div class="footer-socials">
@@ -352,9 +355,16 @@
         onSnapshot(collection(db, "categories"), (snap) => {
             const filterContainer = document.getElementById('filter-container');
             filterContainer.innerHTML = '<button class="filter-btn active" data-filter="all">Tất cả dự án</button>';
+            
+            // ID của danh mục Khóa Học Tài Chính cần giấu đi
+            const targetCategoryId = "WbEP558KgMOJKDuFnfna"; 
+
             snap.forEach(doc => {
-                const catName = doc.data().name;
-                filterContainer.innerHTML += `<button class="filter-btn" data-filter="${catName}">${catName}</button>`;
+                // Kiểm tra ID: Chỉ vẽ nút nếu ID KHÔNG PHẢI là ID của Khóa học
+                if (doc.id !== targetCategoryId) {
+                    const catName = doc.data().name;
+                    filterContainer.innerHTML += `<button class="filter-btn" data-filter="${catName}">${catName}</button>`;
+                }
             });
             attachFilterEvents();
         });
@@ -414,30 +424,41 @@
         const projectContainer = document.getElementById('project-container');
         const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
 
-        onSnapshot(q, (snap) => {
-            projectContainer.innerHTML = "";
-            snap.forEach(doc => {
-                const p = doc.data();
-                const cleanText = p.content ? p.content.replace(/<[^>]*>/g, '') : "Đang cập nhật...";
-                projectContainer.innerHTML += `
-                    <div class="project-card" data-category="${p.category}" data-aos="fade-up">
-                        <div class="card-img">
-                            <img src="${p.thumbnail || 'https://via.placeholder.com/600x400'}" alt="${p.title}">
-                        </div>
-                        <div class="card-content">
-                            <span class="card-tag">${p.category}</span>
-                            <h3>${p.title}</h3>
-                            <p>${cleanText}</p>
-                            <div class="card-meta">
-                                <span>📅 ${p.createdAt ? new Date(p.createdAt.seconds * 1000).toLocaleDateString('vi-VN') : 'Gần đây'}</span>
-                            </div>
-                            <a href="chi-tiet-du-an.html?id=${doc.id}" class="btn-card">Xem chi tiết</a>
-                        </div>
+// --- TẢI DANH SÁCH BÀI VIẾT TỪ FIREBASE ---
+onSnapshot(q, (snap) => {
+    projectContainer.innerHTML = "";
+    snap.forEach(doc => {
+        const p = doc.data();
+        
+        // KIỂM TRA CHÍNH XÁC: 
+        // Bỏ qua bài viết nếu trường category của nó đúng bằng "Khóa Học Tài Chính"
+        // Dùng return; trong forEach tương đương với việc "nhảy qua, không thèm vẽ ra màn hình"
+        if (p.category && p.category.trim().toLowerCase() === "khóa học tài chính") {
+            return; 
+        }
+
+        // Nếu qua được ải trên (tức là không phải khóa học), thì mới vẽ HTML
+        const cleanText = p.content ? p.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : "Đang cập nhật...";
+        
+        projectContainer.innerHTML += `
+            <div class="project-card" data-category="${p.category}" data-aos="fade-up">
+                <div class="card-img">
+                    <img src="${p.thumbnail || 'https://via.placeholder.com/600x400'}" alt="${p.title}">
+                </div>
+                <div class="card-content">
+                    <span class="card-tag">${p.category}</span>
+                    <h3>${p.title}</h3>
+                    <p>${cleanText}</p>
+                    <div class="card-meta">
+                        <span>📅 ${p.createdAt ? new Date(p.createdAt.seconds * 1000).toLocaleDateString('vi-VN') : 'Gần đây'}</span>
                     </div>
-                `;
-            });
-            AOS.refresh();
-        });
+                    <a href="chi-tiet-du-an.html?id=${doc.id}" class="btn-card">Xem chi tiết</a>
+                </div>
+            </div>
+        `;
+    });
+    AOS.refresh();
+});
 
         function attachFilterEvents() {
             const filterBtns = document.querySelectorAll('.filter-btn');

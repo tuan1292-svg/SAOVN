@@ -117,32 +117,10 @@
             }
 
         } catch (error) {
-    console.error("Lỗi đăng nhập:", error);
-    
-    let message = "Email hoặc mật khẩu không chính xác.";
-    
-    switch (error.code) {
-        case 'auth/user-not-found':
-            message = "Tài khoản không tồn tại trong hệ thống.";
-            break;
-        case 'auth/wrong-password':
-            message = "Mật khẩu bạn nhập không đúng.";
-            break;
-        case 'auth/user-disabled':
-            message = "Tài khoản của bạn đã bị khóa bởi quản trị viên.";
-            break;
-        case 'auth/too-many-requests':
-            message = "Quá nhiều lần thử thất bại. Vui lòng thử lại sau vài phút.";
-            break;
-        case 'auth/network-request-failed':
-            message = "Lỗi kết nối. Vui lòng kiểm tra internet.";
-            break;
-    }
-    
-    alert("⚠️ " + message);
-    btn.disabled = false;
-    btn.innerText = "XÁC MINH DANH TÍNH";
-}
+            alert("Lỗi: Email hoặc mật khẩu không chính xác.");
+            btn.disabled = false;
+            btn.innerText = "XÁC MINH DANH TÍNH";
+        }
     });
 </script>
 </body>
