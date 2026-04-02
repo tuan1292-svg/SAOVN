@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAOVN | HỒ SƠ CHI TIẾT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --stark-cyan: #00f2ff;
+            --stark-orange: #ff9d00;
+            --bg-dark: #01080e;
+            --glass-bg: rgba(0, 242, 255, 0.05);
+            --border-glow: rgba(0, 242, 255, 0.4);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0, 242, 255, 0.05) 0%, transparent 60%),
+                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
+        }
+
+        /* Hiệu ứng sọc quét màn hình */
+        .scanline {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 242, 255, 0.1), transparent);
+            opacity: 0.3; pointer-events: none; z-index: 9999;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100vh); } }
+
+        /* Navbar đơn giản */
+        .top-nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 30px; border-bottom: 1px solid var(--border-glow);
+            background: rgba(1, 8, 14, 0.9); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .btn-back {
+            background: transparent; border: 1px solid var(--stark-cyan);
+            color: var(--stark-cyan); font-family: 'Orbitron', sans-serif;
+            padding: 8px 15px; cursor: pointer; text-transform: uppercase;
+            transition: 0.3s; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+        .btn-back:hover { background: rgba(0, 242, 255, 0.2); box-shadow: 0 0 10px var(--stark-cyan); }
+
+        /* Vùng chứa nội dung chính với viền HUD */
+        .container {
+            max-width: 900px; margin: 40px auto; padding: 40px;
+            background: var(--glass-bg); position: relative;
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.02);
+        }
+        /* Góc HUD 4 cạnh */
+        .container::before, .container::after {
+            content: ''; position: absolute; width: 20px; height: 20px; border: 2px solid var(--stark-cyan);
+        }
+        .container::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .container::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+        .hud-corner-tr { position: absolute; top: -2px; right: -2px; width: 20px; height: 20px; border: 2px solid var(--stark-cyan); border-left: none; border-bottom: none; }
+        .hud-corner-bl { position: absolute; bottom: -2px; left: -2px; width: 20px; height: 20px; border: 2px solid var(--stark-cyan); border-right: none; border-top: none; }
+
+        /* Header của bài viết */
+        .post-meta { display: flex; gap: 20px; color: var(--stark-orange); font-size: 14px; margin-bottom: 10px; border-bottom: 1px dashed rgba(255, 157, 0, 0.3); padding-bottom: 10px;}
+        .post-title { font-family: 'Orbitron', sans-serif; color: var(--stark-cyan); font-size: 28px; text-transform: uppercase; margin: 0 0 30px 0; text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); }
+
+        /* Tối ưu định dạng nội dung từ QuillJS */
+        .quill-content { font-family: 'Roboto', sans-serif; line-height: 1.8; color: #d1d5db; font-size: 16px; }
+        .quill-content h1, .quill-content h2, .quill-content h3 { color: var(--stark-cyan); font-family: 'Orbitron', sans-serif; margin-top: 30px; }
+        .quill-content img { max-width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--border-glow); margin: 20px 0; box-shadow: 0 0 15px rgba(0, 242, 255, 0.1); }
+        .quill-content a { color: var(--stark-orange); text-decoration: none; border-bottom: 1px solid var(--stark-orange); transition: 0.3s; }
+        .quill-content a:hover { text-shadow: 0 0 8px var(--stark-orange); }
+        .quill-content blockquote { border-left: 4px solid var(--stark-cyan); padding-left: 15px; background: rgba(0, 242, 255, 0.05); font-style: italic; margin: 20px 0; }
+
+        /* Loading Spinner */
+        #loader { text-align: center; margin-top: 100px; color: var(--stark-cyan); font-size: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="scanline"></div>
+
+    <nav class="top-nav">
+        <div style="font-family: 'Orbitron'; font-weight: 700; font-size: 20px; letter-spacing: 2px;">
+            <i class="fas fa-shield-alt" style="color: var(--stark-orange);"></i> SAOVN <span style="color: var(--stark-cyan);">INTEL</span>
+        </div>
+        <button class="btn-back" onclick="window.history.back()">
+            <i class="fas fa-arrow-left"></i> TRỞ VỀ TRUNG TÂM
+        </button>
+    </nav>
+
+    <div id="loader">
+        <i class="fas fa-circle-notch fa-spin fa-3x"></i>
+        <p style="margin-top: 15px; font-family: 'Orbitron';">ĐANG TRÍCH XUẤT HỒ SƠ MẬT...</p>
+    </div>
+
+    <div class="container" id="content-container" style="display: none;">
+        <div class="hud-corner-tr"></div>
+        <div class="hud-corner-bl"></div>
+
+        <div class="post-meta">
+            <span id="meta-category"><i class="fas fa-folder-open"></i> PHÂN LOẠI: ĐANG TẢI...</span>
+            <span id="meta-date"><i class="fas fa-clock"></i> THỜI GIAN: ĐANG TẢI...</span>
+        </div>
+        
+        <h1 class="post-title" id="post-title">ĐANG TẢI DỮ LIỆU...</h1>
+
+        <div class="quill-content" id="post-content">
+            </div>
+    </div>
+
+    <script type="module">
+        // QUAN TRỌNG: COPY CẤU HÌNH FIREBASE CỦA BẠN DÁN VÀO ĐÂY (Giống hệt bên quy.html)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Cấu hình Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+        authDomain: "saovn-project.firebaseapp.com",
+        projectId: "saovn-project",
+        storageBucket: "saovn-project.firebasestorage.app",
+        messagingSenderId: "194928117396",
+        appId: "1:194928117396:web:642612a60105add5639681"
+    };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // HÀM LẤY ID TỪ URL VÀ TẢI BÀI VIẾT
+        async function loadProjectDetail() {
+            // Lấy ID bài viết từ URL (Ví dụ: project_detail.html?id=04rJDCz...)
+            const urlParams = new URLSearchParams(window.location.search);
+            const projectId = urlParams.get('id');
+
+            if (!projectId) {
+                document.getElementById('loader').innerHTML = "<p style='color: #ff4d4d;'><i class='fas fa-exclamation-triangle'></i> LỖI: KHÔNG TÌM THẤY ID HỒ SƠ.</p>";
+                return;
+            }
+
+            try {
+                // Truy cập thẳng vào collection 'projects' lấy document theo ID
+                const docRef = doc(db, "projects", projectId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+
+                    // Xử lý ngày tháng hiển thị đẹp hơn
+                    let dateStr = "Chưa rõ";
+                    if (data.createdAt) {
+                        const dateObj = data.createdAt.toDate();
+                        dateStr = dateObj.toLocaleDateString('vi-VN') + ' ' + dateObj.toLocaleTimeString('vi-VN');
+                    }
+
+                    // Đổ dữ liệu vào giao diện
+                    document.getElementById('meta-category').innerHTML = `<i class="fas fa-folder-open"></i> PHÂN LOẠI: ${data.category.toUpperCase()}`;
+                    document.getElementById('meta-date').innerHTML = `<i class="fas fa-clock"></i> THỜI GIAN: ${dateStr}`;
+                    document.getElementById('post-title').innerText = data.title;
+                    document.getElementById('post-content').innerHTML = data.content;
+
+                    // Ẩn Loading, Hiện Content
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('content-container').style.display = 'block';
+                } else {
+                    document.getElementById('loader').innerHTML = "<p style='color: #ff4d4d;'><i class='fas fa-exclamation-triangle'></i> LỖI: HỒ SƠ KHÔNG TỒN TẠI HOẶC ĐÃ BỊ XÓA.</p>";
+                }
+            } catch (error) {
+                console.error("Lỗi khi tải chi tiết:", error);
+                document.getElementById('loader').innerHTML = "<p style='color: #ff4d4d;'><i class='fas fa-exclamation-triangle'></i> LỖI KẾT NỐI HỆ THỐNG MẠNG TÌNH BÁO.</p>";
+            }
+        }
+
+        // Chạy hàm khi trang web khởi tạo
+        loadProjectDetail();
+    </script>
+</body>
+</html>
