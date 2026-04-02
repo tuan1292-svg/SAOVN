@@ -322,60 +322,22 @@ header {
             </div>
 
             <div class="mission-section" id="mission-box">
-                <div id="task-cursor"></div>
-                
-                <h2 style="font-family:'Orbitron'; color:var(--stark-orange); font-size:14px;">// DỰ ÁN ĐÓNG GÓP</h2>
-                
-                <div class="mission-item" style="border-left: 3px solid var(--stark-orange);">
-                    <h3>DAILY: CLICK LINK TÀI TRỢ SHOPEE</h3>
-                    <p style="font-size:12px; opacity:0.6;">Xác thực link mỗi ngày để duy trì trạng thái đặc vụ.</p>
-                    <div class="btn-group">
-                        <button class="stark-btn">Tiếp nhận</button>
-                        <button class="stark-btn">Báo cáo hoàn thành</button>
-                    </div>
-                </div>
+    <div id="task-cursor"></div>
+    
+    <h2 style="font-family:'Orbitron'; color:var(--stark-orange); font-size:14px;">// DỰ ÁN ĐÓNG GÓP</h2>
+    <div id="fund-projects-container">
+        <div style="color: var(--stark-cyan); font-size: 12px; margin-bottom: 20px;">
+            <i class="fas fa-spinner fa-spin"></i> ĐANG TRUY XUẤT DỮ LIỆU DỰ ÁN...
+        </div>
+    </div>
 
-                <div class="mission-item">
-                    <div style="display:flex; justify-content:space-between; font-size:14px;">
-                        <span>DỰ ÁN: TRAO CẦN CÂU THOÁT NGHÈO</span>
-                        <span style="color:var(--stark-cyan)">MỨC 2: 75%</span>
-                    </div>
-                    <div class="progress-container"><div class="progress-fill" style="width: 75%;"></div></div>
-                    <div class="milestones"><span>MỨC 1</span><span>MỨC 2</span><span>MỨC 3 (MAX)</span></div>
-                    <div class="btn-group">
-                        <button class="stark-btn">Xem chi tiết</button>
-                        <button class="stark-btn" style="border-color:var(--stark-orange); color:var(--stark-orange);">Đóng góp</button>
-                    </div>
-                </div>
-
-                <h2 style="font-family:'Orbitron'; color:var(--stark-orange); font-size:14px; margin-top:30px;">// NHIỆM VỤ CTV</h2>
-                
-                <div class="mission-item" style="border-left: 3px solid var(--stark-orange);">
-                    <h3>DAILY: CLICK LINK TÀI TRỢ SHOPEE</h3>
-                    <p style="font-size:12px; opacity:0.6;">Xác thực link mỗi ngày để duy trì trạng thái đặc vụ.</p>
-                    <div class="btn-group">
-                        <button class="stark-btn">Tiếp nhận</button>
-                        <button class="stark-btn">Báo cáo hoàn thành</button>
-                    </div>
-                </div>
-
-                <div class="mission-item">
-                    <h3>TRUYỀN THÔNG: SAOVN WIKI BROADCAST</h3>
-                    <div class="btn-group">
-                        <button class="stark-btn">Tiếp nhận</button>
-                        <button class="stark-btn">Xem chi tiết</button>
-                    </div>
-                </div>
-
-                                <div class="mission-item" style="border-left: 3px solid var(--stark-orange);">
-                    <h3>DAILY: ĐĂNG KÝ MỞ TÀI KHOẢN</h3>
-                    <p style="font-size:12px; opacity:0.6;">Xác thực link mỗi ngày để duy trì trạng thái đặc vụ.</p>
-                    <div class="btn-group">
-                        <button class="stark-btn">Tiếp nhận</button>
-                        <button class="stark-btn">Báo cáo hoàn thành</button>
-                    </div>
-                </div>
-            </div>
+    <h2 style="font-family:'Orbitron'; color:var(--stark-orange); font-size:14px; margin-top:30px;">// NHIỆM VỤ CTV</h2>
+    <div id="fund-tasks-container">
+        <div style="color: var(--stark-cyan); font-size: 12px;">
+            <i class="fas fa-spinner fa-spin"></i> ĐANG TRUY XUẤT DỮ LIỆU NHIỆM VỤ...
+        </div>
+    </div>
+</div>
         </div>
 
         <div class="v-separator"></div>
@@ -598,7 +560,7 @@ initGlobe(); animateG(); initVNMap();
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, onSnapshot, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -656,6 +618,81 @@ initGlobe(); animateG(); initVNMap();
         });
     }
     loadFundStatus();
+
+    // --- HÀM TẢI VÀ LỌC DỮ LIỆU TỪ ADDASH ---
+async function loadFundData() {
+    const projectsContainer = document.getElementById('fund-projects-container');
+    const tasksContainer = document.getElementById('fund-tasks-container');
+
+    try {
+        // Truy vấn TẤT CẢ bài viết từ collection "projects", sắp xếp mới nhất lên đầu
+        const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        
+        let projectsHTML = '';
+        let tasksHTML = '';
+
+        querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const id = docSnap.id;
+            const category = data.category || ""; 
+
+            // 1. ÁNH XẠ VÀO KHUNG: DỰ ÁN ĐÓNG GÓP
+if (category.trim().toLowerCase() === "dự án đóng góp") {
+    
+    // Rút xuất con số tiến độ từ Database (nếu bài nào không có thì mặc định hiển thị 0)
+    let currentProgress = data.progress || 0; 
+    
+    projectsHTML += `
+        <div class="mission-item">
+            <div style="display:flex; justify-content:space-between; font-size:14px;">
+                <span>DỰ ÁN: ${data.title.toUpperCase()}</span>
+                <span style="color:var(--stark-cyan)">TIẾN ĐỘ: ${currentProgress}%</span>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-fill" style="width: ${currentProgress}%;"></div>
+            </div>
+            
+            
+            <div class="btn-group">
+                <button class="stark-btn" onclick="window.location.href='project_detail.html?id=${id}'">Xem chi tiết</button>
+                <button class="stark-btn" style="border-color:var(--stark-orange); color:var(--stark-orange);">Đóng góp</button>
+            </div>
+        </div>
+    `;
+}
+            // 2. ÁNH XẠ VÀO KHUNG: NHIỆM VỤ CTV
+            else if (category === "Nhiệm Vụ CTV") {
+                // Mẹo: Dùng Regex cắt bỏ các thẻ HTML (<p>, <b>...) từ QuillJS để lấy 80 ký tự làm mô tả ngắn
+                let shortDesc = data.content ? data.content.replace(/<[^>]+>/g, '').substring(0, 80) + '...' : 'Chi tiết nhiệm vụ đang được cập nhật...';
+                
+                tasksHTML += `
+                    <div class="mission-item" style="border-left: 3px solid var(--stark-orange);">
+                        <h3>${data.title.toUpperCase()}</h3>
+                        <p style="font-size:12px; opacity:0.6;">${shortDesc}</p>
+                        <div class="btn-group">
+                            <button class="stark-btn">Tiếp nhận</button>
+                            <button class="stark-btn" onclick="window.location.href='project_detail.html?id=${id}'">Xem chi tiết</button>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        // Đổ HTML vào giao diện, nếu không có bài nào thì hiện thông báo
+        projectsContainer.innerHTML = projectsHTML || '<p style="color:#888; font-size:12px;">Chưa có dự án nào được triển khai.</p>';
+        tasksContainer.innerHTML = tasksHTML || '<p style="color:#888; font-size:12px;">Hiện tại không có nhiệm vụ mới.</p>';
+
+    } catch (error) {
+        console.error("Lỗi tải dữ liệu Quỹ/Nhiệm vụ:", error);
+        projectsContainer.innerHTML = '<p style="color:#ff4d4d; font-size:12px;">Lỗi kết nối cơ sở dữ liệu.</p>';
+        tasksContainer.innerHTML = '<p style="color:#ff4d4d; font-size:12px;">Lỗi kết nối cơ sở dữ liệu.</p>';
+    }
+}
+
+// Kích hoạt hàm khi trang load xong
+loadFundData();
 
     // --- LOGIC AUTH & ĐỔ DỮ LIỆU ---
     const userProfileBox = document.getElementById('user-profile-box');
