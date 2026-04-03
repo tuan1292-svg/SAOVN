@@ -358,11 +358,18 @@
             
             // ID của danh mục Khóa Học Tài Chính cần giấu đi
             const targetCategoryId = "WbEP558KgMOJKDuFnfna"; 
+            
+            // Tên các danh mục của trang Quỹ cần giấu đi (Lưu ý: Viết thường để dễ so sánh)
+            const hiddenCategories = ["dự án đóng góp", "nhiệm vụ ctv"];
 
             snap.forEach(doc => {
-                // Kiểm tra ID: Chỉ vẽ nút nếu ID KHÔNG PHẢI là ID của Khóa học
-                if (doc.id !== targetCategoryId) {
-                    const catName = doc.data().name;
+                const catName = doc.data().name;
+                const catNameLower = catName ? catName.trim().toLowerCase() : "";
+
+                // Kiểm tra 2 điều kiện:
+                // 1. ID KHÔNG PHẢI là ID của Khóa học
+                // 2. Tên danh mục KHÔNG NẰM TRONG mảng hiddenCategories
+                if (doc.id !== targetCategoryId && !hiddenCategories.includes(catNameLower)) {
                     filterContainer.innerHTML += `<button class="filter-btn" data-filter="${catName}">${catName}</button>`;
                 }
             });
@@ -430,14 +437,18 @@ onSnapshot(q, (snap) => {
     snap.forEach(doc => {
         const p = doc.data();
         
+        // Lấy tên danh mục, chuyển về chữ thường để so sánh
+        const catNameLower = p.category ? p.category.trim().toLowerCase() : "";
+
         // KIỂM TRA CHÍNH XÁC: 
-        // Bỏ qua bài viết nếu trường category của nó đúng bằng "Khóa Học Tài Chính"
-        // Dùng return; trong forEach tương đương với việc "nhảy qua, không thèm vẽ ra màn hình"
-        if (p.category && p.category.trim().toLowerCase() === "khóa học tài chính") {
+        // Bỏ qua bài viết nếu nó thuộc "Khóa Học Tài Chính", "Dự án đóng góp", hoặc "Nhiệm vụ CTV"
+        if (catNameLower === "khóa học tài chính" || 
+            catNameLower === "dự án đóng góp" || 
+            catNameLower === "nhiệm vụ ctv") {
             return; 
         }
 
-        // Nếu qua được ải trên (tức là không phải khóa học), thì mới vẽ HTML
+        // Nếu qua được ải trên (tức là không phải khóa học hay quỹ), thì mới vẽ HTML
         const cleanText = p.content ? p.content.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : "Đang cập nhật...";
         
         projectContainer.innerHTML += `
