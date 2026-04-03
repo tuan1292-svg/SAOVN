@@ -6,6 +6,7 @@
     <title>Về chúng tôi | SAOVN - Hành Động Vì Việt Nam</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
@@ -27,14 +28,15 @@
     <a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
     <button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
     
-    <div class="user-profile" id="user-profile-box" style="display: none;">
-        <div class="user-info-text">
-            Chào, <a href="dashboard.html" class="user-name" id="display-user-link">
-                <span id="display-user-name">Đang tải...</span>
-            </a>
-        </div>
-        <button class="btn-logout" id="auth-logout-btn">Đăng xuất</button>
-    </div>
+    <div id="user-profile-box" class="user-profile-nav" style="display: none;">
+    <a href="dashboard.html" class="nav-avatar-link" title="Đi tới bảng điều khiển">
+        <div id="display-avatar" class="nav-avatar">SV</div>
+        <span id="display-user-name">Đang tải...</span>
+    </a>
+    <button id="auth-logout-btn" class="btn-logout-mini" title="Đăng xuất">
+        <i class="fas fa-sign-out-alt"></i>
+    </button>
+</div>
 </nav>
     </header>
 
@@ -161,7 +163,6 @@
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // Cấu hình Firebase của bạn
     const firebaseConfig = {
         apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
         authDomain: "saovn-project.firebaseapp.com",
@@ -179,31 +180,41 @@
     const loginBtn = document.getElementById('nav-login-btn');
     const registerLink = document.getElementById('nav-register');
     const displayUserName = document.getElementById('display-user-name');
+    const displayAvatar = document.getElementById('display-avatar'); // Đã thêm khai báo này
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            // Hiện profile, ẩn nút login/register
             userProfileBox.style.display = 'flex';
             if(loginBtn) loginBtn.style.display = 'none';
             if(registerLink) registerLink.style.display = 'none';
 
             try {
                 const userDocSnap = await getDoc(doc(db, "users", user.uid));
-                displayUserName.innerText = (userDocSnap.exists() && userDocSnap.data().fullName) 
-                    ? userDocSnap.data().fullName 
-                    : (user.displayName || user.email.split('@')[0]);
+                if (userDocSnap.exists()) {
+                    const data = userDocSnap.data(); // Khai báo data ở đây
+                    displayUserName.innerText = data.fullName || user.email.split('@')[0];
+                    
+                    // Logic hiển thị Avatar
+                    if (data.photoURL) {
+                        displayAvatar.innerText = "";
+                        displayAvatar.style.backgroundImage = `url('${data.photoURL}')`;
+                        displayAvatar.style.backgroundSize = "cover";
+                    } else {
+                        displayAvatar.innerText = (data.fullName || "U").charAt(0).toUpperCase();
+                        displayAvatar.style.backgroundImage = "none";
+                    }
+                }
             } catch (e) {
+                console.error("Lỗi lấy data:", e);
                 displayUserName.innerText = user.email.split('@')[0];
             }
         } else {
-            // Chưa đăng nhập: ẩn profile, hiện nút login/register
             userProfileBox.style.display = 'none';
             if(loginBtn) loginBtn.style.display = 'block';
             if(registerLink) registerLink.style.display = 'block';
         }
     });
 
-    // Sự kiện đăng xuất
     document.getElementById('auth-logout-btn').onclick = () => {
         signOut(auth).then(() => window.location.reload());
     };
