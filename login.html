@@ -28,7 +28,7 @@
             
            <div class="login-footer">
                 <div class="footer-top">
-                    <a href="#">Quên mật khẩu?</a>
+                    <a href="#" id="btnForgotPassword">Quên mật khẩu?</a>
                     <a href="register.html" style="color: var(--accent-color)">Tạo tài khoản mới</a>
                 </div>
             </div>
@@ -37,14 +37,16 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    // Gộp tất cả các hàm Auth vào một lần import duy nhất
     import { 
         getAuth, 
         signInWithEmailAndPassword, 
         setPersistence, 
         browserLocalPersistence,
-        signOut 
+        signOut,
+        sendPasswordResetEmail 
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    // IMPORT THÊM CÁC HÀM CẦN THIẾT CHO TRANSACTION
+    
     import { 
         getFirestore, doc, getDoc, runTransaction, increment 
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -68,7 +70,6 @@
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
-        // Kiểm tra nếu user đã xác minh email và chưa được đếm (isCounted === false)
         if (userSnap.exists() && userSnap.data().isCounted === false) {
             const statsRef = doc(db, "metadata", "users_stats");
             try {
@@ -79,7 +80,6 @@
                     } else {
                         transaction.update(statsRef, { totalMembers: increment(1) });
                     }
-                    // Đánh dấu đã đếm thành công để lần sau đăng nhập không +1 nữa
                     transaction.update(userRef, { isCounted: true });
                 });
                 console.log("Hệ thống: Đã xác nhận thành viên mới (+1)");
@@ -107,7 +107,6 @@
             await user.reload(); 
             
             if (user.emailVerified) {
-                // THỰC HIỆN CỘNG SỐ THÀNH VIÊN TRƯỚC KHI VÀO TRANG CHỦ
                 await updateMemberCount(user);
                 window.location.href = "index.html"; 
             } else {
@@ -120,6 +119,29 @@
             alert("Lỗi: Email hoặc mật khẩu không chính xác.");
             btn.disabled = false;
             btn.innerText = "XÁC MINH DANH TÍNH";
+        }
+    });
+
+    // XỬ LÝ QUÊN MẬT KHẨU
+    document.getElementById('btnForgotPassword').addEventListener('click', async (e) => {
+        e.preventDefault();
+        const email = prompt("Vui lòng nhập Email để nhận liên kết khôi phục mật khẩu:");
+        
+        // Kiểm tra nếu người dùng thực sự nhập email và không nhấn Cancel
+        if (email && email.trim() !== "") {
+            try {
+                await sendPasswordResetEmail(auth, email.trim());
+                alert("Hệ thống: Liên kết khôi phục đã được gửi vào Email của bạn.");
+            } catch (error) {
+                console.error(error.code);
+                let message = "Lỗi: Không thể gửi email khôi phục.";
+                if (error.code === 'auth/user-not-found') {
+                    message = "Lỗi: Email này chưa được đăng ký trong hệ thống SAOVN.";
+                } else if (error.code === 'auth/invalid-email') {
+                    message = "Lỗi: Định dạng Email không hợp lệ.";
+                }
+                alert(message);
+            }
         }
     });
 </script>
