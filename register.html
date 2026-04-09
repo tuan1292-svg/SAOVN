@@ -24,6 +24,10 @@
                         <i class="fas fa-envelope"></i>
                         <input type="email" id="regEmail" placeholder="Email liên lạc" required>
                     </div>
+                    <div class="input-group full-width">
+                        <i class="fas fa-phone-alt"></i>
+                        <input type="tel" id="regPhone" placeholder="Số điện thoại" required>
+                    </div>
                     <div class="input-group">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="regPass" placeholder="Mật khẩu" required>
@@ -84,6 +88,7 @@
         
         const name = document.getElementById('regName').value;
         const email = document.getElementById('regEmail').value;
+        const phone = document.getElementById('regPhone').value;
         const pass = document.getElementById('regPass').value;
         const confirmPass = document.getElementById('regConfirmPass').value;
 
@@ -103,6 +108,7 @@
             await setDoc(doc(db, "users", user.uid), {
                 fullName: name,
                 email: email,
+                phone: phone,
                 role: "member",
                 isCounted: false, 
                 createdAt: new Date()
