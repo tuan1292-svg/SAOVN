@@ -69,7 +69,7 @@
 
                 <div class="about-action" data-aos="zoom-in" data-aos-delay="300">
                     <a href="ve-saovn.html" class="btn-main">Khám phá sứ mệnh</a>
-                    <a href="register.html" class="btn-sub">Gia nhập cộng đồng</a>
+                    <a href="register.html" class="btn-sub" id="btn-join-1">Gia nhập cộng đồng</a>
                 </div>
             </div>
         </div>
@@ -159,7 +159,7 @@
                     <h3>Vấn đề của bạn chưa xuất hiện?</h3>
                     <p>Đừng ngần ngại gia nhập! SAOVN luôn ở đây để lắng nghe điều bạn đang gặp phải. Chúng tôi sẵn sàng tìm giải pháp, cung cấp nguồn lực và cùng bạn giải quyết nó. SAOVN là nơi đáng tham gia, đáng sống và đáng cống hiến vì một Việt Nam tốt đẹp hơn.</p>
                 </div>
-                <a href="register.html" class="btn-main">GIA NHẬP & CHIA SẺ VẤN ĐỀ</a>
+                <a href="register.html" class="btn-main" id="btn-join-2">GIA NHẬP & CHIA SẺ VẤN ĐỀ</a>
             </div>
         </div>
     </section>
@@ -407,11 +407,24 @@
     const displayUserName = document.getElementById('display-user-name');
     const displayAvatar = document.getElementById('display-avatar');
 
+    const btnJoin1 = document.getElementById('btn-join-1');
+    const btnJoin2 = document.getElementById('btn-join-2');
+
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             userProfileBox.style.display = 'flex';
             if(loginBtn) loginBtn.style.display = 'none';
             if(registerLink) registerLink.style.display = 'none';
+
+            // --- THÊM MỚI: Đổi nút thành "Vào Dashboard" ---
+    if(btnJoin1) {
+        btnJoin1.href = "dashboard.html";
+        btnJoin1.innerText = "Vào Bảng Điều Khiển";
+    }
+    if(btnJoin2) {
+        btnJoin2.href = "dashboard.html";
+        btnJoin2.innerText = "ĐI TỚI BẢNG ĐIỀU KHIỂN";
+    }
 
             try {
                 const userDocSnap = await getDoc(doc(db, "users", user.uid));
@@ -436,6 +449,15 @@
             userProfileBox.style.display = 'none';
             if(loginBtn) loginBtn.style.display = 'block';
             if(registerLink) registerLink.style.display = 'block';
+            // --- THÊM MỚI: Trả lại nút "Đăng ký" ban đầu ---
+    if(btnJoin1) {
+        btnJoin1.href = "register.html";
+        btnJoin1.innerText = "Gia nhập cộng đồng";
+    }
+    if(btnJoin2) {
+        btnJoin2.href = "register.html";
+        btnJoin2.innerText = "GIA NHẬP & CHIA SẺ VẤN ĐỀ";
+    }
         }
     });
 
