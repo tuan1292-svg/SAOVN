@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAOVN - Smart Input Allocation</title>
+    <title>SAOVN - Clean Input Allocation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -14,8 +14,7 @@
         .cyber-input { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 8px 12px; border-radius: 8px; outline: none; transition: 0.3s; font-family: monospace; text-align: center; }
         .cyber-input:focus { border-color: #3b82f6; box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
         
-        /* Style riêng cho ô nhập tiền trực tiếp */
-        .money-input { background: transparent; border: none; border-bottom: 1px dashed rgba(255,255,255,0.3); outline: none; text-align: right; font-family: monospace; font-weight: bold; width: 100px; transition: 0.3s; padding: 2px 0; }
+        .money-input { background: transparent; border: none; border-bottom: 1px dashed rgba(255,255,255,0.3); outline: none; text-align: right; font-family: monospace; font-weight: bold; width: 110px; transition: 0.3s; padding: 4px 0; }
         .money-input:focus { border-bottom: 1px solid currentColor; box-shadow: 0 4px 6px -6px currentColor; }
 
         .btn-outline { border: 1px solid rgba(255,255,255,0.2); color: #c9d1d9; font-weight: bold; border-radius: 8px; padding: 8px 16px; transition: 0.3s; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px;}
@@ -24,12 +23,19 @@
         
         ::-webkit-scrollbar { width: 2px; height: 2px; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
-        
-        input[type=range] { -webkit-appearance: none; background: rgba(255, 255, 255, 0.1); height: 6px; border-radius: 3px; width: 100%; margin: 10px 0; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: #fff; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+
+        /* Toast Notification */
+        #toast {
+            visibility: hidden; min-width: 250px; background-color: #ef4444; color: #fff; text-align: center; border-radius: 12px; padding: 12px 20px;
+            position: fixed; z-index: 100; left: 50%; transform: translateX(-50%); bottom: -50px; font-size: 12px; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        #toast.show { visibility: visible; opacity: 1; bottom: 30px; }
     </style>
 </head>
 <body class="pb-20">
+
+    <div id="toast"><i class="fa-solid fa-triangle-exclamation mr-2"></i><span id="toast-msg">Lỗi!</span></div>
 
     <header class="sticky top-0 z-50 bg-[#0d1117]/80 backdrop-blur-xl pt-4 pb-4 px-4 md:px-8 border-b border-white/5 mb-6 shadow-lg">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
@@ -75,19 +81,29 @@
         <div class="lg:col-span-2 space-y-6">
             
             <div class="glass-card p-5 flex flex-col justify-center items-center">
-                <div class="label-tech mb-2">Biểu Đồ Phân Bổ (Jars)</div>
+                <div class="label-tech mb-2">Biểu Đồ Phân Bổ</div>
                 <div class="w-full h-56 md:h-64 relative">
                     <canvas id="jarsChart"></canvas>
                 </div>
             </div>
 
             <div class="glass-card p-5 border-t-2 border-t-blue-500/50">
-                <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
-                    <div>
-                        <h2 class="text-sm font-bold uppercase tracking-widest text-blue-400"><i class="fa-solid fa-layer-group mr-2"></i>Hệ Thống Hũ</h2>
-                        <div class="text-[10px] text-gray-400 mt-1">Đã phân bổ: <span id="total-perc-allocated" class="font-bold text-white text-base">0%</span>/100%</div>
+                <div class="flex justify-between items-start mb-6 border-b border-white/10 pb-4">
+                    <div class="w-full">
+                        <div class="flex justify-between items-center mb-2">
+                            <h2 class="text-sm font-bold uppercase tracking-widest text-blue-400"><i class="fa-solid fa-layer-group mr-2"></i>Hũ Chi Tiêu</h2>
+                            <button onclick="addJar()" class="btn-outline hover:border-blue-400 hover:text-blue-400 py-1"><i class="fa-solid fa-plus"></i> Hũ mới</button>
+                        </div>
+                        
+                        <div class="flex justify-between bg-black/30 p-2 rounded-lg border border-white/5 mt-3">
+                            <div class="text-[11px] text-gray-400">
+                                Đã chia: <span id="total-perc-allocated" class="font-bold text-white text-sm ml-1">0%</span>
+                            </div>
+                            <div class="text-[11px] text-gray-400 text-right">
+                                Chưa phân bổ: <span id="unallocated-amt" class="font-bold text-green-400 text-sm ml-1">0đ</span>
+                            </div>
+                        </div>
                     </div>
-                    <button onclick="addJar()" class="btn-outline hover:border-blue-400 hover:text-blue-400"><i class="fa-solid fa-plus"></i> Thêm Hũ</button>
                 </div>
                 
                 <div id="list-jars" class="space-y-4">
@@ -97,7 +113,7 @@
     </main>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('saovn_finance_v4')) || {
+        let db = JSON.parse(localStorage.getItem('saovn_finance_v6')) || {
             income: [{id: 1, name: 'Lương tháng', amount: 20000000}],
             expense: [{id: 2, name: 'Tiền thuê nhà', amount: 4000000}],
             jars: [
@@ -110,9 +126,17 @@
         };
 
         let chart = null;
+        let toastTimeout = null;
         const jarColors = ['#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#06b6d4', '#f43f5e'];
 
-        // Hàm tính nhanh dòng tiền khả dụng
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.add('show');
+            if(toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
         function getSurplus() {
             const inc = db.income.reduce((sum, i) => sum + i.amount, 0);
             const exp = db.expense.reduce((sum, e) => sum + e.amount, 0);
@@ -160,7 +184,7 @@
         }
 
         function addJar() {
-            const name = prompt("Nhập tên hũ mới:");
+            const name = prompt("Nhập tên hũ chi tiêu mới:");
             if (name) {
                 db.jars.push({ id: Date.now(), name, percent: 0 });
                 render();
@@ -176,34 +200,49 @@
         }
 
         function deleteJar(id) {
-            if(confirm("Xóa hũ này?")) {
+            if(confirm("Bạn có chắc muốn xóa hũ này?")) {
                 db.jars = db.jars.filter(j => j.id !== id);
                 render();
             }
         }
 
-        // Cập nhật khi kéo thanh trượt %
         function updateJarPerc(id, newVal) {
+            const surplus = getSurplus();
             const jar = db.jars.find(j => j.id === id);
             if(jar) {
-                jar.percent = parseInt(newVal) || 0;
+                let parsedVal = parseInt(newVal) || 0;
+                let otherTotalPerc = db.jars.reduce((sum, j) => j.id !== id ? sum + j.percent : sum, 0);
+
+                if (otherTotalPerc + parsedVal > 100) {
+                    parsedVal = 100 - otherTotalPerc;
+                    showToast("Đã hết Dòng tiền! Tự động điều chỉnh tỷ lệ.");
+                }
+
+                jar.percent = parsedVal;
                 render();
             }
         }
 
-        // TÍNH NĂNG MỚI: Cập nhật tự động % khi nhập thẳng số tiền
         function updateJarAmount(id, newAmountStr) {
             const surplus = getSurplus();
             if (surplus <= 0) {
-                alert("Dòng tiền khả dụng đang bằng 0. Vui lòng thêm Nguồn Thu trước!");
+                showToast("Dòng tiền khả dụng đang bằng 0!");
                 render();
                 return;
             }
 
             const jar = db.jars.find(j => j.id === id);
             if(jar) {
-                const amount = parseFloat(newAmountStr.replace(/,/g, '')) || 0;
-                // Tính ra % tương ứng và làm tròn
+                let amount = parseFloat(newAmountStr.replace(/,/g, '')) || 0;
+                let otherTotalPerc = db.jars.reduce((sum, j) => j.id !== id ? sum + j.percent : sum, 0);
+                let otherTotalAmt = (surplus * otherTotalPerc) / 100;
+                let maxAllowedAmt = surplus - otherTotalAmt;
+
+                if (amount > maxAllowedAmt) {
+                    amount = maxAllowedAmt;
+                    showToast("Số tiền vượt quá khoản phân bổ còn lại!");
+                }
+
                 const newPerc = Math.round((amount / surplus) * 100);
                 jar.percent = newPerc;
                 render();
@@ -260,56 +299,72 @@
                 chartLabels.push(jar.name);
                 chartData.push(allocatedAmt);
 
+                // Đã loại bỏ hoàn toàn thẻ <input type="range">
                 listJars.innerHTML += `
-                    <div class="bg-black/20 p-4 rounded-xl border border-white/5">
-                        <div class="flex justify-between items-center mb-3">
-                            <div class="text-sm font-bold uppercase cursor-pointer flex items-center gap-2" style="color: ${color}" onclick="editJarName(${jar.id})">
-                                <span class="w-3 h-3 rounded-full inline-block shadow-sm" style="background-color: ${color}"></span>
-                                ${jar.name} <i class="fa-solid fa-pen text-[10px] opacity-50"></i>
+                    <div class="bg-black/20 p-4 rounded-xl border border-white/5 relative overflow-hidden flex flex-col justify-center min-h-[80px]">
+                        <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-transparent to-${color} opacity-30" style="width: ${jar.percent}%; background-color: ${color}"></div>
+                        
+                        <div class="flex justify-between items-center relative z-10 w-full gap-2">
+                            <div class="flex flex-col gap-2 w-1/2">
+                                <div class="text-sm font-bold uppercase cursor-pointer flex items-center gap-2" style="color: ${color}" onclick="editJarName(${jar.id})">
+                                    <span class="w-3 h-3 rounded-full inline-block shadow-sm" style="background-color: ${color}"></span>
+                                    <span class="truncate">${jar.name}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <input type="number" min="0" max="100" value="${jar.percent}" class="cyber-input w-14 !p-1 !text-xs" style="color: ${color}; border-color: ${color}40;" onchange="updateJarPerc(${jar.id}, this.value)">
+                                    <span class="text-[10px] font-bold" style="color: ${color}">%</span>
+                                </div>
                             </div>
                             
-                            <div class="flex items-baseline gap-1" style="color: ${color}">
-                                <input type="text" 
-                                    value="${allocatedAmt.toLocaleString()}" 
-                                    class="money-input text-base md:text-lg"
-                                    style="color: ${color}; border-bottom-color: ${color}40;"
-                                    onchange="updateJarAmount(${jar.id}, this.value)"
-                                    onfocus="this.value = this.value.replace(/,/g, '')"
-                                    onblur="this.value = parseFloat(this.value || 0).toLocaleString()">
-                                <span class="text-xs font-bold">đ</span>
+                            <div class="flex flex-col items-end gap-2 w-1/2">
+                                <div class="flex items-baseline gap-1" style="color: ${color}">
+                                    <input type="text" 
+                                        value="${allocatedAmt.toLocaleString()}" 
+                                        class="money-input text-base md:text-lg"
+                                        style="color: ${color}; border-bottom-color: ${color}40;"
+                                        onchange="updateJarAmount(${jar.id}, this.value)"
+                                        onfocus="this.value = this.value.replace(/,/g, '')"
+                                        onblur="this.value = parseFloat(this.value || 0).toLocaleString()">
+                                    <span class="text-xs font-bold">đ</span>
+                                </div>
+                                <button onclick="deleteJar(${jar.id})" class="text-gray-600 hover:text-red-400 py-1 px-2" title="Xóa hũ">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
                             </div>
-                        </div>
-                        
-                        <input type="range" min="0" max="100" value="${jar.percent}" style="accent-color: ${color};" oninput="updateJarPerc(${jar.id}, this.value)">
-                        
-                        <div class="flex justify-between items-center mt-2">
-                            <div class="flex items-center gap-2">
-                                <input type="number" min="0" max="100" value="${jar.percent}" class="cyber-input w-16 !p-1 !text-sm" onchange="updateJarPerc(${jar.id}, this.value)">
-                                <span class="text-xs font-bold" style="color: ${color}">%</span>
-                            </div>
-                            <button onclick="deleteJar(${jar.id})" class="text-gray-500 hover:text-red-400 p-2 rounded-lg" title="Xóa hũ">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
                         </div>
                     </div>
                 `;
             });
 
+            // Xử lý bộ đếm tổng % và số tiền chưa phân bổ
             const percEl = document.getElementById('total-perc-allocated');
+            const unallocatedAmtEl = document.getElementById('unallocated-amt');
+            
             percEl.innerText = totalPerc + '%';
+            
+            let unallocatedPerc = 100 - totalPerc;
+            let unallocatedAmt = (surplus * unallocatedPerc) / 100;
+            if(unallocatedAmt < 0) unallocatedAmt = 0;
+
+            unallocatedAmtEl.innerText = unallocatedAmt.toLocaleString() + 'đ';
+
             if(totalPerc !== 100) {
                 percEl.classList.remove('text-white');
                 percEl.classList.add('text-red-400');
+                unallocatedAmtEl.classList.remove('text-gray-500');
+                unallocatedAmtEl.classList.add('text-green-400'); // Còn tiền dư
             } else {
                 percEl.classList.remove('text-red-400');
                 percEl.classList.add('text-green-400');
+                unallocatedAmtEl.classList.remove('text-green-400');
+                unallocatedAmtEl.classList.add('text-gray-500'); // Đã hết tiền dư
             }
 
             chart.data.labels = chartLabels;
             chart.data.datasets[0].data = chartData;
             chart.update();
 
-            localStorage.setItem('saovn_finance_v4', JSON.stringify(db));
+            localStorage.setItem('saovn_finance_v6', JSON.stringify(db));
         }
 
         window.onload = () => {
