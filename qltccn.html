@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SAOVN - Clean Input Allocation</title>
+    <title>SAOVN - Ultra Smooth Input</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -24,7 +24,6 @@
         ::-webkit-scrollbar { width: 2px; height: 2px; }
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
 
-        /* Toast Notification */
         #toast {
             visibility: hidden; min-width: 250px; background-color: #ef4444; color: #fff; text-align: center; border-radius: 12px; padding: 12px 20px;
             position: fixed; z-index: 100; left: 50%; transform: translateX(-50%); bottom: -50px; font-size: 12px; font-weight: bold;
@@ -113,7 +112,7 @@
     </main>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('saovn_finance_v6')) || {
+        let db = JSON.parse(localStorage.getItem('saovn_finance_v7')) || {
             income: [{id: 1, name: 'Lương tháng', amount: 20000000}],
             expense: [{id: 2, name: 'Tiền thuê nhà', amount: 4000000}],
             jars: [
@@ -210,7 +209,7 @@
             const surplus = getSurplus();
             const jar = db.jars.find(j => j.id === id);
             if(jar) {
-                let parsedVal = parseInt(newVal) || 0;
+                let parsedVal = parseFloat(newVal) || 0;
                 let otherTotalPerc = db.jars.reduce((sum, j) => j.id !== id ? sum + j.percent : sum, 0);
 
                 if (otherTotalPerc + parsedVal > 100) {
@@ -218,7 +217,7 @@
                     showToast("Đã hết Dòng tiền! Tự động điều chỉnh tỷ lệ.");
                 }
 
-                jar.percent = parsedVal;
+                jar.percent = parsedVal; // Giữ nguyên số thập phân để không mất tiền
                 render();
             }
         }
@@ -238,12 +237,14 @@
                 let otherTotalAmt = (surplus * otherTotalPerc) / 100;
                 let maxAllowedAmt = surplus - otherTotalAmt;
 
-                if (amount > maxAllowedAmt) {
+                // Cộng thêm 1đ để tránh lỗi sai số thập phân ẩn của Javascript
+                if (amount > maxAllowedAmt + 1) {
                     amount = maxAllowedAmt;
                     showToast("Số tiền vượt quá khoản phân bổ còn lại!");
                 }
 
-                const newPerc = Math.round((amount / surplus) * 100);
+                // Không dùng Math.round nữa để giữ tính chính xác tuyệt đối
+                const newPerc = (amount / surplus) * 100;
                 jar.percent = newPerc;
                 render();
             }
@@ -293,13 +294,13 @@
 
             db.jars.forEach((jar, index) => {
                 totalPerc += jar.percent;
-                const allocatedAmt = (surplus * jar.percent) / 100;
+                // Giữ nguyên số nguyên khi hiển thị tiền để tránh bị lẻ số
+                const allocatedAmt = Math.round((surplus * jar.percent) / 100);
                 const color = jarColors[index % jarColors.length]; 
                 
                 chartLabels.push(jar.name);
                 chartData.push(allocatedAmt);
 
-                // Đã loại bỏ hoàn toàn thẻ <input type="range">
                 listJars.innerHTML += `
                     <div class="bg-black/20 p-4 rounded-xl border border-white/5 relative overflow-hidden flex flex-col justify-center min-h-[80px]">
                         <div class="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-transparent to-${color} opacity-30" style="width: ${jar.percent}%; background-color: ${color}"></div>
@@ -311,20 +312,19 @@
                                     <span class="truncate">${jar.name}</span>
                                 </div>
                                 <div class="flex items-center gap-1">
-                                    <input type="number" min="0" max="100" value="${jar.percent}" class="cyber-input w-14 !p-1 !text-xs" style="color: ${color}; border-color: ${color}40;" onchange="updateJarPerc(${jar.id}, this.value)">
+                                    <input type="number" step="0.1" min="0" max="100" value="${Number(jar.percent.toFixed(1))}" class="cyber-input w-16 !p-1 !text-xs" style="color: ${color}; border-color: ${color}40;" onchange="updateJarPerc(${jar.id}, this.value)">
                                     <span class="text-[10px] font-bold" style="color: ${color}">%</span>
                                 </div>
                             </div>
                             
                             <div class="flex flex-col items-end gap-2 w-1/2">
                                 <div class="flex items-baseline gap-1" style="color: ${color}">
-                                    <input type="text" 
+                                    <input type="text" inputmode="numeric"
                                         value="${allocatedAmt.toLocaleString()}" 
                                         class="money-input text-base md:text-lg"
                                         style="color: ${color}; border-bottom-color: ${color}40;"
                                         onchange="updateJarAmount(${jar.id}, this.value)"
-                                        onfocus="this.value = this.value.replace(/,/g, '')"
-                                        onblur="this.value = parseFloat(this.value || 0).toLocaleString()">
+                                        onfocus="this.value = this.value.replace(/,/g, ''); this.select();">
                                     <span class="text-xs font-bold">đ</span>
                                 </div>
                                 <button onclick="deleteJar(${jar.id})" class="text-gray-600 hover:text-red-400 py-1 px-2" title="Xóa hũ">
@@ -336,35 +336,36 @@
                 `;
             });
 
-            // Xử lý bộ đếm tổng % và số tiền chưa phân bổ
             const percEl = document.getElementById('total-perc-allocated');
             const unallocatedAmtEl = document.getElementById('unallocated-amt');
             
-            percEl.innerText = totalPerc + '%';
+            let displayTotalPerc = Number(totalPerc.toFixed(1));
+            percEl.innerText = displayTotalPerc + '%';
             
             let unallocatedPerc = 100 - totalPerc;
-            let unallocatedAmt = (surplus * unallocatedPerc) / 100;
-            if(unallocatedAmt < 0) unallocatedAmt = 0;
+            let unallocatedAmt = Math.round((surplus * unallocatedPerc) / 100);
+            if(unallocatedAmt < 0 || unallocatedAmt < 5) unallocatedAmt = 0; // Fix sai số siêu nhỏ
 
             unallocatedAmtEl.innerText = unallocatedAmt.toLocaleString() + 'đ';
 
-            if(totalPerc !== 100) {
-                percEl.classList.remove('text-white');
+            if(displayTotalPerc < 99.9) {
+                percEl.classList.remove('text-white', 'text-green-400');
                 percEl.classList.add('text-red-400');
                 unallocatedAmtEl.classList.remove('text-gray-500');
-                unallocatedAmtEl.classList.add('text-green-400'); // Còn tiền dư
+                unallocatedAmtEl.classList.add('text-green-400'); 
             } else {
+                percEl.innerText = '100%';
                 percEl.classList.remove('text-red-400');
                 percEl.classList.add('text-green-400');
                 unallocatedAmtEl.classList.remove('text-green-400');
-                unallocatedAmtEl.classList.add('text-gray-500'); // Đã hết tiền dư
+                unallocatedAmtEl.classList.add('text-gray-500'); 
             }
 
             chart.data.labels = chartLabels;
             chart.data.datasets[0].data = chartData;
             chart.update();
 
-            localStorage.setItem('saovn_finance_v6', JSON.stringify(db));
+            localStorage.setItem('saovn_finance_v7', JSON.stringify(db));
         }
 
         window.onload = () => {
