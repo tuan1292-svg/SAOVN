@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAOVN ERP - Media Production House</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        body {
+            background-color: #f1f5f9; 
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .erp-card { transition: all 0.2s ease; }
+        .erp-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+
+        .sidebar-overlay { display: none; }
+        .sidebar-overlay.active { display: block; }
+
+        /* Hệ thống Tab cho Mobile & Desktop */
+        .workspace-tab-pane { display: none; }
+        .workspace-tab-pane.active { display: flex; flex-direction: column; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-box {
+            background: #fff; border-radius: 16px; padding: 20px;
+            width: 90%; max-width: 350px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.2s ease; position: relative; max-height: 80vh; display: flex; flex-direction: column;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="text-slate-800 h-[100dvh] flex overflow-hidden">
+
+    <!-- Lớp phủ nền mờ khi mở Menu trên Mobile -->
+    <div id="sidebarOverlay" class="sidebar-overlay fixed inset-0 bg-slate-900/60 z-30 backdrop-blur-sm md:hidden" onclick="toggleSidebar()"></div>
+
+    <!-- 1. THANH SIDEBAR BÊN TRÁI -->
+    <aside id="sidebar" class="fixed md:relative w-[280px] md:w-[260px] h-full bg-[#133A66] flex flex-col justify-between z-40 shadow-2xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shrink-0">
+        
+        <div class="h-16 flex items-center justify-between px-6 border-b border-white/10 bg-[#0E2C4F] shrink-0">
+            <div class="flex items-center">
+                <div class="w-2.5 h-6 bg-blue-400 rounded-sm mr-2.5"></div>
+                <div>
+                    <span class="text-lg font-bold tracking-widest text-white">SAOVN</span>
+                    <span class="text-[10px] font-semibold text-blue-200 block -mt-1 tracking-wider uppercase">Production Hub</span>
+                </div>
+            </div>
+            <button class="md:hidden text-white/50 hover:text-white" onclick="toggleSidebar()">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto py-4 px-3 space-y-6 custom-scrollbar">
+            
+            <!-- QUẢN TRỊ HỆ THỐNG -->
+            <div>
+                <div class="px-3 mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Quản Trị Hệ Thống</span>
+                </div>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#" class="flex items-center px-3 py-2 text-sm font-semibold rounded-lg bg-blue-500/20 text-blue-300 border border-blue-400/30 shadow-inner">
+                            <span class="mr-3 opacity-90 text-base">⚙️</span> Tổng Quan Quản Trị
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- QUẢN LÝ ĐƠN HÀNG (JOB KHÁCH HÀNG) -->
+            <div>
+                <div class="px-3 mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Kinh Doanh & Dự Án</span>
+                </div>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#" class="flex items-center px-3 py-2 text-xs font-bold rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all">
+                            <span class="mr-3 text-sm">🛒</span> Quản Lý Đơn Hàng (Jobs)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- PHÂN HỆ SẢN XUẤT -->
+            <div>
+                <div class="px-3 mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Phân Hệ Sản Xuất</span>
+                </div>
+                <ul class="space-y-0.5 text-xs font-medium text-slate-300">
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="w-2 h-2 rounded-full bg-red-400 mr-2.5"></span> Làm Film</a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="w-2 h-2 rounded-full bg-emerald-400 mr-2.5"></span> Kịch Bản</a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="w-2 h-2 rounded-full bg-amber-400 mr-2.5"></span> Chụp Ảnh</a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="w-2 h-2 rounded-full bg-sky-400 mr-2.5"></span> Quay Video</a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="w-2 h-2 rounded-full bg-purple-400 mr-2.5"></span> Biên Tập</a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="w-2 h-2 rounded-full bg-pink-400 mr-2.5"></span> Mẫu (Model)</a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="w-2 h-2 rounded-full bg-teal-400 mr-2.5"></span> Makeup</a></li>
+                </ul>
+            </div>
+
+            <!-- TRUNG TÂM TRUYỀN THÔNG -->
+            <div>
+                <div class="px-3 mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Trung Tâm Truyền Thông</span>
+                </div>
+                <ul class="space-y-1 text-xs font-medium text-slate-300">
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="mr-3 text-cyan-400">🌐</span> Kênh Cần Up</a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="mr-3 text-blue-400">📢</span> Bài Cần Đăng</a></li>
+                </ul>
+            </div>
+
+            <!-- KHO THIẾT BỊ & TÀI NGUYÊN -->
+            <div>
+                <div class="px-3 mb-2">
+                    <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Hạ Tầng & Tài Nguyên</span>
+                </div>
+                <ul class="space-y-1 text-xs font-medium text-slate-300">
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="mr-3 text-amber-400">📷</span> Kho Thiết Bị (Gear)</a></li>
+                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="mr-3 text-indigo-400">📁</span> Kho Tài Nguyên (NAS)</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Thông tin thành viên & Nút Đăng xuất -->
+        <div class="p-4 bg-[#0E2C4F] border-t border-white/5 flex flex-col gap-3 shrink-0">
+            <div class="flex items-center space-x-3 overflow-hidden">
+                <div id="userAvatar" class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-500 flex items-center justify-center font-bold text-white text-sm border border-white/20 shrink-0 shadow-sm">
+                    --
+                </div>
+                <div class="flex-1 overflow-hidden">
+                    <div id="userName" class="text-sm md:text-xs font-bold text-white truncate">Đang tải...</div>
+                    <div id="userRole" class="text-xs md:text-[10px] text-blue-200 truncate font-mono">...</div>
+                </div>
+            </div>
+            
+            <button id="btnLogout" class="flex items-center justify-center w-full gap-2 text-[11px] font-bold text-red-400 bg-red-500/10 hover:bg-red-500 hover:text-white py-2.5 md:py-2 rounded-lg transition-all border border-red-500/20 shadow-sm">
+                <i class="fas fa-sign-out-alt"></i> ĐĂNG XUẤT
+            </button>
+        </div>
+    </aside>
+
+    <!-- 2. KHU VỰC NỘI DUNG CHÍNH BÊN PHẢI -->
+    <div class="flex-1 flex flex-col overflow-hidden bg-slate-50 w-full pb-14 md:pb-0">
+        
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 z-10 shadow-sm shrink-0">
+            <div class="flex items-center text-sm font-medium text-slate-500">
+                <button class="md:hidden mr-3 text-slate-600 hover:text-blue-600 focus:outline-none" onclick="toggleSidebar()">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <span class="hidden md:inline hover:text-blue-600 cursor-pointer">Trang chủ</span>
+                <span class="hidden md:inline mx-2">/</span>
+                <span class="text-slate-800 font-bold truncate">Văn Phòng Điều Hành</span>
+            </div>
+            
+            <div class="flex items-center space-x-3 md:space-x-4">
+                <div class="relative hidden md:block w-64">
+                    <span class="absolute left-3 top-2 text-slate-400 text-xs"><i class="fas fa-search"></i></span>
+                    <input type="text" placeholder="Tìm kiếm tài nguyên..." class="w-full bg-slate-100 border-none rounded-full text-xs pl-8 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
+                </div>
+                <button class="relative p-2 text-slate-400 hover:text-blue-600 transition-colors">
+                    <i class="fas fa-bell text-lg"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- KPI Dashboard -->
+        <div class="bg-white border-b border-slate-200 px-4 md:px-6 py-3 flex space-x-4 md:space-x-6 z-0 overflow-x-auto shrink-0 custom-scrollbar pb-2 md:pb-3">
+            <div onclick="window.openOnlineModal()" class="flex flex-col min-w-max cursor-pointer hover:bg-slate-50 px-2 rounded transition-colors group">
+                <span class="text-[10px] text-slate-500 font-semibold uppercase group-hover:text-blue-600">Nhân sự Đang Online</span>
+                <span class="text-lg font-black text-slate-800">
+                    <span id="kpiOnlineCount">0</span> <span class="text-xs font-normal text-emerald-500">Người <i class="fas fa-chevron-down text-[8px] ml-1"></i></span>
+                </span>
+            </div>
+            <div class="w-px bg-slate-200 hidden md:block"></div>
+            <div class="flex flex-col min-w-max border-l md:border-0 border-slate-200 pl-4 md:pl-0">
+                <span class="text-[10px] text-slate-500 font-semibold uppercase">Dự án Đang Chạy</span>
+                <span class="text-lg font-black text-slate-800">04 <span class="text-xs font-normal text-blue-500">Active</span></span>
+            </div>
+            <div class="w-px bg-slate-200 hidden md:block"></div>
+            <div class="flex flex-col min-w-max border-l md:border-0 border-slate-200 pl-4 md:pl-0">
+                <span class="text-[10px] text-slate-500 font-semibold uppercase">Thiết Bị Xuất Kho</span>
+                <span class="text-lg font-black text-slate-800">12 <span class="text-xs font-normal text-amber-500">Items</span></span>
+            </div>
+        </div>
+
+        <!-- THANH CHUYỂN ĐỔI TAB TRÊN MOBILE (Hiển thị nổi bật trên điện thoại) -->
+        <div class="flex md:hidden bg-white border-b border-slate-200 px-2 py-2 shrink-0 justify-around z-20 shadow-xs">
+            <button onclick="switchMobileTab('tab-chat')" id="mBtnChat" class="flex-1 py-2 text-xs font-bold rounded-lg bg-[#133A66] text-white flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                <i class="fas fa-comments"></i> Thảo Luận (<span id="chatBadgeCount">Chat</span>)
+            </button>
+            <button onclick="switchMobileTab('tab-notif')" id="mBtnNotif" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fas fa-bullhorn text-cyan-600"></i> Thông Báo
+            </button>
+            <button onclick="switchMobileTab('tab-sched')" id="mBtnSched" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fas fa-calendar-alt text-blue-600"></i> Lịch Trình
+            </button>
+        </div>
+
+        <!-- NỘI DUNG CHÍNH (CHIA DẠNG RESPONSIVE CHO CẢ MOBILE & DESKTOP) -->
+        <main class="flex-1 flex overflow-hidden p-3 md:p-6 gap-4 md:gap-6 relative">
+            
+            <!-- 1. TAB THÔNG BÁO (Desktop hiện cố định cột trái, Mobile nằm trong tab pane) -->
+            <section id="pane-notif" class="workspace-tab-pane active md:flex w-full md:w-[55%] flex-col h-full bg-white md:bg-transparent rounded-xl shadow-sm md:shadow-none border border-slate-200 md:border-none p-3 md:p-0 overflow-y-auto md:overflow-hidden custom-scrollbar">
+                
+                <div class="hidden md:flex items-center justify-between mb-3 md:mb-4 border-b border-slate-200 pb-2 shrink-0">
+                    <h3 class="text-sm md:text-base font-bold text-slate-800"><i class="fas fa-bullhorn text-[#133A66] mr-2"></i> Bản Tin & Quyền Lợi</h3>
+                </div>
+
+                <div class="flex-1 overflow-y-auto space-y-3 pr-1 md:pr-2 custom-scrollbar">
+                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
+                        <div class="flex justify-between items-start mb-2 pl-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 bg-cyan-100 rounded flex items-center justify-center text-xs">💡</div>
+                                <span class="text-xs font-bold text-slate-700">Bài Toán Chi Phí & Giá Trị Thực</span>
+                            </div>
+                            <span class="text-[9px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Ghim</span>
+                        </div>
+                        <div class="pl-8">
+                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Làm một mình tốn kém đến mức nào?</h3>
+                            <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
+                                Nếu tự lập nghiệp 1 mình, tiền mua máy quay, ống kính, thiết bị ánh sáng, thuê studio, thuê mẫu... ngốn hàng trăm triệu đồng chưa chắc đã vận hành nổi. Nhưng tại SAOVN Media Hub, chỉ với khoản đóng góp nhỏ, bạn được <b>cầm thiết bị và thực hành ngay</b> vào các dự án thực tế hàng tuần!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+                        <div class="flex justify-between items-start mb-2 pl-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 bg-emerald-100 rounded flex items-center justify-center text-xs">🤝</div>
+                                <span class="text-xs font-bold text-slate-700">Cơ Hội Hợp Tác Brand Thời Trang</span>
+                            </div>
+                            <span class="text-[9px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-bold">Hot Job</span>
+                        </div>
+                        <div class="pl-8">
+                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Dự án Affiliate Quay Chụp Mảng Thời Trang</h3>
+                            <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
+                                Team hiện đang có Brand thời trang lớn muốn hợp tác sản xuất nội dung. Cơ chế chia lại <b>10% hoa hồng Affiliate</b> cho anh em tham gia triển khai. Đồng thời, toàn bộ sản phẩm ảnh & video từ thực hành hàng tuần sẽ được đẩy lên hệ thống để tiếp cận và <b>nhận job trực tiếp từ khách đặt</b>!
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
+                        <div class="flex justify-between items-start mb-2 pl-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 bg-blue-100 rounded flex items-center justify-center text-xs">🎓</div>
+                                <span class="text-xs font-bold text-slate-700">Học Tập & Tích Lũy Kinh Nghiệm</span>
+                            </div>
+                            <span class="text-[9px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Quyền lợi</span>
+                        </div>
+                        <div class="pl-8">
+                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Cầm tay chỉ việc từ người đi trước</h3>
+                            <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
+                                Phúc lợi cốt lõi của thành viên là được tham gia học tập từ kinh nghiệm thực chiến của những anh em đi trước đã lăn lộn qua nhiều dự án lớn. Không lý thuyết suông, học đến đâu làm được việc và ra tiền đến đó.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
+                        <div class="flex justify-between items-start mb-2 pl-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-6 h-6 bg-purple-100 rounded flex items-center justify-center text-xs">🚀</div>
+                                <span class="text-xs font-bold text-slate-700">Đồng Sở Hữu & Tương Lai Bền Vững</span>
+                            </div>
+                            <span class="text-[9px] text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded font-bold">Cổ Phần</span>
+                        </div>
+                        <div class="pl-8">
+                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Được sở hữu cổ phần khi team phát triển mạnh</h3>
+                            <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
+                                Khi team phát triển mạnh, có doanh thu từ các dịch vụ và dự án chung, lợi nhuận sẽ được chia sòng phẳng tương ứng với mức độ đóng góp và cổ phần của từng thành viên. Cùng nhau xây nhà chung để tự hào khẳng định vị thế!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. TAB LỊCH LÀM VIỆC & LỊCH TRÌNH -->
+            <section id="pane-sched" class="workspace-tab-pane md:flex w-full md:w-[55%] flex-col h-full bg-white md:bg-transparent rounded-xl shadow-sm md:shadow-none border border-slate-200 md:border-none p-3 md:p-0 overflow-y-auto md:overflow-hidden custom-scrollbar">
+                
+                <div class="hidden md:flex items-center justify-between mb-3 md:mb-4 border-b border-slate-200 pb-2 shrink-0">
+                    <h3 class="text-sm md:text-base font-bold text-slate-800"><i class="fas fa-calendar-alt text-blue-600 mr-2"></i> Lịch Hoạt Động & Sự Kiện</h3>
+                </div>
+
+                <div class="flex-1 overflow-y-auto space-y-3 pr-1 md:pr-2 custom-scrollbar">
+                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3.5 md:p-4 shadow-sm relative overflow-hidden border-l-4 border-l-blue-600">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase font-mono">📅 25/07/2026</span>
+                                <span class="text-xs font-bold text-slate-800">Buổi Offline Định Hướng & Thực Chiến Media Hub</span>
+                            </div>
+                            <span class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-bold">06:00 (Chủ Nhật)</span>
+                        </div>
+                        <div class="text-xs text-slate-600 space-y-1.5 pl-1">
+                            <div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-red-500 w-4"></i> <span><b>Địa điểm:</b> Trung tâm Quận 1, TP. Hồ Chí Minh</span></div>
+                            <div class="flex items-center gap-2"><i class="fas fa-list-check text-emerald-600 w-4"></i> <span><b>Nội dung chính:</b></span></div>
+                            <ul class="list-disc list-inside pl-5 space-y-1 text-slate-600">
+                                <li>Gặp mặt lần đầu, làm quen và kết nối giữa các thành viên.</li>
+                                <li>Thống nhất tư tưởng lập team, định hướng chung và biểu quyết nội dung cần thiết.</li>
+                                <li>Trao đổi, chia sẻ kiến thức chuyên sâu về chủ đề quay chụp thực chiến.</li>
+                                <li>Thực hành quay chụp trực tiếp tại chỗ và mang file về biên tập.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. TAB THẢO LUẬN CHAT REAL-TIME -->
+            <section id="pane-chat" class="workspace-tab-pane active md:flex w-full md:w-[45%] flex-col bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden h-full relative">
+                <div onclick="window.openOnlineModal()" class="px-3 md:px-4 py-2.5 md:py-3 border-b border-slate-100 bg-slate-50 flex justify-between items-center shrink-0 cursor-pointer hover:bg-slate-100 transition-colors">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800">#Production-Team</h3>
+                        <span class="text-[10px] text-emerald-600 font-medium flex items-center mt-0.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> 
+                            <span id="chatOnlineStatus">Đang kết nối...</span> <i class="fas fa-chevron-down text-[8px] ml-1 text-slate-400"></i>
+                        </span>
+                    </div>
+                    <div class="flex space-x-1">
+                        <button class="p-1.5 text-slate-400 hover:bg-slate-200 rounded"><i class="fas fa-cog text-xs"></i></button>
+                    </div>
+                </div>
+
+                <div id="chatBox" class="flex-1 p-3 md:p-4 overflow-y-auto space-y-4 md:space-y-5 flex flex-col custom-scrollbar">
+                    <div class="text-center text-xs text-slate-400 my-4"><i class="fas fa-spinner fa-spin mr-1"></i> Đang tải dữ liệu...</div>
+                </div>
+
+                <div class="p-2 md:p-3 bg-white border-t border-slate-100 shrink-0">
+                    <div class="flex items-center bg-slate-50 border border-slate-200 rounded-full px-2 py-1 md:py-1.5 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-400 transition-all">
+                        <button class="text-slate-400 hover:text-[#133A66] p-2 mr-1"><i class="fas fa-paperclip"></i></button>
+                        <input type="text" id="chatInput" placeholder="Gõ tin nhắn..." class="flex-1 bg-transparent border-none focus:outline-none text-xs md:text-sm text-slate-800 py-2">
+                        <button id="btnSendChat" class="bg-[#133A66] hover:bg-[#0E2C4F] text-white p-2.5 rounded-full ml-1 md:ml-2 shadow-sm transition-colors flex items-center justify-center">
+                            <i class="fas fa-paper-plane text-xs md:text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL DANH SÁCH ONLINE -->
+    <div id="onlineModal" class="modal-overlay" onclick="if(event.target === this) window.closeOnlineModal()">
+        <div class="modal-box flex flex-col">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-3 shrink-0">
+                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Đang Trực Tuyến (<span id="modalOnlineCount">0</span>)
+                </h3>
+                <button onclick="window.closeOnlineModal()" class="text-slate-400 hover:text-red-500"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="onlineUsersList" class="flex-1 overflow-y-auto space-y-1 custom-scrollbar pr-1"></div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS ĐIỀU KHIỂN GIAO DIỆN & MOBILE TABS -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('active');
+        }
+
+        // Logic chuyển đổi 3 Tab trên Mobile
+        function switchMobileTab(paneId) {
+            const paneChat = document.getElementById('pane-chat');
+            const paneNotif = document.getElementById('pane-notif');
+            const paneSched = document.getElementById('pane-sched');
+
+            const mBtnChat = document.getElementById('mBtnChat');
+            const mBtnNotif = document.getElementById('mBtnNotif');
+            const mBtnSched = document.getElementById('mBtnSched');
+
+            // Reset desktop display fix (trên desktop luôn hiện cả 2 cột)
+            if (window.innerWidth >= 768) return;
+
+            paneChat.classList.remove('active');
+            paneNotif.classList.remove('active');
+            paneSched.classList.remove('active');
+
+            mBtnChat.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 flex items-center justify-center gap-1.5 transition-all";
+            mBtnNotif.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 flex items-center justify-center gap-1.5 transition-all";
+            mBtnSched.className = "flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 flex items-center justify-center gap-1.5 transition-all";
+
+            if (paneId === 'tab-chat') {
+                paneChat.classList.add('active');
+                mBtnChat.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-[#133A66] text-white flex items-center justify-center gap-1.5 transition-all shadow-sm";
+            } else if (paneId === 'tab-notif') {
+                paneNotif.classList.add('active');
+                mBtnNotif.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-[#133A66] text-white flex items-center justify-center gap-1.5 transition-all shadow-sm";
+            } else if (paneId === 'tab-sched') {
+                paneSched.classList.add('active');
+                mBtnSched.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-[#133A66] text-white flex items-center justify-center gap-1.5 transition-all shadow-sm";
+            }
+        }
+
+        window.openOnlineModal = function() {
+            document.getElementById('onlineModal').style.display = 'flex';
+        };
+        window.closeOnlineModal = function() {
+            document.getElementById('onlineModal').style.display = 'none';
+        };
+    </script>
+
+    <!-- FIREBASE & NOTIFICATION LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, deleteDoc, query, orderBy, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+            authDomain: "saovn-project.firebaseapp.com",
+            projectId: "saovn-project",
+            storageBucket: "saovn-project.firebasestorage.app",
+            messagingSenderId: "194928117396",
+            appId: "1:194928117396:web:642612a60105add5639681",
+            measurementId: "G-L7Y106VT85"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserData = null;
+
+        // Xin cấp quyền Web Notification
+        document.addEventListener("DOMContentLoaded", () => {
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+        });
+
+        function showBrowserNotification(title, bodyText) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, {
+                    body: bodyText,
+                    icon: "https://ui-avatars.com/api/?name=SAOVN&background=133A66&color=fff"
+                });
+            }
+        }
+
+        const positionMap = {
+            "photo": "Chụp Ảnh (Photographer)",
+            "cam": "Quay Phim (Camera Operator)",
+            "edit": "Hậu Kỳ & Biên Tập (Editor)",
+            "content": "Sáng Tạo Nội Dung (Content)",
+            "model": "Người Mẫu (Model/Talent)",
+            "makeup": "Makeup & Styling"
+        };
+
+        window.deleteChat = async function(docId) {
+            if(confirm("Admin: Bạn chắc chắn muốn xóa tin nhắn này khỏi hệ thống?")) {
+                try {
+                    await deleteDoc(doc(db, "chats", docId));
+                } catch(e) {
+                    alert("Lỗi: Bạn không có quyền xóa tin nhắn này!");
+                    console.error(e);
+                }
+            }
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user || !user.emailVerified) {
+                window.location.replace("/media/login.html");
+                return;
+            }
+
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    currentUserData = userDoc.data();
+                    currentUserData.uid = user.uid; 
+
+                    const nameParts = currentUserData.fullName.split(' ');
+                    const initials = (nameParts.length >= 2 ? nameParts[0][0] + nameParts[nameParts.length-1][0] : nameParts[0].substring(0, 2)).toUpperCase();
+
+                    document.getElementById('userName').innerText = currentUserData.fullName;
+                    document.getElementById('userAvatar').innerText = initials;
+                    
+                    let roleStr = positionMap[currentUserData.position] || currentUserData.position || "Thành Viên Media";
+                    if(currentUserData.role === 'admin') roleStr = "Admin Hệ Thống";
+                    document.getElementById('userRole').innerText = roleStr;
+                    
+                    const userRef = doc(db, "users", user.uid);
+                    await updateDoc(userRef, { isOnline: true, lastActive: serverTimestamp() });
+
+                    const setOffline = () => { updateDoc(userRef, { isOnline: false }); };
+                    window.addEventListener('beforeunload', setOffline);
+                    document.addEventListener('visibilitychange', () => {
+                        if (document.visibilityState === 'hidden') setOffline();
+                        else updateDoc(userRef, { isOnline: true, lastActive: serverTimestamp() });
+                    });
+
+                    initChat();
+                    initPresence();
+                }
+            } catch (error) {
+                console.error("Lỗi:", error);
+            }
+        });
+
+        function initPresence() {
+            const qOnline = query(collection(db, "users"), where("isOnline", "==", true));
+            onSnapshot(qOnline, (snapshot) => {
+                const count = snapshot.size;
+                
+                document.getElementById('kpiOnlineCount').innerText = count;
+                document.getElementById('chatOnlineStatus').innerText = `${count} Hoạt động`;
+                document.getElementById('modalOnlineCount').innerText = count;
+
+                let html = '';
+                snapshot.forEach(doc => {
+                    const u = doc.data();
+                    const nParts = u.fullName.split(' ');
+                    const init = (nParts.length >= 2 ? nParts[0][0] + nParts[nParts.length-1][0] : nParts[0].substring(0, 2)).toUpperCase();
+                    
+                    let userTitle = positionMap[u.position] || "Media Team";
+                    if(u.role === 'admin') userTitle = "Admin Hệ Thống";
+
+                    html += `
+                        <div class="flex items-center space-x-3 p-2 hover:bg-slate-50 rounded-lg transition-colors border border-transparent hover:border-slate-100">
+                            <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold shrink-0 relative">
+                                ${init}
+                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                            </div>
+                            <div class="flex flex-col overflow-hidden">
+                                <span class="text-xs font-bold text-slate-700 truncate">${u.fullName}</span>
+                                <span class="text-[10px] text-slate-400 truncate">${userTitle}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('onlineUsersList').innerHTML = html;
+            });
+        }
+
+        const chatBox = document.getElementById('chatBox');
+        const chatInput = document.getElementById('chatInput');
+        const btnSendChat = document.getElementById('btnSendChat');
+
+        let isInitialChatLoad = true;
+
+        function initChat() {
+            const q = query(collection(db, "chats"), orderBy("timestamp", "asc"));
+            
+            onSnapshot(q, (snapshot) => {
+                chatBox.innerHTML = ''; 
+                if (snapshot.empty) {
+                    chatBox.innerHTML = '<div class="text-center text-xs text-slate-400 mt-4">Kênh truyền thông đã mở.</div>';
+                }
+
+                snapshot.forEach((doc) => {
+                    renderMessage(doc.data(), doc.id);
+                });
+                
+                if (!isInitialChatLoad && snapshot.docChanges().some(change => change.type === 'added')) {
+                    const changes = snapshot.docChanges();
+                    const latestChange = changes[changes.length - 1];
+                    if (latestChange && latestChange.type === 'added') {
+                        const msgData = latestChange.doc.data();
+                        if (currentUserData && msgData.uid !== currentUserData.uid) {
+                            showBrowserNotification(`💬 Tin nhắn mới từ ${msgData.senderName}`, msgData.text);
+                        }
+                    }
+                }
+                isInitialChatLoad = false;
+
+                setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+            });
+        }
+
+        function renderMessage(message, docId) {
+            const isMe = message.uid === currentUserData.uid;
+            const isAdmin = currentUserData.role === 'admin';
+            
+            let timeString = 'Đang gửi...';
+            if (message.timestamp) {
+                const date = message.timestamp.toDate();
+                timeString = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            }
+
+            let deleteBtnHtml = '';
+            if (isAdmin) {
+                deleteBtnHtml = `<button onclick="window.deleteChat('${docId}')" title="Xóa tin nhắn" class="text-red-300 hover:text-red-500 px-1 ml-1 cursor-pointer transition-colors"><i class="fas fa-trash text-[10px]"></i></button>`;
+            }
+
+            const div = document.createElement('div');
+            if (isMe) {
+                div.className = "flex items-start space-x-2 md:space-x-3 flex-row-reverse space-x-reverse";
+                div.innerHTML = `
+                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#133A66] flex items-center justify-center font-bold text-white text-[10px] md:text-xs shadow-sm shrink-0">
+                        ${message.initials || 'ME'}
+                    </div>
+                    <div class="flex flex-col items-end max-w-[85%]">
+                        <span class="text-[9px] md:text-[10px] font-semibold text-[#133A66] mb-1">
+                            ${message.senderName} <span class="font-normal text-slate-400 mr-1">${timeString}</span> ${deleteBtnHtml}
+                        </span>
+                        <div class="bg-[#133A66] text-white text-[11px] md:text-xs px-3 py-2 rounded-2xl rounded-tr-none shadow-sm leading-relaxed break-words whitespace-pre-wrap">${message.text}</div>
+                    </div>
+                `;
+            } else {
+                div.className = "flex items-start space-x-2 md:space-x-3";
+                div.innerHTML = `
+                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-200 text-slate-600 border border-slate-300 flex items-center justify-center font-bold text-[10px] md:text-xs shadow-sm shrink-0">
+                        ${message.initials || 'U'}
+                    </div>
+                    <div class="flex flex-col items-start max-w-[85%]">
+                        <span class="text-[9px] md:text-[10px] font-semibold text-slate-500 mb-1">
+                            ${message.senderName} <span class="font-normal text-slate-400 ml-1">${timeString}</span> ${deleteBtnHtml}
+                        </span>
+                        <div class="bg-slate-100 text-slate-800 text-[11px] md:text-xs px-3 py-2 rounded-2xl rounded-tl-none shadow-sm leading-relaxed break-words whitespace-pre-wrap">${message.text}</div>
+                    </div>
+                `;
+            }
+            chatBox.appendChild(div);
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || !currentUserData) return;
+
+            chatInput.value = ''; 
+            const nameParts = currentUserData.fullName.split(' ');
+            const initials = (nameParts.length >= 2 ? nameParts[0][0] + nameParts[nameParts.length-1][0] : nameParts[0].substring(0, 2)).toUpperCase();
+
+            try {
+                await addDoc(collection(db, "chats"), {
+                    uid: currentUserData.uid,
+                    senderName: currentUserData.fullName,
+                    initials: initials,
+                    text: text,
+                    timestamp: serverTimestamp()
+                });
+            } catch (error) {
+                console.error("Lỗi:", error);
+                alert("Lỗi kết nối. Vui lòng kiểm tra lại mạng hoặc phân quyền hệ thống!");
+            }
+        }
+
+        btnSendChat.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
+        });
+
+        document.getElementById('btnLogout').addEventListener('click', async () => {
+            if(currentUserData) {
+                await updateDoc(doc(db, "users", currentUserData.uid), { isOnline: false });
+            }
+            signOut(auth).then(() => { window.location.replace("/media/login.html"); });
+        });
+    </script>
+</body>
+</html>
