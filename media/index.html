@@ -27,7 +27,6 @@
         .sidebar-overlay { display: none; }
         .sidebar-overlay.active { display: block; }
 
-        /* Tab nội dung chuyển đổi mượt mà */
         .feed-tab-content { display: none; animation: fadeIn 0.2s ease-in-out; }
         .feed-tab-content.active { display: flex; flex-direction: column; gap: 12px; }
 
@@ -157,10 +156,9 @@
 
         <main class="flex-1 flex flex-col md:flex-row overflow-hidden p-3 md:p-6 gap-4 md:gap-6">
             
-            <!-- CỘT TRÁI: KHUNG THÔNG BÁO TÍCH HỢP TAB (LUỒNG VIỆC & LỊCH HOẠT ĐỘNG) -->
+            <!-- CỘT TRÁI: KHUNG THÔNG BÁO TÍCH HỢP TAB -->
             <section class="w-full md:w-[55%] flex flex-col h-[45%] md:h-full bg-white md:bg-transparent rounded-xl shadow-sm md:shadow-none border border-slate-200 md:border-none p-3 md:p-0">
                 
-                <!-- Thanh tiêu đề & Tabs chuyển đổi -->
                 <div class="flex items-center justify-between mb-3 md:mb-4 border-b border-slate-200 pb-2">
                     <div class="flex space-x-2">
                         <button onclick="switchFeedTab('tasks')" id="btnTabTasks" class="text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg bg-[#133A66] text-white shadow-sm transition-all">
@@ -175,7 +173,7 @@
                     </button>
                 </div>
 
-                <!-- NỘI DUNG TAB 1: LUỒNG VIỆC (TASKS) -->
+                <!-- TAB 1: LUỒNG VIỆC -->
                 <div id="feedTasks" class="feed-tab-content active flex-1 overflow-y-auto pr-1 md:pr-2 custom-scrollbar">
                     <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
@@ -193,29 +191,10 @@
                             </p>
                         </div>
                     </div>
-
-                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
-                        <div class="flex justify-between items-start mb-2 pl-2">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-6 h-6 bg-purple-100 rounded flex items-center justify-center text-xs">✂️</div>
-                                <span class="text-xs font-bold text-slate-700 truncate">Hậu Kỳ MV Ca Nhạc</span>
-                            </div>
-                            <span class="text-[9px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">2 giờ trước</span>
-                        </div>
-                        <div class="pl-8">
-                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Kiểm tra bản nháp Draft 02</h3>
-                            <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
-                                File render đã nén thành công trên NAS. Bộ phận Color Grading tiến hành đổ màu theo đúng Moodboard.
-                            </p>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- NỘI DUNG TAB 2: LỊCH HOẠT ĐỘNG & LỊCH QUAY (SCHEDULE) -->
+                <!-- TAB 2: LỊCH HOẠT ĐỘNG -->
                 <div id="feedSchedule" class="feed-tab-content flex-1 overflow-y-auto pr-1 md:pr-2 custom-scrollbar">
-                    
-                    <!-- Lịch 1: Call Sheet Quay Hình -->
                     <div class="erp-card bg-white border border-slate-200 rounded-xl p-3.5 md:p-4 shadow-sm relative overflow-hidden border-l-4 border-l-emerald-500">
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex items-center space-x-2">
@@ -229,38 +208,7 @@
                             <div class="flex items-center gap-2"><i class="fas fa-users text-blue-500 w-4"></i> <span><b>Ekip chính:</b> Tổ Photo, Tổ Makeup & Model A</span></div>
                         </div>
                     </div>
-
-                    <!-- Lịch 2: Lịch Họp / Tổng Duyệt -->
-                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3.5 md:p-4 shadow-sm relative overflow-hidden border-l-4 border-l-amber-500">
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="flex items-center space-x-2">
-                                <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase font-mono">📅 25/03</span>
-                                <span class="text-xs font-bold text-slate-800">Họp Kiểm Duyệt Kịch Bản TVC</span>
-                            </div>
-                            <span class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-bold">14:00 - 15:30</span>
-                        </div>
-                        <div class="text-xs text-slate-600 space-y-1.5 pl-1">
-                            <div class="flex items-center gap-2"><i class="fas fa-video text-indigo-500 w-4"></i> <span><b>Hình thức:</b> Họp Online qua phòng họp chung</span></div>
-                            <div class="flex items-center gap-2"><i class="fas fa-user-tie text-emerald-500 w-4"></i> <span><b>Chủ trì:</b> Giám Đốc Sản Xuất & Tổ Content</span></div>
-                        </div>
-                    </div>
-
-                    <!-- Lịch 3: Lịch Đào Tạo Academy -->
-                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3.5 md:p-4 shadow-sm relative overflow-hidden border-l-4 border-l-indigo-500">
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="flex items-center space-x-2">
-                                <span class="bg-indigo-100 text-indigo-800 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase font-mono">📅 28/03</span>
-                                <span class="text-xs font-bold text-slate-800">Workshop: Kỹ Thuật Color Grading Nâng Cao</span>
-                            </div>
-                            <span class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-bold">20:00 - 22:00</span>
-                        </div>
-                        <div class="text-xs text-slate-600 space-y-1.5 pl-1">
-                            <div class="flex items-center gap-2"><i class="fas fa-graduation-cap text-purple-500 w-4"></i> <span><b>Đối tượng:</b> Toàn bộ nhân sự khối Hậu Kỳ</span></div>
-                        </div>
-                    </div>
-
                 </div>
-
             </section>
 
             <!-- CỘT PHẢI: KHÔNG GIAN THẢO LUẬN & CHAT REAL-TIME -->
@@ -309,7 +257,6 @@
         </div>
     </div>
 
-    <!-- SCRIPTS ĐIỀU KHIỂN -->
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -318,7 +265,6 @@
             overlay.classList.toggle('active');
         }
 
-        // Logic chuyển đổi giữa tab Luồng Việc và Lịch Hoạt Động
         function switchFeedTab(tabName) {
             const btnTasks = document.getElementById('btnTabTasks');
             const btnSchedule = document.getElementById('btnTabSchedule');
@@ -389,6 +335,7 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (!user || !user.emailVerified) {
+                // ĐÃ SỬA: Dùng đường dẫn tương đối để đá về đúng thư mục media/login.html trên Vercel
                 window.location.replace("login.html");
                 return;
             }
@@ -556,6 +503,7 @@
             if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
         });
 
+        // ĐÃ SỬA: Đăng xuất sẽ đẩy về đúng login.html trong cùng thư mục media/
         document.getElementById('btnLogout').addEventListener('click', async () => {
             if(currentUserData) {
                 await updateDoc(doc(db, "users", currentUserData.uid), { isOnline: false });
