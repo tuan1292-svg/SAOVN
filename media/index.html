@@ -336,7 +336,7 @@
         onAuthStateChanged(auth, async (user) => {
             if (!user || !user.emailVerified) {
                 // ĐÃ SỬA: Dùng đường dẫn tương đối để đá về đúng thư mục media/login.html trên Vercel
-                window.location.replace("login.html");
+                window.location.replace("/media/login.html");
                 return;
             }
 
@@ -508,7 +508,7 @@
             if(currentUserData) {
                 await updateDoc(doc(db, "users", currentUserData.uid), { isOnline: false });
             }
-            signOut(auth).then(() => { window.location.replace("login.html"); });
+            signOut(auth).then(() => { window.location.replace("/media/login.html"); });
         });
     </script>
 </body>
