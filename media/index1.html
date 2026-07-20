@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAO VN - Media Team Recruitment Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .glass-panel {
+            background: rgba(11, 22, 43, 0.45);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(6, 182, 212, 0.15);
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-left-color: #06b6d4;
+            color: #22d3ee;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: grid;
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(12px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        /* Custom Neon Glows */
+        .neon-glow-cyan {
+            box-shadow: 0 0 30px -5px rgba(6, 182, 212, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-[#060b13] via-[#0b1528] to-[#041f3a] text-slate-100 font-sans antialiased selection:bg-cyan-500 selection:text-slate-900">
+
+    <!-- NAVIGATION MENU -->
+    <nav class="w-full max-w-7xl mx-auto px-8 py-6 flex justify-between items-center border-b border-cyan-500/10">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-bold text-xl tracking-wider text-white shadow-lg shadow-cyan-500/20">S</div>
+            <span class="text-xl font-bold tracking-widest bg-gradient-to-r from-white via-slate-200 to-cyan-400 bg-clip-text text-transparent">SAO<span class="text-cyan-400">VN</span> MEDIA HUB</span>
+        </div>
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide text-slate-300">
+            <a href="#" class="hover:text-cyan-400 transition-colors">Tầm Nhìn</a>
+            <a href="#" class="hover:text-cyan-400 transition-colors">Học Viện Academy</a>
+            <a href="#" class="hover:text-cyan-400 transition-colors">Dự Án Cộng Đồng</a>
+            <a href="#" class="text-cyan-400 border-b-2 border-cyan-400/50 pb-1">Tuyển Dụng Media</a>
+        </div>
+        <a href="/media/login.html" class="px-5 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-sm font-medium tracking-wide transition-all shadow-lg shadow-cyan-500/5 active:scale-95">
+            Gia Nhập Ngay
+        </a>
+    </nav>
+
+    <!-- HERO TEXT -->
+    <header class="text-center max-w-4xl mx-auto mt-12 mb-10 px-4">
+        <span class="px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20">Kỷ Nguyên Sáng Tạo Hệ Sinh Thái SAOVN</span>
+        <h1 class="text-4xl md:text-5xl font-black tracking-tight mt-5 mb-5 leading-tight">
+            Đột Phá Năng Lực Sáng Tạo <br>
+            <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-400 bg-clip-text text-transparent">Làm Chủ Chính Sự Nghiệp Của Bản Thân Bạn</span>
+        </h1>
+        <p class="text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            Áp lực chi phí, thiếu định hướng thực chiến và sự đơn độc đang kìm hãm bạn? Hệ sinh thái Media Hub của chúng tôi được thiết kế để đập tan các rào cản lớn này.
+        </p>
+    </header>
+
+    <!-- MAIN INTERACTIVE HUB (LANDSCAPE SYSTEM) -->
+    <main class="w-full max-w-6xl mx-auto mb-20 px-4">
+        <!-- Main Panel Grid Layout (Landscape) -->
+        <div class="glass-panel rounded-3xl overflow-hidden neon-glow-cyan grid grid-cols-1 md:grid-cols-12 min-h-[580px]">
+            
+            <!-- LEFT SIDEBAR: EQUIPMENT NAVIGATION TABS -->
+            <div class="md:col-span-4 bg-black/25 border-r border-cyan-500/10 flex flex-col justify-between py-6">
+                <div class="space-y-1 px-3" id="tab-headers">
+                    <div class="px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Thách thức & Giải pháp</div>
+                    
+                    <!-- Tab 1: Camera -->
+                    <button onclick="switchTab(event, 'tab-camera')" class="tab-btn active w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-camera text-xl text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-cyan-400/60 uppercase tracking-wider">Vấn đề 01</div>
+                            <div class="text-sm font-bold text-slate-200 group-hover:text-cyan-400 transition-colors">Gánh Nặng Thiết Bị</div>
+                        </div>
+                    </button>
+
+                    <!-- Tab 2: Gimbal -->
+                    <button onclick="switchTab(event, 'tab-gimbal')" class="tab-btn w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left text-slate-400 hover:text-slate-200 transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-mobile-screen-button rotate-12 text-xl text-slate-400 group-hover:text-teal-400 transition-colors"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-slate-500 uppercase tracking-wider">Vấn đề 02</div>
+                            <div class="text-sm font-bold text-slate-300 group-hover:text-teal-400 transition-colors">Làm Cho Người Khác</div>
+                        </div>
+                    </button>
+
+                    <!-- Tab 3: Lighting -->
+                    <button onclick="switchTab(event, 'tab-lighting')" class="tab-btn w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left text-slate-400 hover:text-slate-200 transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-lightbulb text-xl text-slate-400 group-hover:text-amber-400 transition-colors"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-slate-500 uppercase tracking-wider">Vấn đề 03</div>
+                            <div class="text-sm font-bold text-slate-300 group-hover:text-amber-400 transition-colors">Lộ Trình Định Hướng</div>
+                        </div>
+                    </button>
+
+                    <!-- Tab 4: Drone -->
+                    <button onclick="switchTab(event, 'tab-drone')" class="tab-btn w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left text-slate-400 hover:text-slate-200 transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-users text-xl text-slate-400 group-hover:text-purple-400 transition-colors"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-slate-500 uppercase tracking-wider">Vấn đề 04</div>
+                            <div class="text-sm font-bold text-slate-300 group-hover:text-purple-400 transition-colors">Cộng Đồng & Tương Tác</div>
+                        </div>
+                    </button>
+
+                    <!-- Tab 5: Workstation -->
+                    <button onclick="switchTab(event, 'tab-workstation')" class="tab-btn w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left text-slate-400 hover:text-slate-200 transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-chart-line text-xl text-slate-400 group-hover:text-emerald-400 transition-colors"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-slate-500 uppercase tracking-wider">Vấn đề 05</div>
+                            <div class="text-sm font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">Làm Cho Chính Bạn</div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Small Branding Info at Sidebar Bottom -->
+                <div class="px-6 pt-4 border-t border-cyan-500/5 hidden md:block">
+                    <div class="flex items-center gap-2 text-xs text-slate-500 font-mono">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> SAOVN INFRASTRUCTURE
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: DYNAMIC TAB CONTENT DISPLAY -->
+            <div class="md:col-span-8 p-8 md:p-12 flex flex-col justify-center" id="tab-contents">
+
+                <!-- 1. Vấn đề Thiết bị (Camera Content) -->
+                <div id="tab-camera" class="tab-content active grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> KHÔNG CẦN TRĂM TRIỆU MUA THIẾT BỊ
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Giải quyết bài toán <span class="text-cyan-400">Gánh nặng chi phí máy móc</span> công nghệ cao
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Rất nhiều bạn trẻ đam mê sáng tạo nội dung phải bỏ cuộc sớm chỉ vì không có đủ tài chính sắm sửa các dòng máy quay Sony, Canon đời mới hay các hệ thống ống kính đắt đỏ.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 to-slate-900/40 border border-cyan-500/10 text-slate-300">
+                            <div class="font-bold text-cyan-400 text-sm mb-1">Hạ tầng hỗ trợ từ Team Media:</div>
+                            <p class="text-sm text-slate-400">Chúng tôi tập hợp hệ thống kho thiết bị media chuyên nghiệp, máy ảnh, ống kính, thiết bị chống rung tối tân nhất để phục vụ trực tiếp cho các chiến dịch truyền thông lớn nhỏ.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Vấn đề Chi phí Vận hành (Gimbal Content) -->
+                <div id="tab-gimbal" class="tab-content grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> THAY VÌ LÀM THUÊ CHO CÔNG TY CỦA NGƯỜI KHÁC - THÌ MÌNH XÂY DỰNG LUÔN SỰ NGHIỆP CỦA BẢN THÂN
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Đập tan áp lực <span class="text-teal-400">Làm việc phải chịu sự gò bó</span> khó chịu
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Đi làm thuê cho tư bản và mông lung về tương lai bản thân, thêm vào đó là không được cháy hết mình với đam mê và sáng tạo cao trong công việc.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-teal-950/40 to-slate-900/40 border border-teal-500/10 text-slate-300">
+                            <div class="font-bold text-teal-400 text-sm mb-1">Phương thức hoạt động tối ưu:</div>
+                            <p class="text-sm text-slate-400">Làm việc và từng ngày nhìn đứa con tinh thần của mình lớn lên và phát triển nổi tiếng, rồi sẽ đến một ngày bạn tự hào rằng bản thân đã cùng chúng mình xây dựng nên chính nơi làm việc mà nhiều người mong ước này.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Vấn đề Thiếu Kiến Thức Định Hướng (Lighting Content) -->
+                <div id="tab-lighting" class="tab-content grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> LỘ TRÌNH THỰC CHIẾN 
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Giải quyết tình trạng <span class="text-amber-400">Mất định hướng & Lý thuyết suông</span>
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Không còn lạc lối giữa hàng ngàn kiến thức trôi nổi trên internet hoặc tốn kém tiền bạc vào các khóa học đắt đỏ nhưng thiếu tính thực tế, không thể ứng dụng tạo ra tiền ngay.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 to-slate-900/40 border border-amber-500/10 text-slate-300">
+                            <div class="font-bold text-amber-400 text-sm mb-1">Học viện Academy cầm tay chỉ việc:</div>
+                            <p class="text-sm text-slate-400">Thành viên được học thông qua các case-study thực tế trên chính những kiến thức thực chiến của người đi trước và được thực hành làm dự án hàng tuần.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Vấn đề Tương Tác Ảo, Một Mình (Drone Content) -->
+                <div id="tab-drone" class="tab-content grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> TƯƠNG TÁC THỰC TẾ - THƯƠNG HIỆU BỀN VỮNG
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Xóa bỏ rào cản <span class="text-purple-400">Làm nội dung đơn độc, tương tác ảo</span>
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Tình trạng cày cuốc ngày đêm nhưng video bị bóp tương tác, không có cộng đồng nền tảng làm đòn bẩy đứng sau hỗ trợ sẽ khiến thương hiệu cá nhân của bạn dễ dàng bị chìm nghỉm.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-purple-950/40 to-slate-900/40 border border-purple-500/10 text-slate-300">
+                            <div class="font-bold text-purple-400 text-sm mb-1">Đòn bẩy cộng đồng SAOVN:</div>
+                            <p class="text-sm text-slate-400">Các sản phẩm hình ảnh, video, film, kịch bản của bạn sản xuất sẽ được tiếp cận trực tiếp mạng lưới thành viên thực tế qua các dự án, tạo tương tác thật, giá trị thật.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Vấn đề Tài chính & Thời gian (Workstation Content) -->
+                <div id="tab-workstation" class="tab-content grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> PHÁT TRIỂN THƯƠNG HIỆU CHUNG SONG SONG THƯƠNG HIỆU CÁ NHÂN
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Cứ làm cho công ty rồi cái thương hiệu riêng cá nhân của mình <span class="text-emerald-400"> làm sao phát triển</span>
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Đi làm cho tư bản cứ cắm mặt cày mấy chục năm xong khi ra ngoài mọi người nhiều khi vẫn chẳng biết mình là ai.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-emerald-950/40 to-slate-900/40 border border-emerald-500/10 text-slate-300">
+                            <div class="font-bold text-emerald-400 text-sm mb-1">Sắp xếp phát triển thương hiệu chung SAOVN và riêng cho từng thành viên:</div>
+                            <p class="text-sm text-slate-400">Chỉ với 100.000 VND/tháng bạn và mọi người cùng xây cái chung là SAOVN rồi từng thành viên trong SAOVN đều được cả team hỗ trợ phát triển thương hiệu của riêng bạn. Khoản tiền góp vào cũng dùng để phục vụ cho chính bạn, mà còn được thống kê lại để dựa vào đó tính cổ phần của bạn trong SAOVN.Và còn nhiều lợi ích khác chưa được nhắc tới.Nếu có thắc mắc bạn cứ hỏi trực tiếp người sáng lập nhé! Còn nếu thấy chung tư tưởng thì hãy nhanh nhanh gia nhập cùng tụi mình nhé!</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- KHUNG LỘ TRÌNH PHÁT TRIỂN (ROADMAP SECTION) -->
+    <section class="w-full max-w-6xl mx-auto mb-24 px-4">
+        <div class="text-center mb-12">
+            <span class="px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20 font-mono">Hành Trình Tăng Trưởng</span>
+            <h2 class="text-3xl md:text-4xl font-black tracking-tight text-white mt-4">
+                Lộ Trình Phát Triển Cùng <span class="text-cyan-400">SAOVN Media Hub</span>
+            </h2>
+            <p class="text-slate-400 text-sm md:text-base max-w-xl mx-auto mt-2">
+                Các mốc tiến trình rõ ràng từ một thành viên mới gia nhập cho đến khi trở thành nhà đồng hành cốt lõi.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Chặng 1 -->
+            <div class="glass-panel p-6 rounded-2xl relative border-t-4 border-t-cyan-400 flex flex-col justify-between group hover:-translate-y-1 transition-transform">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-mono font-bold text-cyan-400 bg-cyan-500/10 px-2.5 py-1 rounded border border-cyan-500/20">CHẶNG 01</span>
+                        <i class="fas fa-user-plus text-cyan-400 text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Gia Nhập & Thấm Nhuần</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Đăng ký tài khoản, xác thực email, truy cập Văn phòng điều hành ERP và kết nối cùng anh em trong hệ thống chat real-time.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-cyan-500/10 text-[11px] text-cyan-300 font-mono flex items-center gap-1.5">
+                    <i class="fas fa-check-circle"></i> Kích hoạt tài khoản ngay
+                </div>
+            </div>
+
+            <!-- Chặng 2 -->
+            <div class="glass-panel p-6 rounded-2xl relative border-t-4 border-t-teal-400 flex flex-col justify-between group hover:-translate-y-1 transition-transform">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-mono font-bold text-teal-400 bg-teal-500/10 px-2.5 py-1 rounded border border-teal-500/20">CHẶNG 02</span>
+                        <i class="fas fa-graduation-cap text-teal-400 text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Học Viện & Thực Chiến</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Tham gia các mô-đun học tập thực chiến qua Học viện Academy, nhận task hàng tuần và làm quen với kho thiết bị Media Hub.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-cyan-500/10 text-[11px] text-teal-300 font-mono flex items-center gap-1.5">
+                    <i class="fas fa-check-circle"></i> Nâng cao kỹ năng chuyên môn
+                </div>
+            </div>
+
+            <!-- Chặng 3 -->
+            <div class="glass-panel p-6 rounded-2xl relative border-t-4 border-t-purple-400 flex flex-col justify-between group hover:-translate-y-1 transition-transform">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-mono font-bold text-purple-400 bg-purple-500/10 px-2.5 py-1 rounded border border-purple-500/20">CHẶNG 03</span>
+                        <i class="fas fa-rocket text-purple-400 text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Đồng Xây Thương Hiệu</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Tham gia các chiến dịch sản xuất chung của SAOVN, trên đủ mọi phương diện, chụp ảnh, quay video, làm film, biên kịch, biên tập, người mẫu, makeup,..., đồng thời được cả team hỗ trợ bứt phá thương hiệu cá nhân riêng của bạn.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-cyan-500/10 text-[11px] text-purple-300 font-mono flex items-center gap-1.5">
+                    <i class="fas fa-check-circle"></i> Phủ sóng giá trị cá nhân
+                </div>
+            </div>
+
+            <!-- Chặng 4 -->
+            <div class="glass-panel p-6 rounded-2xl relative border-t-4 border-t-emerald-400 flex flex-col justify-between group hover:-translate-y-1 transition-transform">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">CHẶNG 04</span>
+                        <i class="fas fa-handshake-angle text-emerald-400 text-lg"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Cổ Phần & Bền Vững</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Góp sức xây dựng hệ sinh thái chung, tích lũy giá trị đóng góp để ghi nhận cổ phần và cùng chia sẻ dòng tiền bền vững lâu dài.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-cyan-500/10 text-[11px] text-emerald-300 font-mono flex items-center gap-1.5">
+                    <i class="fas fa-check-circle"></i> Đồng sở hữu nền tảng
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="join" class="text-center py-12 border-t border-cyan-500/5 bg-black/40">
+        <div class="mb-6">
+            <a href="/media/login.html" class="px-8 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm tracking-wide transition-all shadow-lg shadow-cyan-500/20 active:scale-95 inline-block">
+                Gia Nhập Ngay Hub Media
+            </a>
+        </div>
+        <p class="text-sm text-slate-500">&copy; 2026 SAOVN Platform. Xây dựng giá trị thực cho cộng đồng.</p>
+    </footer>
+
+    <!-- INTERACTIVE TAB JAVASCRIPT -->
+    <script>
+        function switchTab(event, tabId) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Reset all tab headers style
+            const headers = document.querySelectorAll('.tab-btn');
+            headers.forEach(header => {
+                header.classList.remove('active', 'border-cyan-400', 'text-cyan-400');
+                header.classList.add('border-transparent', 'text-slate-400');
+                
+                // Reset inside wrapper icon style
+                const iconWrapper = header.querySelector('.w-11');
+                iconWrapper.className = "w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0";
+                
+                const icon = iconWrapper.querySelector('i');
+                icon.className = icon.className.replace(/text-(cyan|teal|amber|purple|emerald)-400/, 'text-slate-400');
+            });
+
+            // Show target tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Apply active styles to clicked tab
+            const currentTab = event.currentTarget;
+            currentTab.classList.add('active');
+            
+            // Highlight current icon wrapper color based on the tab
+            const activeIconWrapper = currentTab.querySelector('.w-11');
+            const activeIcon = activeIconWrapper.querySelector('i');
+            
+            if(tabId === 'tab-camera') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-cyan-400');
+            } else if(tabId === 'tab-gimbal') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-teal-500/10 flex items-center justify-center border border-teal-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-teal-400');
+            } else if(tabId === 'tab-lighting') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-amber-400');
+            } else if(tabId === 'tab-drone') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-purple-400');
+            } else if(tabId === 'tab-workstation') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-emerald-400');
+            }
+        }
+    </script>
+</body>
+</html>
