@@ -80,7 +80,7 @@
                 </ul>
             </div>
 
-            <!-- QUẢN LÝ ĐƠN HÀNG (JOB KHÁCH HÀNG) -->
+            <!-- QUẢN LÝ ĐƠN HÀNG (JOB KHÁCH HÀNG) - MỚI BỔ SUNG -->
             <div>
                 <div class="px-3 mb-2">
                     <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Kinh Doanh & Dự Án</span>
@@ -205,7 +205,7 @@
                 <div class="flex items-center justify-between mb-3 md:mb-4 border-b border-slate-200 pb-2">
                     <div class="flex space-x-2">
                         <button onclick="switchFeedTab('tasks')" id="btnTabTasks" class="text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg bg-[#133A66] text-white shadow-sm transition-all">
-                            <i class="fas fa-bullhorn mr-1.5"></i> Bản Tin & Quyền Lợi
+                            <i class="fas fa-tasks mr-1.5"></i> Luồng Việc
                         </button>
                         <button onclick="switchFeedTab('schedule')" id="btnTabSchedule" class="text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-200/60 transition-all">
                             <i class="fas fa-calendar-alt mr-1.5 text-blue-600"></i> Lịch Hoạt Động
@@ -216,100 +216,41 @@
                     </button>
                 </div>
 
-                <!-- TAB 1: BẢN TIN & QUYỀN LỢI -->
-                <div id="feedTasks" class="feed-tab-content active flex-1 overflow-y-auto pr-1 md:pr-2 custom-scrollbar space-y-3">
-                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
-                        <div class="flex justify-between items-start mb-2 pl-2">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-6 h-6 bg-cyan-100 rounded flex items-center justify-center text-xs">💡</div>
-                                <span class="text-xs font-bold text-slate-700">Bài Toán Chi Phí & Giá Trị Thực</span>
-                            </div>
-                            <span class="text-[9px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Ghim</span>
-                        </div>
-                        <div class="pl-8">
-                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Làm một mình tốn kém đến mức nào?</h3>
-                            <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
-                                Nếu tự lập nghiệp 1 mình, tiền mua máy quay, ống kính, thiết bị ánh sáng, thuê studio, thuê mẫu... ngốn hàng trăm triệu đồng chưa chắc đã vận hành nổi. Nhưng tại SAOVN Media Hub, chỉ với khoản đóng góp nhỏ, bạn được <b>cầm thiết bị và thực hành ngay</b> vào các dự án thực tế hàng tuần!
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
-                        <div class="flex justify-between items-start mb-2 pl-2">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-6 h-6 bg-emerald-100 rounded flex items-center justify-center text-xs">🤝</div>
-                                <span class="text-xs font-bold text-slate-700">Cơ Hội Hợp Tác Brand Thời Trang</span>
-                            </div>
-                            <span class="text-[9px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded font-bold">Hot Job</span>
-                        </div>
-                        <div class="pl-8">
-                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Dự án Affiliate Quay Chụp Mảng Thời Trang</h3>
-                            <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
-                                Team hiện đang có Brand thời trang lớn muốn hợp tác sản xuất nội dung. Cơ chế chia lại <b>10% hoa hồng Affiliate</b> cho anh em tham gia triển khai. Đồng thời, toàn bộ sản phẩm ảnh & video từ thực hành hàng tuần sẽ được đẩy lên hệ thống để tiếp cận và <b>nhận job trực tiếp từ khách đặt</b>!
-                            </p>
-                        </div>
-                    </div>
-
+                <!-- TAB 1: LUỒNG VIỆC -->
+                <div id="feedTasks" class="feed-tab-content active flex-1 overflow-y-auto pr-1 md:pr-2 custom-scrollbar">
                     <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
                         <div class="flex justify-between items-start mb-2 pl-2">
                             <div class="flex items-center space-x-2">
-                                <div class="w-6 h-6 bg-blue-100 rounded flex items-center justify-center text-xs">🎓</div>
-                                <span class="text-xs font-bold text-slate-700">Học Tập & Tích Lũy Kinh Nghiệm</span>
+                                <div class="w-6 h-6 bg-blue-100 rounded flex items-center justify-center text-xs">🎬</div>
+                                <span class="text-xs font-bold text-slate-700 truncate">TVC Giày Thể Thao</span>
                             </div>
-                            <span class="text-[9px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Quyền lợi</span>
+                            <span class="text-[9px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Vừa xong</span>
                         </div>
                         <div class="pl-8">
-                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Cầm tay chỉ việc từ người đi trước</h3>
+                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Chốt thiết bị & lịch quay</h3>
                             <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
-                                Phúc lợi cốt lõi của thành viên là được tham gia học tập từ kinh nghiệm thực chiến của những anh em đi trước đã lăn lộn qua nhiều dự án lớn. Không lý thuyết suông, học đến đâu làm được việc và ra tiền đến đó.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
-                        <div class="flex justify-between items-start mb-2 pl-2">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-6 h-6 bg-purple-100 rounded flex items-center justify-center text-xs">🚀</div>
-                                <span class="text-xs font-bold text-slate-700">Đồng Sở Hữu & Tương Lai Bền Vững</span>
-                            </div>
-                            <span class="text-[9px] text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded font-bold">Cổ Phần</span>
-                        </div>
-                        <div class="pl-8">
-                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Được sở hữu cổ phần khi team phát triển mạnh</h3>
-                            <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
-                                Khi team phát triển mạnh, có doanh thu từ các dịch vụ và dự án chung, lợi nhuận sẽ được chia sòng phẳng tương ứng với mức độ đóng góp và cổ phần của từng thành viên. Cùng nhau xây nhà chung để tự hào khẳng định vị thế!
+                                Yêu cầu tổ Quay phim chốt danh sách máy móc (Sony FX3, Gimbal). Tổ Ánh sáng xác nhận layout đèn trước 17:00 hôm nay.
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 2: LỊCH HOẠT ĐỘNG (ĐÃ CẬP NHẬT LỊCH OFFLINE 25/07/2026) -->
-                <div id="feedSchedule" class="feed-tab-content flex-1 overflow-y-auto pr-1 md:pr-2 custom-scrollbar space-y-3">
-                    
-                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3.5 md:p-4 shadow-sm relative overflow-hidden border-l-4 border-l-blue-600">
+                <!-- TAB 2: LỊCH HOẠT ĐỘNG -->
+                <div id="feedSchedule" class="feed-tab-content flex-1 overflow-y-auto pr-1 md:pr-2 custom-scrollbar">
+                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3.5 md:p-4 shadow-sm relative overflow-hidden border-l-4 border-l-emerald-500">
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex items-center space-x-2">
-                                <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase font-mono">📅 25/07/2026</span>
-                                <span class="text-xs font-bold text-slate-800">Buổi Offline Định Hướng & Thực Chiến Media Hub</span>
+                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase font-mono">📅 Ngày mai</span>
+                                <span class="text-xs font-bold text-slate-800">Call Sheet: Quay Lookbook Thời Trang</span>
                             </div>
-                            <span class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-bold">06:00 (Chủ Nhật)</span>
+                            <span class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-bold">08:00 - 16:00</span>
                         </div>
                         <div class="text-xs text-slate-600 space-y-1.5 pl-1">
-                            <div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-red-500 w-4"></i> <span><b>Địa điểm:</b> Trung tâm Quận 1, TP. Hồ Chí Minh</span></div>
-                            <div class="flex items-center gap-2"><i class="fas fa-list-check text-emerald-600 w-4"></i> <span><b>Nội dung chính:</b></span></div>
-                            <ul class="list-disc list-inside pl-5 space-y-1 text-slate-600">
-                                <li>Gặp mặt lần đầu, làm quen và kết nối giữa các thành viên.</li>
-                                <li>Thống nhất tư tưởng lập team, định hướng chung và biểu quyết nội dung cần thiết.</li>
-                                <li>Trao đổi, chia sẻ kiến thức chuyên sâu về chủ đề quay chụp thực chiến.</li>
-                                <li>Thực hành quay chụp trực tiếp tại chỗ và mang file về biên tập.</li>
-                            </ul>
+                            <div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-red-500 w-4"></i> <span><b>Địa điểm:</b> Studio Quận 7, TP.HCM</span></div>
+                            <div class="flex items-center gap-2"><i class="fas fa-users text-blue-500 w-4"></i> <span><b>Ekip chính:</b> Tổ Photo, Tổ Makeup & Model A</span></div>
                         </div>
                     </div>
-
                 </div>
             </section>
 
