@@ -27,9 +27,12 @@
         .sidebar-overlay { display: none; }
         .sidebar-overlay.active { display: block; }
 
-        /* Hệ thống Tab cho Mobile & Desktop */
+        /* Mặc định trên Mobile ẩn các tab, trên Desktop (md) tự động hiện flex để không bị đè */
         .workspace-tab-pane { display: none; }
         .workspace-tab-pane.active { display: flex; flex-direction: column; }
+        @media (min-width: 768px) {
+            .workspace-tab-pane { display: flex !important; flex-direction: column !important; }
+        }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -198,23 +201,23 @@
             </div>
         </div>
 
-        <!-- THANH CHUYỂN ĐỔI TAB TRÊN MOBILE (Hiển thị nổi bật trên điện thoại) -->
+        <!-- THANH CHUYỂN ĐỔI TAB TRÊN MOBILE -->
         <div class="flex md:hidden bg-white border-b border-slate-200 px-2 py-2 shrink-0 justify-around z-20 shadow-xs">
-            <button onclick="switchMobileTab('tab-chat')" id="mBtnChat" class="flex-1 py-2 text-xs font-bold rounded-lg bg-[#133A66] text-white flex items-center justify-center gap-1.5 transition-all shadow-sm">
-                <i class="fas fa-comments"></i> Thảo Luận (<span id="chatBadgeCount">Chat</span>)
+            <button onclick="switchMobileTab('tab-chat')" id="mBtnChat" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 flex items-center justify-center gap-1.5 transition-all">
+                <i class="fas fa-comments"></i> Thảo Luận
             </button>
-            <button onclick="switchMobileTab('tab-notif')" id="mBtnNotif" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 flex items-center justify-center gap-1.5 transition-all">
-                <i class="fas fa-bullhorn text-cyan-600"></i> Thông Báo
+            <button onclick="switchMobileTab('tab-notif')" id="mBtnNotif" class="flex-1 py-2 text-xs font-bold rounded-lg bg-[#133A66] text-white flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                <i class="fas fa-bullhorn text-cyan-300"></i> Thông Báo
             </button>
             <button onclick="switchMobileTab('tab-sched')" id="mBtnSched" class="flex-1 py-2 text-xs font-bold rounded-lg text-slate-600 flex items-center justify-center gap-1.5 transition-all">
-                <i class="fas fa-calendar-alt text-blue-600"></i> Lịch Trình
+                <i class="fas fa-calendar-alt text-blue-300"></i> Lịch Trình
             </button>
         </div>
 
-        <!-- NỘI DUNG CHÍNH (CHIA DẠNG RESPONSIVE CHO CẢ MOBILE & DESKTOP) -->
+        <!-- NỘI DUNG CHÍNH -->
         <main class="flex-1 flex overflow-hidden p-3 md:p-6 gap-4 md:gap-6 relative">
             
-            <!-- 1. TAB THÔNG BÁO (Desktop hiện cố định cột trái, Mobile nằm trong tab pane) -->
+            <!-- 1. TAB THÔNG BÁO (Mặc định active trên mobile) -->
             <section id="pane-notif" class="workspace-tab-pane active md:flex w-full md:w-[55%] flex-col h-full bg-white md:bg-transparent rounded-xl shadow-sm md:shadow-none border border-slate-200 md:border-none p-3 md:p-0 overflow-y-auto md:overflow-hidden custom-scrollbar">
                 
                 <div class="hidden md:flex items-center justify-between mb-3 md:mb-4 border-b border-slate-200 pb-2 shrink-0">
@@ -323,7 +326,7 @@
             </section>
 
             <!-- 3. TAB THẢO LUẬN CHAT REAL-TIME -->
-            <section id="pane-chat" class="workspace-tab-pane active md:flex w-full md:w-[45%] flex-col bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden h-full relative">
+            <section id="pane-chat" class="workspace-tab-pane md:flex w-full md:w-[45%] flex-col bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden h-full relative">
                 <div onclick="window.openOnlineModal()" class="px-3 md:px-4 py-2.5 md:py-3 border-b border-slate-100 bg-slate-50 flex justify-between items-center shrink-0 cursor-pointer hover:bg-slate-100 transition-colors">
                     <div>
                         <h3 class="text-sm font-bold text-slate-800">#Production-Team</h3>
@@ -378,7 +381,7 @@
             overlay.classList.toggle('active');
         }
 
-        // Logic chuyển đổi 3 Tab trên Mobile
+        // Logic chuyển đổi 3 Tab trên Mobile (Đảm bảo khi load trang không bị đè)
         function switchMobileTab(paneId) {
             const paneChat = document.getElementById('pane-chat');
             const paneNotif = document.getElementById('pane-notif');
@@ -388,8 +391,7 @@
             const mBtnNotif = document.getElementById('mBtnNotif');
             const mBtnSched = document.getElementById('mBtnSched');
 
-            // Reset desktop display fix (trên desktop luôn hiện cả 2 cột)
-            if (window.innerWidth >= 768) return;
+            if (window.innerWidth >= 768) return; // Desktop luôn hiện đủ cột
 
             paneChat.classList.remove('active');
             paneNotif.classList.remove('active');
@@ -410,6 +412,13 @@
                 mBtnSched.className = "flex-1 py-2 text-xs font-bold rounded-lg bg-[#133A66] text-white flex items-center justify-center gap-1.5 transition-all shadow-sm";
             }
         }
+
+        // Tự động thiết lập trạng thái ban đầu cho Mobile khi vừa load xong
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.innerWidth < 768) {
+                switchMobileTab('tab-notif'); // Mặc định mở tab Thông báo trên mobile
+            }
+        });
 
         window.openOnlineModal = function() {
             document.getElementById('onlineModal').style.display = 'flex';
