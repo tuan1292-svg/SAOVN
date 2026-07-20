@@ -275,7 +275,7 @@
     // 2. Chuyển hướng người dùng ĐÃ đăng nhập
     onAuthStateChanged(auth, (user) => {
         if (user && user.emailVerified) {
-            window.location.href = "index.html";
+            window.location.href = "workspace.html";
         }
     });
 
@@ -356,7 +356,7 @@
             
             if (user.emailVerified) {
                 await updateMemberCount(user);
-                window.location.href = "index.html"; 
+                window.location.href = "workspace.html"; 
             } else {
                 alert("⚠️ Tài khoản chưa kích hoạt! Hãy kiểm tra Email.");
                 await signOut(auth); 

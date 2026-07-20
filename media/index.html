@@ -3,513 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAOVN ERP - Media Production House</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>SAO VN - Media Team Recruitment Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        
-        body {
-            background-color: #f1f5f9; 
-            font-family: 'Inter', sans-serif;
+        .glass-panel {
+            background: rgba(11, 22, 43, 0.45);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(6, 182, 212, 0.15);
         }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        .erp-card { transition: all 0.2s ease; }
-        .erp-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-left-color: #06b6d4;
+            color: #22d3ee;
         }
-
-        .sidebar-overlay { display: none; }
-        .sidebar-overlay.active { display: block; }
-
-        .feed-tab-content { display: none; animation: fadeIn 0.2s ease-in-out; }
-        .feed-tab-content.active { display: flex; flex-direction: column; gap: 12px; }
-
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px);
-            display: none; align-items: center; justify-content: center; z-index: 1000;
+        .tab-content {
+            display: none;
         }
-        .modal-box {
-            background: #fff; border-radius: 16px; padding: 20px;
-            width: 90%; max-width: 350px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: fadeIn 0.2s ease; position: relative; max-height: 80vh; display: flex; flex-direction: column;
+        .tab-content.active {
+            display: grid;
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(12px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        /* Custom Neon Glows */
+        .neon-glow-cyan {
+            box-shadow: 0 0 30px -5px rgba(6, 182, 212, 0.2);
+        }
     </style>
 </head>
-<body class="text-slate-800 h-screen flex overflow-hidden">
+<body class="min-h-screen bg-gradient-to-br from-[#060b13] via-[#0b1528] to-[#041f3a] text-slate-100 font-sans antialiased selection:bg-cyan-500 selection:text-slate-900">
 
-    <!-- Lớp phủ nền mờ khi mở Menu trên Mobile -->
-    <div id="sidebarOverlay" class="sidebar-overlay fixed inset-0 bg-slate-900/60 z-30 backdrop-blur-sm md:hidden" onclick="toggleSidebar()"></div>
-
-    <!-- 1. THANH SLIDEBAR BÊN TRÁI -->
-    <aside id="sidebar" class="fixed md:relative w-[280px] md:w-[260px] h-full bg-[#133A66] flex flex-col justify-between z-40 shadow-2xl transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shrink-0">
-        
-        <div class="h-16 flex items-center justify-between px-6 border-b border-white/10 bg-[#0E2C4F]">
-            <div class="flex items-center">
-                <div class="w-2.5 h-6 bg-blue-400 rounded-sm mr-2.5"></div>
-                <div>
-                    <span class="text-lg font-bold tracking-widest text-white">SAOVN</span>
-                    <span class="text-[10px] font-semibold text-blue-200 block -mt-1 tracking-wider uppercase">Production Hub</span>
-                </div>
-            </div>
-            <button class="md:hidden text-white/50 hover:text-white" onclick="toggleSidebar()">
-                <i class="fas fa-times text-xl"></i>
-            </button>
+    <!-- NAVIGATION MENU -->
+    <nav class="w-full max-w-7xl mx-auto px-8 py-6 flex justify-between items-center border-b border-cyan-500/10">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-bold text-xl tracking-wider text-white shadow-lg shadow-cyan-500/20">S</div>
+            <span class="text-xl font-bold tracking-widest bg-gradient-to-r from-white via-slate-200 to-cyan-400 bg-clip-text text-transparent">SAO<span class="text-cyan-400">VN</span> MEDIA HUB</span>
         </div>
-
-        <div class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
-            <div>
-                <div class="px-3 mb-2">
-                    <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Quản Trị Hệ Thống</span>
-                </div>
-                <ul class="space-y-1">
-                    <li>
-                        <a href="#" class="flex items-center px-3 py-2.5 text-sm font-semibold rounded-lg bg-blue-500/20 text-blue-300 border border-blue-400/30 shadow-inner">
-                            <span class="mr-3 opacity-90 text-lg">⚙️</span> Quản lý Thiết Bị (Gear)
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div>
-                <div class="px-3 mb-2">
-                    <span class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Phân Hệ Sản Xuất</span>
-                </div>
-                <ul class="space-y-1 text-sm font-medium text-slate-300">
-                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="mr-3 text-sky-400">📋</span> Quản Lý Lịch Quay (Booking)</a></li>
-                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="mr-3 text-amber-400">📁</span> Kho Dữ Liệu (NAS)</a></li>
-                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="mr-3 text-emerald-400">📝</span> Duyệt Kịch Bản</a></li>
-                    <li><a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-white/10 hover:text-white transition-colors"><span class="mr-3 text-indigo-400">🎓</span> Đào Tạo (Academy)</a></li>
-                </ul>
-            </div>
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide text-slate-300">
+            <a href="#" class="hover:text-cyan-400 transition-colors">Tầm Nhìn</a>
+            <a href="#" class="hover:text-cyan-400 transition-colors">Học Viện Academy</a>
+            <a href="#" class="hover:text-cyan-400 transition-colors">Dự Án Cộng Đồng</a>
+            <a href="#" class="text-cyan-400 border-b-2 border-cyan-400/50 pb-1">Tuyển Dụng Media</a>
         </div>
+        <a href="login.html" class="px-5 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-sm font-medium tracking-wide transition-all shadow-lg shadow-cyan-500/5 active:scale-95">
+            Gia Nhập Ngay
+        </a>
+    </nav>
 
-        <!-- Thông tin thành viên & Nút Đăng xuất -->
-        <div class="p-4 bg-[#0E2C4F] border-t border-white/5 flex flex-col gap-3">
-            <div class="flex items-center space-x-3 overflow-hidden">
-                <div id="userAvatar" class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-400 to-indigo-500 flex items-center justify-center font-bold text-white text-sm border border-white/20 shrink-0 shadow-sm">
-                    --
-                </div>
-                <div class="flex-1 overflow-hidden">
-                    <div id="userName" class="text-sm md:text-xs font-bold text-white truncate">Đang tải...</div>
-                    <div id="userRole" class="text-xs md:text-[10px] text-blue-200 truncate font-mono">...</div>
-                </div>
-            </div>
+    <!-- HERO TEXT -->
+    <header class="text-center max-w-4xl mx-auto mt-12 mb-10 px-4">
+        <span class="px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-cyan-400 border border-cyan-500/20">Kỷ Nguyên Sáng Tạo Hệ Sinh Thái SAOVN</span>
+        <h1 class="text-4xl md:text-5xl font-black tracking-tight mt-5 mb-5 leading-tight">
+            Đột Phá Năng Lực Sáng Tạo <br>
+            <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-400 bg-clip-text text-transparent">Làm Chủ Chính Sự Nghiệp Của Bản Thân Bạn</span>
+        </h1>
+        <p class="text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+            Áp lực chi phí, thiếu định hướng thực chiến và sự đơn độc đang kìm hãm bạn? Hệ sinh thái Media Hub của chúng tôi được thiết kế để đập tan các rào cản lớn này.
+        </p>
+    </header>
+
+    <!-- MAIN INTERACTIVE HUB (LANDSCAPE SYSTEM) -->
+    <main class="w-full max-w-6xl mx-auto mb-24 px-4">
+        <!-- Main Panel Grid Layout (Landscape) -->
+        <div class="glass-panel rounded-3xl overflow-hidden neon-glow-cyan grid grid-cols-1 md:grid-cols-12 min-h-[580px]">
             
-            <button id="btnLogout" class="flex items-center justify-center w-full gap-2 text-[11px] font-bold text-red-400 bg-red-500/10 hover:bg-red-500 hover:text-white py-2.5 md:py-2 rounded-lg transition-all border border-red-500/20 shadow-sm">
-                <i class="fas fa-sign-out-alt"></i> ĐĂNG XUẤT
-            </button>
-        </div>
-    </aside>
+            <!-- LEFT SIDEBAR: EQUIPMENT NAVIGATION TABS -->
+            <div class="md:col-span-4 bg-black/25 border-r border-cyan-500/10 flex flex-col justify-between py-6">
+                <div class="space-y-1 px-3" id="tab-headers">
+                    <div class="px-4 py-3 text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Thách thức & Giải pháp</div>
+                    
+                    <!-- Tab 1: Camera -->
+                    <button onclick="switchTab(event, 'tab-camera')" class="tab-btn active w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-camera text-xl text-cyan-400"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-cyan-400/60 uppercase tracking-wider">Vấn đề 01</div>
+                            <div class="text-sm font-bold text-slate-200 group-hover:text-cyan-400 transition-colors">Gánh Nặng Thiết Bị</div>
+                        </div>
+                    </button>
 
-    <!-- 2. KHU VỰC NỘI DUNG CHÍNH BÊN PHẢI -->
-    <div class="flex-1 flex flex-col overflow-hidden bg-slate-50 w-full">
-        
-        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 z-10 shadow-sm shrink-0">
-            <div class="flex items-center text-sm font-medium text-slate-500">
-                <button class="md:hidden mr-3 text-slate-600 hover:text-blue-600 focus:outline-none" onclick="toggleSidebar()">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-                <span class="hidden md:inline hover:text-blue-600 cursor-pointer">Trang chủ</span>
-                <span class="hidden md:inline mx-2">/</span>
-                <span class="text-slate-800 font-bold truncate">Văn Phòng Điều Hành</span>
-            </div>
-            
-            <div class="flex items-center space-x-3 md:space-x-4">
-                <div class="relative hidden md:block w-64">
-                    <span class="absolute left-3 top-2 text-slate-400 text-xs"><i class="fas fa-search"></i></span>
-                    <input type="text" placeholder="Tìm kiếm tài nguyên..." class="w-full bg-slate-100 border-none rounded-full text-xs pl-8 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all">
-                </div>
-                <button class="relative p-2 text-slate-400 hover:text-blue-600 transition-colors">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-                </button>
-            </div>
-        </header>
+                    <!-- Tab 2: Gimbal -->
+                    <button onclick="switchTab(event, 'tab-gimbal')" class="tab-btn w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left text-slate-400 hover:text-slate-200 transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-mobile-screen-button rotate-12 text-xl text-slate-400 group-hover:text-teal-400 transition-colors"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-slate-500 uppercase tracking-wider">Vấn đề 02</div>
+                            <div class="text-sm font-bold text-slate-300 group-hover:text-teal-400 transition-colors">Làm Cho Người Khác</div>
+                        </div>
+                    </button>
 
-        <!-- KPI Dashboard -->
-        <div class="bg-white border-b border-slate-200 px-4 md:px-6 py-3 flex space-x-4 md:space-x-6 z-0 overflow-x-auto shrink-0 custom-scrollbar pb-2 md:pb-3">
-            <div onclick="window.openOnlineModal()" class="flex flex-col min-w-max cursor-pointer hover:bg-slate-50 px-2 rounded transition-colors group">
-                <span class="text-[10px] text-slate-500 font-semibold uppercase group-hover:text-blue-600">Nhân sự Đang Online</span>
-                <span class="text-lg font-black text-slate-800">
-                    <span id="kpiOnlineCount">0</span> <span class="text-xs font-normal text-emerald-500">Người <i class="fas fa-chevron-down text-[8px] ml-1"></i></span>
-                </span>
-            </div>
-            <div class="w-px bg-slate-200 hidden md:block"></div>
-            <div class="flex flex-col min-w-max border-l md:border-0 border-slate-200 pl-4 md:pl-0">
-                <span class="text-[10px] text-slate-500 font-semibold uppercase">Dự án Đang Chạy</span>
-                <span class="text-lg font-black text-slate-800">04 <span class="text-xs font-normal text-blue-500">Active</span></span>
-            </div>
-            <div class="w-px bg-slate-200 hidden md:block"></div>
-            <div class="flex flex-col min-w-max border-l md:border-0 border-slate-200 pl-4 md:pl-0">
-                <span class="text-[10px] text-slate-500 font-semibold uppercase">Thiết Bị Xuất Kho</span>
-                <span class="text-lg font-black text-slate-800">12 <span class="text-xs font-normal text-amber-500">Items</span></span>
-            </div>
-        </div>
+                    <!-- Tab 3: Lighting -->
+                    <button onclick="switchTab(event, 'tab-lighting')" class="tab-btn w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left text-slate-400 hover:text-slate-200 transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-lightbulb text-xl text-slate-400 group-hover:text-amber-400 transition-colors"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-slate-500 uppercase tracking-wider">Vấn đề 03</div>
+                            <div class="text-sm font-bold text-slate-300 group-hover:text-amber-400 transition-colors">Lộ Trình Định Hướng</div>
+                        </div>
+                    </button>
 
-        <main class="flex-1 flex flex-col md:flex-row overflow-hidden p-3 md:p-6 gap-4 md:gap-6">
-            
-            <!-- CỘT TRÁI: KHUNG THÔNG BÁO TÍCH HỢP TAB -->
-            <section class="w-full md:w-[55%] flex flex-col h-[45%] md:h-full bg-white md:bg-transparent rounded-xl shadow-sm md:shadow-none border border-slate-200 md:border-none p-3 md:p-0">
-                
-                <div class="flex items-center justify-between mb-3 md:mb-4 border-b border-slate-200 pb-2">
-                    <div class="flex space-x-2">
-                        <button onclick="switchFeedTab('tasks')" id="btnTabTasks" class="text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg bg-[#133A66] text-white shadow-sm transition-all">
-                            <i class="fas fa-tasks mr-1.5"></i> Luồng Việc
-                        </button>
-                        <button onclick="switchFeedTab('schedule')" id="btnTabSchedule" class="text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-200/60 transition-all">
-                            <i class="fas fa-calendar-alt mr-1.5 text-blue-600"></i> Lịch Hoạt Động
-                        </button>
-                    </div>
-                    <button class="text-[10px] md:text-xs font-semibold text-[#133A66] bg-blue-50/50 border border-[#133A66]/20 px-2.5 py-1.5 rounded-lg hover:bg-blue-100">
-                        + Tạo Mới
+                    <!-- Tab 4: Cộng đồng & Tương tác (Đã bổ sung icon fa-users) -->
+                    <button onclick="switchTab(event, 'tab-drone')" class="tab-btn w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left text-slate-400 hover:text-slate-200 transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-users text-xl text-slate-400 group-hover:text-purple-400 transition-colors"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-slate-500 uppercase tracking-wider">Vấn đề 04</div>
+                            <div class="text-sm font-bold text-slate-300 group-hover:text-purple-400 transition-colors">Cộng Đồng & Tương Tác</div>
+                        </div>
+                    </button>
+
+                    <!-- Tab 5: Workstation -->
+                    <button onclick="switchTab(event, 'tab-workstation')" class="tab-btn w-full flex items-center gap-4 px-4 py-4 rounded-xl border-l-4 border-transparent text-left text-slate-400 hover:text-slate-200 transition-all cursor-pointer group">
+                        <div class="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0">
+                            <i class="fa-solid fa-chart-line text-xl text-slate-400 group-hover:text-emerald-400 transition-colors"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-slate-500 uppercase tracking-wider">Vấn đề 05</div>
+                            <div class="text-sm font-bold text-slate-300 group-hover:text-emerald-400 transition-colors">Làm Cho Chính Bạn</div>
+                        </div>
                     </button>
                 </div>
 
-                <!-- TAB 1: LUỒNG VIỆC -->
-                <div id="feedTasks" class="feed-tab-content active flex-1 overflow-y-auto pr-1 md:pr-2 custom-scrollbar">
-                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3 md:p-4 shadow-sm relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
-                        <div class="flex justify-between items-start mb-2 pl-2">
-                            <div class="flex items-center space-x-2">
-                                <div class="w-6 h-6 bg-blue-100 rounded flex items-center justify-center text-xs">🎬</div>
-                                <span class="text-xs font-bold text-slate-700 truncate">TVC Giày Thể Thao</span>
-                            </div>
-                            <span class="text-[9px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">Vừa xong</span>
-                        </div>
-                        <div class="pl-8">
-                            <h3 class="text-xs md:text-sm font-semibold text-slate-900 mb-1">Chốt thiết bị & lịch quay</h3>
-                            <p class="text-[11px] md:text-xs text-slate-600 leading-relaxed">
-                                Yêu cầu tổ Quay phim chốt danh sách máy móc (Sony FX3, Gimbal). Tổ Ánh sáng xác nhận layout đèn trước 17:00 hôm nay.
-                            </p>
-                        </div>
+                <!-- Small Branding Info at Sidebar Bottom -->
+                <div class="px-6 pt-4 border-t border-cyan-500/5 hidden md:block">
+                    <div class="flex items-center gap-2 text-xs text-slate-500 font-mono">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> SAOVN INFRASTRUCTURE
                     </div>
                 </div>
-
-                <!-- TAB 2: LỊCH HOẠT ĐỘNG -->
-                <div id="feedSchedule" class="feed-tab-content flex-1 overflow-y-auto pr-1 md:pr-2 custom-scrollbar">
-                    <div class="erp-card bg-white border border-slate-200 rounded-xl p-3.5 md:p-4 shadow-sm relative overflow-hidden border-l-4 border-l-emerald-500">
-                        <div class="flex justify-between items-start mb-2">
-                            <div class="flex items-center space-x-2">
-                                <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded uppercase font-mono">📅 Ngày mai</span>
-                                <span class="text-xs font-bold text-slate-800">Call Sheet: Quay Lookbook Thời Trang</span>
-                            </div>
-                            <span class="text-[10px] font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-bold">08:00 - 16:00</span>
-                        </div>
-                        <div class="text-xs text-slate-600 space-y-1.5 pl-1">
-                            <div class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-red-500 w-4"></i> <span><b>Địa điểm:</b> Studio Quận 7, TP.HCM</span></div>
-                            <div class="flex items-center gap-2"><i class="fas fa-users text-blue-500 w-4"></i> <span><b>Ekip chính:</b> Tổ Photo, Tổ Makeup & Model A</span></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- CỘT PHẢI: KHÔNG GIAN THẢO LUẬN & CHAT REAL-TIME -->
-            <section class="w-full md:w-[45%] flex flex-col bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden h-[55%] md:h-full relative">
-                <div onclick="window.openOnlineModal()" class="px-3 md:px-4 py-2.5 md:py-3 border-b border-slate-100 bg-slate-50 flex justify-between items-center shrink-0 cursor-pointer hover:bg-slate-100 transition-colors">
-                    <div>
-                        <h3 class="text-sm font-bold text-slate-800">#Production-Team</h3>
-                        <span class="text-[10px] text-emerald-600 font-medium flex items-center mt-0.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> 
-                            <span id="chatOnlineStatus">Đang kết nối...</span> <i class="fas fa-chevron-down text-[8px] ml-1 text-slate-400"></i>
-                        </span>
-                    </div>
-                    <div class="flex space-x-1">
-                        <button class="p-1.5 text-slate-400 hover:bg-slate-200 rounded"><i class="fas fa-cog text-xs"></i></button>
-                    </div>
-                </div>
-
-                <div id="chatBox" class="flex-1 p-3 md:p-4 overflow-y-auto space-y-4 md:space-y-5 flex flex-col custom-scrollbar">
-                    <div class="text-center text-xs text-slate-400 my-4"><i class="fas fa-spinner fa-spin mr-1"></i> Đang tải dữ liệu...</div>
-                </div>
-
-                <div class="p-2 md:p-3 bg-white border-t border-slate-100 shrink-0">
-                    <div class="flex items-center bg-slate-50 border border-slate-200 rounded-full px-2 py-1 md:py-1.5 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-400 transition-all">
-                        <button class="text-slate-400 hover:text-[#133A66] p-2 mr-1"><i class="fas fa-paperclip"></i></button>
-                        <input type="text" id="chatInput" placeholder="Gõ tin nhắn..." class="flex-1 bg-transparent border-none focus:outline-none text-xs md:text-sm text-slate-800 py-2">
-                        <button id="btnSendChat" class="bg-[#133A66] hover:bg-[#0E2C4F] text-white p-2.5 rounded-full ml-1 md:ml-2 shadow-sm transition-colors flex items-center justify-center">
-                            <i class="fas fa-paper-plane text-xs md:text-sm"></i>
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- MODAL DANH SÁCH ONLINE -->
-    <div id="onlineModal" class="modal-overlay" onclick="if(event.target === this) window.closeOnlineModal()">
-        <div class="modal-box flex flex-col">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-3 shrink-0">
-                <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Đang Trực Tuyến (<span id="modalOnlineCount">0</span>)
-                </h3>
-                <button onclick="window.closeOnlineModal()" class="text-slate-400 hover:text-red-500"><i class="fas fa-times"></i></button>
             </div>
-            <div id="onlineUsersList" class="flex-1 overflow-y-auto space-y-1 custom-scrollbar pr-1"></div>
-        </div>
-    </div>
 
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sidebar.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('active');
-        }
+            <!-- RIGHT PANEL: DYNAMIC TAB CONTENT DISPLAY -->
+            <div class="md:col-span-8 p-8 md:p-12 flex flex-col justify-center" id="tab-contents">
 
-        function switchFeedTab(tabName) {
-            const btnTasks = document.getElementById('btnTabTasks');
-            const btnSchedule = document.getElementById('btnTabSchedule');
-            const feedTasks = document.getElementById('feedTasks');
-            const feedSchedule = document.getElementById('feedSchedule');
-
-            if (tabName === 'tasks') {
-                btnTasks.className = "text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg bg-[#133A66] text-white shadow-sm transition-all";
-                btnSchedule.className = "text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-200/60 transition-all";
-                feedTasks.classList.add('active');
-                feedSchedule.classList.remove('active');
-            } else {
-                btnSchedule.className = "text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg bg-[#133A66] text-white shadow-sm transition-all";
-                btnTasks.className = "text-xs md:text-sm font-bold px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-200/60 transition-all";
-                feedSchedule.classList.add('active');
-                feedTasks.classList.remove('active');
-            }
-        }
-
-        window.openOnlineModal = function() {
-            document.getElementById('onlineModal').style.display = 'flex';
-        };
-        window.closeOnlineModal = function() {
-            document.getElementById('onlineModal').style.display = 'none';
-        };
-    </script>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, deleteDoc, query, orderBy, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
-            authDomain: "saovn-project.firebaseapp.com",
-            projectId: "saovn-project",
-            storageBucket: "saovn-project.firebasestorage.app",
-            messagingSenderId: "194928117396",
-            appId: "1:194928117396:web:642612a60105add5639681",
-            measurementId: "G-L7Y106VT85"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUserData = null;
-
-        const positionMap = {
-            "photo": "Chụp Ảnh (Photographer)",
-            "cam": "Quay Phim (Camera Operator)",
-            "edit": "Hậu Kỳ & Biên Tập (Editor)",
-            "content": "Sáng Tạo Nội Dung (Content)",
-            "model": "Người Mẫu (Model/Talent)",
-            "makeup": "Makeup & Styling"
-        };
-
-        window.deleteChat = async function(docId) {
-            if(confirm("Admin: Bạn chắc chắn muốn xóa tin nhắn này khỏi hệ thống?")) {
-                try {
-                    await deleteDoc(doc(db, "chats", docId));
-                } catch(e) {
-                    alert("Lỗi: Bạn không có quyền xóa tin nhắn này!");
-                    console.error(e);
-                }
-            }
-        };
-
-        onAuthStateChanged(auth, async (user) => {
-            if (!user || !user.emailVerified) {
-                // ĐÃ SỬA: Dùng đường dẫn tương đối để đá về đúng thư mục media/login.html trên Vercel
-                window.location.replace("/media/login.html");
-                return;
-            }
-
-            try {
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists()) {
-                    currentUserData = userDoc.data();
-                    currentUserData.uid = user.uid; 
-
-                    const nameParts = currentUserData.fullName.split(' ');
-                    const initials = (nameParts.length >= 2 ? nameParts[0][0] + nameParts[nameParts.length-1][0] : nameParts[0].substring(0, 2)).toUpperCase();
-
-                    document.getElementById('userName').innerText = currentUserData.fullName;
-                    document.getElementById('userAvatar').innerText = initials;
-                    
-                    let roleStr = positionMap[currentUserData.position] || currentUserData.position || "Thành Viên Media";
-                    if(currentUserData.role === 'admin') roleStr = "Admin Hệ Thống";
-                    document.getElementById('userRole').innerText = roleStr;
-                    
-                    const userRef = doc(db, "users", user.uid);
-                    await updateDoc(userRef, { isOnline: true, lastActive: serverTimestamp() });
-
-                    const setOffline = () => { updateDoc(userRef, { isOnline: false }); };
-                    window.addEventListener('beforeunload', setOffline);
-                    document.addEventListener('visibilitychange', () => {
-                        if (document.visibilityState === 'hidden') setOffline();
-                        else updateDoc(userRef, { isOnline: true, lastActive: serverTimestamp() });
-                    });
-
-                    initChat();
-                    initPresence();
-                }
-            } catch (error) {
-                console.error("Lỗi:", error);
-            }
-        });
-
-        function initPresence() {
-            const qOnline = query(collection(db, "users"), where("isOnline", "==", true));
-            onSnapshot(qOnline, (snapshot) => {
-                const count = snapshot.size;
-                
-                document.getElementById('kpiOnlineCount').innerText = count;
-                document.getElementById('chatOnlineStatus').innerText = `${count} Hoạt động`;
-                document.getElementById('modalOnlineCount').innerText = count;
-
-                let html = '';
-                snapshot.forEach(doc => {
-                    const u = doc.data();
-                    const nParts = u.fullName.split(' ');
-                    const init = (nParts.length >= 2 ? nParts[0][0] + nParts[nParts.length-1][0] : nParts[0].substring(0, 2)).toUpperCase();
-                    
-                    let userTitle = positionMap[u.position] || "Media Team";
-                    if(u.role === 'admin') userTitle = "Admin Hệ Thống";
-
-                    html += `
-                        <div class="flex items-center space-x-3 p-2 hover:bg-slate-50 rounded-lg transition-colors border border-transparent hover:border-slate-100">
-                            <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold shrink-0 relative">
-                                ${init}
-                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
-                            </div>
-                            <div class="flex flex-col overflow-hidden">
-                                <span class="text-xs font-bold text-slate-700 truncate">${u.fullName}</span>
-                                <span class="text-[10px] text-slate-400 truncate">${userTitle}</span>
-                            </div>
+                <!-- 1. Vấn đề Thiết bị (Camera Content) -->
+                <div id="tab-camera" class="tab-content active grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> KHÔNG CẦN TRĂM TRIỆU MUA THIẾT BỊ
                         </div>
-                    `;
-                });
-                document.getElementById('onlineUsersList').innerHTML = html;
-            });
-        }
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Giải quyết bài toán <span class="text-cyan-400">Gánh nặng chi phí máy móc</span> công nghệ cao
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Rất nhiều bạn trẻ đam mê sáng tạo nội dung phải bỏ cuộc sớm chỉ vì không có đủ tài chính sắm sửa các dòng máy quay Sony, Canon đời mới hay các hệ thống ống kính đắt đỏ.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-cyan-950/40 to-slate-900/40 border border-cyan-500/10 text-slate-300">
+                            <div class="font-bold text-cyan-400 text-sm mb-1">Hạ tầng hỗ trợ từ Team Media:</div>
+                            <p class="text-sm text-slate-400">Chúng tôi tập hợp hệ thống kho thiết bị media chuyên nghiệp, máy ảnh, ống kính, thiết bị chống rung tối tân nhất để phục vụ trực tiếp cho các chiến dịch truyền thông lớn nhỏ.</p>
+                        </div>
+                    </div>
+                </div>
 
-        const chatBox = document.getElementById('chatBox');
-        const chatInput = document.getElementById('chatInput');
-        const btnSendChat = document.getElementById('btnSendChat');
+                <!-- 2. Vấn đề Chi phí Vận hành (Gimbal Content) -->
+                <div id="tab-gimbal" class="tab-content grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> THAY VÌ LÀM THUÊ CHO CÔNG TY CỦA NGƯỜI KHÁC - THÌ MÌNH XÂY DỰNG LUÔN SỰ NGHIỆP CỦA BẢN THÂN
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Đập tan áp lực <span class="text-teal-400">Làm việc phải chịu sự gò bó</span> khó chịu
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Đi làm thuê cho tư bản và mông lung về tương lai bản thân, thêm vào đó là không được cháy hết mình với đam mê và sáng tạo cao trong công việc.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-teal-950/40 to-slate-900/40 border border-teal-500/10 text-slate-300">
+                            <div class="font-bold text-teal-400 text-sm mb-1">Phương thức hoạt động tối ưu:</div>
+                            <p class="text-sm text-slate-400">Làm việc và từng ngày nhìn đứa con tinh thần của mình lớn lên và phát triển nổi tiếng, rồi sẽ đến một ngày bạn tự hào rằng bản thân đã cùng chúng mình xây dựng nên chính nơi làm việc mà nhiều người mong ước này.</p>
+                        </div>
+                    </div>
+                </div>
 
-        function initChat() {
-            const q = query(collection(db, "chats"), orderBy("timestamp", "asc"));
-            
-            onSnapshot(q, (snapshot) => {
-                chatBox.innerHTML = ''; 
-                if (snapshot.empty) {
-                    chatBox.innerHTML = '<div class="text-center text-xs text-slate-400 mt-4">Kênh truyền thông đã mở.</div>';
-                }
+                <!-- 3. Vấn đề Thiếu Kiến Thức Định Hướng (Lighting Content) -->
+                <div id="tab-lighting" class="tab-content grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> LỘ TRÌNH THỰC CHIẾN 
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Giải quyết tình trạng <span class="text-amber-400">Mất định hướng & Lý thuyết suông</span>
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Không còn lạc lối giữa hàng ngàn kiến thức trôi nổi trên internet hoặc tốn kém tiền bạc vào các khóa học đắt đỏ nhưng thiếu tính thực tế, không thể ứng dụng tạo ra tiền ngay.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 to-slate-900/40 border border-amber-500/10 text-slate-300">
+                            <div class="font-bold text-amber-400 text-sm mb-1">Học viện Academy cầm tay chỉ việc:</div>
+                            <p class="text-sm text-slate-400">Thành viên được học thông qua các case-study thực tế trên chính những kiến thức thực chiến của người đi trước và được thực hành làm dự án hàng tuần.</p>
+                        </div>
+                    </div>
+                </div>
 
-                snapshot.forEach((doc) => {
-                    renderMessage(doc.data(), doc.id);
-                });
+                <!-- 4. Vấn đề Tương Tác Ảo, Một Mình (Drone Content) -->
+                <div id="tab-drone" class="tab-content grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> TƯƠNG TÁC THỰC TẾ - THƯƠNG HIỆU BỀN VỮNG
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Xóa bỏ rào cản <span class="text-purple-400">Làm nội dung đơn độc, tương tác ảo</span>
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Tình trạng cày cuốc ngày đêm nhưng video bị bóp tương tác, không có cộng đồng nền tảng làm đòn bẩy đứng sau hỗ trợ sẽ khiến thương hiệu cá nhân của bạn dễ dàng bị chìm nghỉm.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-purple-950/40 to-slate-900/40 border border-purple-500/10 text-slate-300">
+                            <div class="font-bold text-purple-400 text-sm mb-1">Đòn bẩy cộng đồng SAOVN:</div>
+                            <p class="text-sm text-slate-400">Các sản phẩm hình ảnh, video, film, kịch bản của bạn sản xuất sẽ được tiếp cận trực tiếp mạng lưới thành viên thực tế qua các dự án, tạo tương tác thật, giá trị thật.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Vấn đề Tài chính & Thời gian (Workstation Content) -->
+                <div id="tab-workstation" class="tab-content grid gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            <i class="fa-solid fa-circle-dot animate-pulse"></i> PHÁT TRIỂN THƯƠNG HIỆU CHUNG SONG SONG THƯƠNG HIỆU CÁ NHÂN
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-white leading-snug">
+                            Cứ làm cho công ty rồi cái thương hiệu riêng cá nhân của mình <span class="text-emerald-400"> làm sao phát triển</span>
+                        </h2>
+                        <p class="text-slate-400 leading-relaxed text-sm md:text-base">
+                            Đi làm cho tư bản cứ cắm mặt cày mấy chục năm xong khi ra ngoài mọi người nhiều khi vẫn chẳng biết mình là ai.
+                        </p>
+                        <div class="p-5 rounded-2xl bg-gradient-to-r from-emerald-950/40 to-slate-900/40 border border-emerald-500/10 text-slate-300">
+                            <div class="font-bold text-emerald-400 text-sm mb-1">Sắp xếp phát triển thương hiệu chung SAOVN và riêng cho từng thành viên:</div>
+                            <p class="text-sm text-slate-400">Chỉ với 100.000 VND/tháng bạn và mọi người cùng xây cái chung là SAOVN rồi từng thành viên trong SAOVN đều được cả team hỗ trợ phát triển thương hiệu của riêng bạn. Khoản tiền góp vào cũng dùng để phục vụ cho chính bạn, mà còn được thống kê lại để dựa vào đó tính cổ phần của bạn trong SAOVN.Và còn nhiều lợi ích khác chưa được nhắc tới.Nếu có thắc mắc bạn cứ hỏi trực tiếp người sáng lập nhé! Còn nếu thấy chung tư tưởng thì hãy nhanh nhanh gia nhập cùng tụi mình nhé!</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer id="join" class="text-center py-12 border-t border-cyan-500/5 bg-black/40">
+        <div class="mb-6">
+            <a href="login.html" class="px-8 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm tracking-wide transition-all shadow-lg shadow-cyan-500/20 active:scale-95 inline-block">
+                Gia Nhập Ngay Hub Media
+            </a>
+        </div>
+        <p class="text-sm text-slate-500">&copy; 2026 SAOVN Platform. Xây dựng giá trị thực cho cộng đồng.</p>
+    </footer>
+
+    <!-- INTERACTIVE TAB JAVASCRIPT -->
+    <script>
+        function switchTab(event, tabId) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Reset all tab headers style
+            const headers = document.querySelectorAll('.tab-btn');
+            headers.forEach(header => {
+                header.classList.remove('active', 'border-cyan-400', 'text-cyan-400');
+                header.classList.add('border-transparent', 'text-slate-400');
                 
-                setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+                // Reset inside wrapper icon style
+                const iconWrapper = header.querySelector('.w-11');
+                iconWrapper.className = "w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform shrink-0";
+                
+                const icon = iconWrapper.querySelector('i');
+                icon.className = icon.className.replace(/text-(cyan|teal|amber|purple|emerald)-400/, 'text-slate-400');
             });
-        }
 
-        function renderMessage(message, docId) {
-            const isMe = message.uid === currentUserData.uid;
-            const isAdmin = currentUserData.role === 'admin';
+            // Show target tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Apply active styles to clicked tab
+            const currentTab = event.currentTarget;
+            currentTab.classList.add('active');
             
-            let timeString = 'Đang gửi...';
-            if (message.timestamp) {
-                const date = message.timestamp.toDate();
-                timeString = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-            }
-
-            let deleteBtnHtml = '';
-            if (isAdmin) {
-                deleteBtnHtml = `<button onclick="window.deleteChat('${docId}')" title="Xóa tin nhắn" class="text-red-300 hover:text-red-500 px-1 ml-1 cursor-pointer transition-colors"><i class="fas fa-trash text-[10px]"></i></button>`;
-            }
-
-            const div = document.createElement('div');
-            if (isMe) {
-                div.className = "flex items-start space-x-2 md:space-x-3 flex-row-reverse space-x-reverse";
-                div.innerHTML = `
-                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#133A66] flex items-center justify-center font-bold text-white text-[10px] md:text-xs shadow-sm shrink-0">
-                        ${message.initials || 'ME'}
-                    </div>
-                    <div class="flex flex-col items-end max-w-[85%]">
-                        <span class="text-[9px] md:text-[10px] font-semibold text-[#133A66] mb-1">
-                            ${message.senderName} <span class="font-normal text-slate-400 mr-1">${timeString}</span> ${deleteBtnHtml}
-                        </span>
-                        <div class="bg-[#133A66] text-white text-[11px] md:text-xs px-3 py-2 rounded-2xl rounded-tr-none shadow-sm leading-relaxed break-words whitespace-pre-wrap">${message.text}</div>
-                    </div>
-                `;
-            } else {
-                div.className = "flex items-start space-x-2 md:space-x-3";
-                div.innerHTML = `
-                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-200 text-slate-600 border border-slate-300 flex items-center justify-center font-bold text-[10px] md:text-xs shadow-sm shrink-0">
-                        ${message.initials || 'U'}
-                    </div>
-                    <div class="flex flex-col items-start max-w-[85%]">
-                        <span class="text-[9px] md:text-[10px] font-semibold text-slate-500 mb-1">
-                            ${message.senderName} <span class="font-normal text-slate-400 ml-1">${timeString}</span> ${deleteBtnHtml}
-                        </span>
-                        <div class="bg-slate-100 text-slate-800 text-[11px] md:text-xs px-3 py-2 rounded-2xl rounded-tl-none shadow-sm leading-relaxed break-words whitespace-pre-wrap">${message.text}</div>
-                    </div>
-                `;
-            }
-            chatBox.appendChild(div);
-        }
-
-        async function sendMessage() {
-            const text = chatInput.value.trim();
-            if (!text || !currentUserData) return;
-
-            chatInput.value = ''; 
-            const nameParts = currentUserData.fullName.split(' ');
-            const initials = (nameParts.length >= 2 ? nameParts[0][0] + nameParts[nameParts.length-1][0] : nameParts[0].substring(0, 2)).toUpperCase();
-
-            try {
-                await addDoc(collection(db, "chats"), {
-                    uid: currentUserData.uid,
-                    senderName: currentUserData.fullName,
-                    initials: initials,
-                    text: text,
-                    timestamp: serverTimestamp()
-                });
-            } catch (error) {
-                console.error("Lỗi:", error);
-                alert("Lỗi kết nối. Vui lòng kiểm tra lại mạng hoặc phân quyền hệ thống!");
+            // Highlight current icon wrapper color based on the tab
+            const activeIconWrapper = currentTab.querySelector('.w-11');
+            const activeIcon = activeIconWrapper.querySelector('i');
+            
+            if(tabId === 'tab-camera') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-cyan-500/10 flex items-center justify-center border border-cyan-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-cyan-400');
+            } else if(tabId === 'tab-gimbal') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-teal-500/10 flex items-center justify-center border border-teal-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-teal-400');
+            } else if(tabId === 'tab-lighting') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-amber-400');
+            } else if(tabId === 'tab-drone') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-purple-400');
+            } else if(tabId === 'tab-workstation') {
+                activeIconWrapper.className = "w-11 h-11 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-400/20 shadow-inner group-hover:scale-105 transition-transform shrink-0";
+                activeIcon.className = activeIcon.className.replace('text-slate-400', 'text-emerald-400');
             }
         }
-
-        btnSendChat.addEventListener('click', sendMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') { e.preventDefault(); sendMessage(); }
-        });
-
-        // ĐÃ SỬA: Đăng xuất sẽ đẩy về đúng login.html trong cùng thư mục media/
-        document.getElementById('btnLogout').addEventListener('click', async () => {
-            if(currentUserData) {
-                await updateDoc(doc(db, "users", currentUserData.uid), { isOnline: false });
-            }
-            signOut(auth).then(() => { window.location.replace("/media/login.html"); });
-        });
     </script>
 </body>
 </html>
