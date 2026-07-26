@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập | SAOVN Portal</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* CSS BỔ SUNG CHO MODAL - TUẤN KHÔNG CẦN SỬA FILE CSS RIÊNG */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none; 
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-box {
+            width: 90%;
+            max-width: 400px;
+            animation: modalFadeIn 0.3s ease;
+        }
+        .close-modal {
+            position: absolute;
+            right: 20px; top: 15px;
+            color: #666;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .close-modal:hover { color: var(--accent-color); }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <a href="index.html" class="login-logo">SAOVN</a>
+            <h2>HỆ THỐNG ĐIỀU HÀNH</h2>
+            <p>Vui lòng đăng nhập bằng tài khoản SAOVN</p>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPass" placeholder="Mật khẩu" required>
+                </div>
+                <button type="submit" class="login-btn" id="btnLogin">XÁC MINH DANH TÍNH</button>
+            </form>
+            
+           <div class="login-footer">
+                <div class="footer-top">
+                    <a href="#" id="btnForgotPassword">Quên mật khẩu?</a>
+                    <a href="register.html" style="color: var(--accent-color)">Tạo tài khoản mới</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="forgotPassModal" class="modal-overlay">
+        <div class="login-box modal-box">
+            <span class="close-modal">&times;</span>
+            <h2 style="margin-top: 10px; font-size: 16px;">KHÔI PHỤC TRUY CẬP</h2>
+            <p style="margin-bottom: 20px;">Nhập Email để nhận lệnh cấp lại mật mã</p>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="resetEmail" placeholder="Email đặc vụ" style="width: 100%; padding: 12px 12px 12px 40px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; outline: none;">
+            </div>
+            <button id="btnConfirmReset" class="login-btn">GỬI YÊU CẦU</button>
+        </div>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+        getAuth, 
+        signInWithEmailAndPassword, 
+        setPersistence, 
+        browserLocalPersistence,
+        signOut,
+        sendPasswordResetEmail 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    
+    import { 
+        getFirestore, doc, getDoc, runTransaction, increment 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+        authDomain: "saovn-project.firebaseapp.com",
+        projectId: "saovn-project",
+        storageBucket: "saovn-project.firebasestorage.app",
+        messagingSenderId: "194928117396",
+        appId: "1:194928117396:web:642612a60105add5639681",
+        measurementId: "G-L7Y106VT85"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // --- TÍNH NĂNG CỘNG ĐỒNG (GIỮ NGUYÊN) ---
+    async function updateMemberCount(user) {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists() && userSnap.data().isCounted === false) {
+            const statsRef = doc(db, "metadata", "users_stats");
+            try {
+                await runTransaction(db, async (transaction) => {
+                    const statsDoc = await transaction.get(statsRef);
+                    if (!statsDoc.exists()) {
+                        transaction.set(statsRef, { totalMembers: 1 });
+                    } else {
+                        transaction.update(statsRef, { totalMembers: increment(1) });
+                    }
+                    transaction.update(userRef, { isCounted: true });
+                });
+            } catch (e) { console.error("Lỗi bộ đếm:", e); }
+        }
+    }
+
+    // --- LOGIC ĐĂNG NHẬP (GIỮ NGUYÊN) ---
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value;
+        const pass = document.getElementById('loginPass').value;
+        const btn = document.getElementById('btnLogin');
+
+        try {
+            btn.disabled = true;
+            btn.innerText = "ĐANG XỬ LÝ...";
+            await setPersistence(auth, browserLocalPersistence);
+            const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+            const user = userCredential.user;
+            await user.reload(); 
+            
+            if (user.emailVerified) {
+                await updateMemberCount(user);
+                window.location.href = "index.html"; 
+            } else {
+                alert("⚠️ Tài khoản chưa kích hoạt! Hãy kiểm tra Email.");
+                await signOut(auth); 
+                window.location.reload();
+            }
+        } catch (error) {
+            alert("Lỗi: Email hoặc mật khẩu không chính xác.");
+            btn.disabled = false;
+            btn.innerText = "XÁC MINH DANH TÍNH";
+        }
+    });
+
+    // --- LOGIC MODAL QUÊN MẬT KHẨU (MỚI) ---
+    const modal = document.getElementById('forgotPassModal');
+    const btnOpen = document.getElementById('btnForgotPassword');
+    const btnClose = document.querySelector('.close-modal');
+    const btnConfirm = document.getElementById('btnConfirmReset');
+
+    btnOpen.onclick = (e) => { e.preventDefault(); modal.style.display = 'flex'; };
+    btnClose.onclick = () => modal.style.display = 'none';
+    window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
+
+    btnConfirm.onclick = async () => {
+        const email = document.getElementById('resetEmail').value.trim();
+        if (!email) return alert("Vui lòng nhập Email!");
+
+        try {
+            btnConfirm.disabled = true;
+            btnConfirm.innerText = "ĐANG GỬI...";
+            await sendPasswordResetEmail(auth, email);
+            alert("Hệ thống: Liên kết khôi phục đã được gửi vào Email của bạn.");
+            modal.style.display = 'none';
+        } catch (error) {
+            let msg = "Không thể gửi yêu cầu.";
+            if (error.code === 'auth/user-not-found') msg = "Email này chưa đăng ký hệ thống!";
+            alert("Lỗi: " + msg);
+        } finally {
+            btnConfirm.disabled = false;
+            btnConfirm.innerText = "GỬI YÊU CẦU";
+        }
+    };
+</script>
+</body>
+</html>

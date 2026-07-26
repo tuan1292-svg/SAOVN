@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAOVN | Sáng Tạo Không Giới Hạn</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo-wrapper">
+            <span class="logo-text">SAOVN</span>
+            <span class="logo-slogan">Special Actions Organization for Vietnam</span>
+        </a>
+
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+		<nav class="nav-container">
+			<a href="index.html" class="nav-link active">Trang chủ</a>
+			<a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
+			<a href="du-an.html" class="nav-link">Dự án</a>
+			<a href="quy-tac.html" class="nav-link">Quy tắc</a>
+            <a href="quy.html" class="nav-link">Qũy</a>
+            <a href="academy.html" class="nav-link">Học viện</a>
+
+			
+			<a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
+			<button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
+			
+			<div id="user-profile-box" class="user-profile-nav" style="display: none;">
+                <a href="dashboard.html" class="nav-avatar-link" title="Đi tới bảng điều khiển">
+                    <div id="display-avatar" class="nav-avatar">SV</div>
+                    <span id="display-user-name">Đang tải...</span>
+                </a>
+                <button id="auth-logout-btn" class="btn-logout-mini" title="Đăng xuất">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+		</nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 data-aos="zoom-in">SÁNG TẠO <br> <span class="outline">KHÔNG GIỚI HẠN</span></h1>
+            <p data-aos="fade-up" data-aos-delay="200">Tổ chức hoạt động đặc biệt vì Việt Nam</p>
+            <div class="scroll-down">Cuộn xuống để xem ↓</div>
+        </div>
+    </section>
+
+    <section class="section about-section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Về <span class="highlight">SAOVN</span></h2>
+            
+            <div class="about-brief">
+                <p class="about-intro" data-aos="fade-up" data-aos-delay="100">
+                    Từ những trăn trở về bão lũ, kẹt xe và vòng lặp nghèo khó... chúng tôi tin rằng chỉ có <strong>HÀNH ĐỘNG</strong> mới tạo nên thay đổi thực chất.
+                </p>
+                
+                <p class="about-text" data-aos="fade-up" data-aos-delay="200">
+                    SAOVN (Special Actions Organization for Vietnam) là cộng đồng tập hợp những con người sẵn sàng đóng góp trí tuệ và thời gian để giải quyết các vấn đề xã hội dựa trên dữ liệu thực tế.
+                </p>
+
+                <div class="about-action" data-aos="zoom-in" data-aos-delay="300">
+                    <a href="ve-saovn.html" class="btn-main">Khám phá sứ mệnh</a>
+                    <a href="register.html" class="btn-sub" id="btn-join-1">Gia nhập cộng đồng</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section problem-solving">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">SAOVN GIẢI QUYẾT <span class="highlight">BẾ TẮC CỦA BẠN</span></h2>
+            <p class="section-subtitle" data-aos="fade-up">Chúng tôi không chỉ nói về vấn đề, chúng tôi tập hợp để xử lý chúng. Hãy xem bế tắc của bạn có nằm ở đây?</p>
+
+            <div class="problem-grid">
+                <div class="problem-note" data-aos="fade-up">
+                    <div class="note-header"><i class="fas fa-video"></i> TRUYỀN THÔNG & ĐIỆN ẢNH</div>
+                    <div class="note-body">
+                        <h4>Đam mê quay dựng nhưng thiếu máy xịn?</h4>
+                        <p class="pain-point">"Tôi muốn học quay phim chuyên nghiệp nhưng học phí quá cao, tiền mua máy ảnh, lens và máy tính dựng phim là con số không tưởng..."</p>
+                    </div>
+                    <div class="detailed-solution">
+                        <b>Giải pháp SAOVN:</b>
+                        <p>Cung cấp hệ thống thiết bị cao cấp và đội ngũ sản xuất thực tế. Bạn được thực hành trên máy xịn, tham gia các dự án thật cùng Team chuyên nghiệp để thành nghề mà không cần chờ đợi.</p>
+                    </div>
+                </div>
+
+                <div class="problem-note" data-aos="fade-up" data-aos-delay="100">
+                    <div class="note-header"><i class="fas fa-share-nodes"></i> XÂY DỰNG THƯƠNG HIỆU SỐ</div>
+                    <div class="note-body">
+                        <h4>Làm kênh đơn độc, thiếu tương tác thực?</h4>
+                        <p class="pain-point">"Tôi đang xây kênh kiếm tiền nhưng chỉ có một mình, thời gian và kinh nghiệm còn thiếu để kéo hàng ngàn follow hay tạo ra tương tác thực tế..."</p>
+                    </div>
+                    <div class="detailed-solution">
+                        <b>Giải pháp SAOVN:</b>
+                        <p>Sở hữu ngay sức mạnh từ cộng đồng đặc vụ. Chúng tôi hỗ trợ đẩy viral, tăng tương tác chất lượng thật 100%, tạo nền tảng vững chắc để bạn dễ dàng nhận hợp đồng quảng cáo từ nhãn hàng.</p>
+                    </div>
+                </div>
+
+                <div class="problem-note" data-aos="fade-up" data-aos-delay="200">
+                    <div class="note-header"><i class="fas fa-water"></i> AN TOÀN DÂN SINH</div>
+                    <div class="note-body">
+                        <h4>Bất an khi mùa bão lũ cận kề?</h4>
+                        <p class="pain-point">"Gia đình tôi luôn sống trong lo sợ vì không biết chính xác khi nào nước dâng, thông tin từ tivi thường quá chậm so với thực tế..."</p>
+                    </div>
+                    <div class="detailed-solution">
+                        <b>Giải pháp SAOVN:</b>
+                        <p>Triển khai các trạm quan trắc mực nước tại địa phương và hệ thống cảnh báo qua di động. Dữ liệu thực tế giúp bạn chủ động bảo vệ tính mạng và tài sản.</p>
+                    </div>
+                </div>
+
+                <div class="problem-note" data-aos="fade-up" data-aos-delay="300">
+                    <div class="note-header"><i class="fas fa-traffic-light"></i> GIAO THÔNG ĐÔ THỊ</div>
+                    <div class="note-body">
+                        <h4>Mệt mỏi vì kẹt xe và quy hoạch lỗi?</h4>
+                        <p class="pain-point">"Ngày nào cũng mất hàng giờ trên đường kẹt xe khói bụi, nhìn những điểm nghẽn giao thông mà không ai đứng ra đề xuất thay đổi..."</p>
+                    </div>
+                    <div class="detailed-solution">
+                        <b>Giải pháp SAOVN:</b>
+                        <p>SAOVN tập hợp các đặc vụ chuyên về hạ tầng và dữ liệu để phân tích điểm nghẽn, xây dựng phương án phân luồng tối ưu và kiến nghị trực tiếp đến cơ quan chức năng.</p>
+                    </div>
+                </div>
+
+                <div class="problem-note" data-aos="fade-up" data-aos-delay="400">
+                    <div class="note-header"><i class="fas fa-chart-line"></i> AN SINH XÃ HỘI</div>
+                    <div class="note-body">
+                        <h4>Bế tắc trong vòng lặp thu nhập thấp?</h4>
+                        <p class="pain-point">"Tôi làm việc cật lực nhưng không có định hướng, không có vốn và cũng chẳng có ai dẫn dắt để thoát khỏi cái nghèo..."</p>
+                    </div>
+                    <div class="detailed-solution">
+                        <b>Giải pháp SAOVN:</b>
+                        <p>Xây dựng lộ trình thoát nghèo bền vững qua đào tạo kỹ năng thực chiến và hỗ trợ vốn từ quỹ SAOVN cho các mô hình kinh doanh khả thi tại địa phương.</p>
+                    </div>
+                </div>
+
+                <div class="problem-note" data-aos="fade-up" data-aos-delay="500">
+                    <div class="note-header"><i class="fas fa-brain"></i> HỌC VIỆN TÀI NĂNG</div>
+                    <div class="note-body">
+                        <h4>Có ý tưởng tốt nhưng đơn độc?</h4>
+                        <p class="pain-point">"Tôi có giải pháp công nghệ giúp ích cho xã hội nhưng bạn bè bảo viển vông, tôi không tìm được người đồng hành..."</p>
+                    </div>
+                    <div class="detailed-solution">
+                        <b>Giải pháp SAOVN:</b>
+                        <p>Học viện SAOVN là nơi hội tụ các 'máy não' sáng tạo. Chúng tôi cung cấp môi trường làm việc chung, cố vấn chuyên môn và cộng đồng hỗ trợ bạn hiện thực hóa ý tưởng.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="problem-cta" data-aos="zoom-in">
+                <div class="cta-message">
+                    <h3>Vấn đề của bạn chưa xuất hiện?</h3>
+                    <p>Đừng ngần ngại gia nhập! SAOVN luôn ở đây để lắng nghe điều bạn đang gặp phải. Chúng tôi sẵn sàng tìm giải pháp, cung cấp nguồn lực và cùng bạn giải quyết nó. SAOVN là nơi đáng tham gia, đáng sống và đáng cống hiến vì một Việt Nam tốt đẹp hơn.</p>
+                </div>
+                <a href="register.html" class="btn-main" id="btn-join-2">GIA NHẬP & CHIA SẺ VẤN ĐỀ</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section stats-section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Dữ Liệu <span class="highlight">Thực Tế</span></h2>
+            
+            <div class="dashboard-grid">
+                <div class="dash-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="card-header">
+                        <span class="dot-live"></span> <span class="card-label">Thành viên tham gia</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="stat-number" id="member-count" data-target="0">0</h3>
+                        <div class="mini-chart bar-chart">
+                            <div class="bar-line"></div><div class="bar-line"></div>
+                            <div class="bar-line"></div><div class="bar-line"></div>
+                            <div class="bar-line"></div><div class="bar-line"></div>
+                        </div>
+                    </div>
+                    <p class="card-footer">↑ 12% so với tháng trước</p>
+                </div>
+
+                <div class="dash-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-header">
+                        <span class="status-icon">⚡</span> <span class="card-label">Dự án hoàn thành</span>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="stat-number" data-target="14">0</h3>
+                        <div class="mini-chart circle-chart">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path class="circle" stroke-dasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="card-footer">Đang triển khai: 03</p>
+                </div>
+
+                <div class="dash-card highlight-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="card-header">
+                        <span class="money-icon">$</span> <span class="card-label">Quỹ huy động (VNĐ)</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="money-wrapper">
+							<h3 class="stat-number" id="fund_stats" data-target="0">0</h3>
+							<span class="unit">VNĐ</span> 
+						</div>
+                        <div class="mini-chart line-chart">
+                            <svg viewBox="0 0 100 30" class="trending-line">
+                                <polyline fill="none" stroke="#00d2ff" stroke-width="2" points="0,25 20,20 40,22 60,10 80,15 100,5" />
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="card-footer live-text">Đang cập nhật real-time...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section projects-section">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Dự Án <span class="highlight">Tiêu Biểu</span></h2>
+            
+            <div class="project-grid">
+                <div class="project-card" data-aos="fade-right">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1547619292-8816ee7cdd50?auto=format&fit=crop&w=600&q=80" alt="Hệ thống cảnh báo lũ">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Thiên tai</span>
+                        <h3>Giải Pháp Bão Lũ</h3>
+                        <p>Hệ thống giám sát lưu lượng xả lũ thủy điện và cảnh báo sớm dựa trên dữ liệu thực tế.</p>
+                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80" alt="Giao thông thông minh">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">Giao thông</span>
+                        <h3>Giải pháp Ùn tắc Đô thị</h3>
+                        <p>Phân tích điểm nghẽn và đề xuất phương án phân luồng, quy hoạch hạ tầng khả thi.</p>
+                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+
+                <div class="project-card" data-aos="fade-left" data-aos-delay="400">
+                    <div class="card-img">
+                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80" alt="Hỗ trợ thoát nghèo">
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">An sinh</span>
+                        <h3>Thoát nghèo bền vững</h3>
+                        <p>Xây dựng lộ trình hỗ trợ các hoàn cảnh khó khăn tìm hướng đi mới và ổn định cuộc sống.</p>
+                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid" data-aos="fade-up">
+            <div class="footer-brand">
+                <h3>SAOVN</h3>
+                <p>Special Actions Organization for Vietnam</p>
+                <p class="footer-slogan">Sáng tạo không giới hạn - Nâng tầm vị thế Việt.</p>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Liên Hệ</h4>
+                <p>📍 Địa chỉ: Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
+                <p>📞 Điện thoại: 0867 179 857</p>
+                <p>✉️ Email: saovn.official@gmail.com</p>
+            </div>
+
+            <div class="footer-socials">
+                <h4>Kết Nối</h4>
+                <div class="social-icons">
+                    <a href="#" class="social-link">TikTok</a>
+                    <a href="https://www.youtube.com/@SAOVNOfficial" class="social-link">YouTube</a>
+                    <a href="#" class="social-link">Discord</a>
+                    <a href="https://www.facebook.com/profile.php?id=61581585313701" class="social-link">Facebook</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="copyright">&copy; 2026 SAOVN. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        // Init AOS
+        AOS.init({ duration: 1000, once: true });
+
+        // Mobile Menu Toggle
+        const menu = document.querySelector('#mobile-menu');
+        const menuLinks = document.querySelector('.nav-container');
+
+        menu.addEventListener('click', function() {
+            menu.classList.toggle('is-active');
+            menuLinks.classList.toggle('active');
+        });
+        
+        // 1. HEADER SCROLL EFFECT
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // 2. COUNTER ANIMATION LOGIC
+        const stats = document.querySelectorAll('.stat-number');
+        let hasAnimated = false;
+
+        const animateCounters = () => {
+            stats.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const isFloat = counter.getAttribute('data-is-float') === 'true';
+                const duration = 2000; 
+                const frameRate = 20; 
+                const totalFrames = duration / frameRate;
+                const increment = target / totalFrames;
+                
+                let current = 0;
+
+                const updateCount = () => {
+                    current += increment;
+                    if (current < target) {
+                        const value = isFloat ? current.toFixed(1) : Math.ceil(current);
+						counter.innerText = Number(value).toLocaleString('vi-VN');
+                        setTimeout(updateCount, frameRate);
+                    } else {
+                        counter.innerText = isFloat ? target : target;
+                    }
+                };
+                updateCount();
+            });
+        };
+
+        // Kích hoạt khi cuộn đến section Stats
+        window.addEventListener('scroll', () => {
+            const statsSection = document.querySelector('.stats-section');
+            if(statsSection) {
+                const triggerPoint = window.innerHeight * 0.8; 
+                const sectionTop = statsSection.getBoundingClientRect().top;
+                if (sectionTop < triggerPoint && !hasAnimated) {
+                    animateCounters();
+                    hasAnimated = true;
+                }
+            }
+        });
+    </script>
+	<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // Cấu hình Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+        authDomain: "saovn-project.firebaseapp.com",
+        projectId: "saovn-project",
+        storageBucket: "saovn-project.firebasestorage.app",
+        messagingSenderId: "194928117396",
+        appId: "1:194928117396:web:642612a60105add5639681"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+	
+	// --- HÀM LẤY SỐ THÀNH VIÊN ---
+    async function fetchMemberStats() {
+        try {
+            const statsDocRef = doc(db, "metadata", "users_stats"); 
+            const statsDocSnap = await getDoc(statsDocRef);
+            if (statsDocSnap.exists()) {
+                const data = statsDocSnap.data();
+                const total = data.totalMembers || 0; 
+                const memberElement = document.getElementById('member-count');
+                if (memberElement) {
+                    memberElement.setAttribute('data-target', total);
+                    if (window.scrollY > memberElement.offsetTop - window.innerHeight) {
+                        memberElement.innerText = total;
+                    }
+                }
+            }
+        } catch (e) { console.error(e); }
+    }
+    fetchMemberStats();
+
+    // --- LOGIC AUTH & AVATAR ĐỒNG BỘ ---
+    const userProfileBox = document.getElementById('user-profile-box');
+    const loginBtn = document.getElementById('nav-login-btn');
+    const registerLink = document.getElementById('nav-register');
+    const displayUserName = document.getElementById('display-user-name');
+    const displayAvatar = document.getElementById('display-avatar');
+
+    const btnJoin1 = document.getElementById('btn-join-1');
+    const btnJoin2 = document.getElementById('btn-join-2');
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            userProfileBox.style.display = 'flex';
+            if(loginBtn) loginBtn.style.display = 'none';
+            if(registerLink) registerLink.style.display = 'none';
+
+            // --- THÊM MỚI: Đổi nút thành "Vào Dashboard" ---
+    if(btnJoin1) {
+        btnJoin1.href = "dashboard.html";
+        btnJoin1.innerText = "Vào Bảng Điều Khiển";
+    }
+    if(btnJoin2) {
+        btnJoin2.href = "dashboard.html";
+        btnJoin2.innerText = "ĐI TỚI BẢNG ĐIỀU KHIỂN";
+    }
+
+            try {
+                const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                if (userDocSnap.exists()) {
+                    const data = userDocSnap.data();
+                    displayUserName.innerText = data.fullName || user.email.split('@')[0];
+                    
+                    // Hiển thị Avatar (Ưu tiên ảnh từ Firestore)
+                    if (data.photoURL) {
+                        displayAvatar.innerText = "";
+                        displayAvatar.style.backgroundImage = `url('${data.photoURL}')`;
+                    } else {
+                        // Backup nếu không có ảnh
+                        displayAvatar.innerText = (data.fullName || "U").charAt(0).toUpperCase();
+                        displayAvatar.style.backgroundImage = "none";
+                    }
+                }
+            } catch (e) {
+                displayUserName.innerText = user.email.split('@')[0];
+            }
+        } else {
+            userProfileBox.style.display = 'none';
+            if(loginBtn) loginBtn.style.display = 'block';
+            if(registerLink) registerLink.style.display = 'block';
+            // --- THÊM MỚI: Trả lại nút "Đăng ký" ban đầu ---
+    if(btnJoin1) {
+        btnJoin1.href = "register.html";
+        btnJoin1.innerText = "Gia nhập cộng đồng";
+    }
+    if(btnJoin2) {
+        btnJoin2.href = "register.html";
+        btnJoin2.innerText = "GIA NHẬP & CHIA SẺ VẤN ĐỀ";
+    }
+        }
+    });
+
+    document.getElementById('auth-logout-btn').onclick = () => {
+        signOut(auth).then(() => window.location.reload());
+    };
+	
+    async function loadFundStatus() {
+        const fundRef = doc(db, "metadata", "fund_stats");
+        onSnapshot(fundRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                const amount = data.amount || 0;
+                const displayElem = document.getElementById('fund_stats');
+                if (displayElem) {
+                    displayElem.setAttribute('data-target', amount);
+                    displayElem.innerText = amount.toLocaleString('vi-VN');
+                }
+            }
+        });
+    }
+    loadFundStatus();
+</script>
+</body>
+</html>

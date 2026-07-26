@@ -1,192 +1,182 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng nhập | SAOVN Portal</title>
-    <link rel="stylesheet" href="login.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>SAOVN - Đăng Nhập Hệ Thống</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* CSS BỔ SUNG CHO MODAL - TUẤN KHÔNG CẦN SỬA FILE CSS RIÊNG */
-        .modal-overlay {
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; } /* slate-950 */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-effect {
+            box-shadow: 0 0 50px -10px rgba(14, 165, 233, 0.3);
+        }
+        .bg-image-layer {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: none; 
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            mix-blend-mode: luminosity;
+            z-index: 0;
         }
-        .modal-box {
-            width: 90%;
-            max-width: 400px;
-            animation: modalFadeIn 0.3s ease;
-        }
-        .close-modal {
-            position: absolute;
-            right: 20px; top: 15px;
-            color: #666;
-            font-size: 24px;
-            cursor: pointer;
+        .content-layer {
+            position: relative;
             z-index: 10;
-        }
-        .close-modal:hover { color: var(--accent-color); }
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
-<body>
-    <div class="login-container">
-        <div class="login-box">
-            <a href="index.html" class="login-logo">SAOVN</a>
-            <h2>HỆ THỐNG ĐIỀU HÀNH</h2>
-            <p>Vui lòng đăng nhập bằng tài khoản SAOVN</p>
+<body class="text-slate-100 antialiased min-h-screen flex flex-col selection:bg-cyan-500 selection:text-slate-950">
+
+    <!-- Background Layer -->
+    <div class="bg-image-layer"></div>
+    <div class="fixed inset-0 bg-gradient-to-b from-slate-950/50 to-slate-950/90 z-0"></div>
+
+    <!-- HEADER GỌN GÀNG -->
+    <header class="w-full p-4 border-b border-slate-900/50 glass-card sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto w-full flex items-center justify-between px-2 sm:px-6 content-layer">
+            <a href="index.html" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-black text-sm shadow-lg shadow-cyan-500/40">S</div>
+                <span class="font-extrabold tracking-wider text-cyan-400 text-sm">SAOVN PLATFORM</span>
+            </a>
+            <a href="index.html" class="text-xs text-slate-400 font-medium hover:text-cyan-400 transition-colors">
+                &larr; Về trang chủ
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN LOGIN CONTAINER -->
+    <main class="w-full max-w-md mx-auto px-4 py-12 flex-grow flex flex-col justify-center content-layer">
+        
+        <div class="glass-card p-6 sm:p-10 rounded-3xl glow-effect text-center border border-cyan-500/30">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-black text-2xl shadow-lg shadow-cyan-500/40 mb-6">
+                S
+            </div>
             
-            <form id="loginForm">
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="email" id="loginEmail" placeholder="Email" required>
+            <h2 class="text-2xl sm:text-3xl font-extrabold mb-2">Chào mừng trở lại!</h2>
+            <p class="text-slate-400 text-sm mb-8">Đăng nhập để vào Trung tâm điều khiển tài chính SAOVN.</p>
+            
+            <form id="login-form" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Số điện thoại đăng nhập</label>
+                    <input type="tel" id="login-phone" placeholder="0912345678" required class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-100 focus:outline-none focus:border-cyan-400 backdrop-blur-sm transition-colors">
                 </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="loginPass" placeholder="Mật khẩu" required>
+                
+                <div class="relative">
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Mật khẩu</label>
+                    <input type="password" id="login-pwd" placeholder="••••••••" required class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 pr-10 text-sm text-slate-100 focus:outline-none focus:border-cyan-400 backdrop-blur-sm transition-colors">
+                    <button type="button" onclick="togglePassword('login-pwd', 'eye-pwd')" class="absolute right-3 top-[30px] text-slate-400 hover:text-cyan-400 focus:outline-none">
+                        <!-- SVG Eye Icon -->
+                        <svg id="eye-pwd" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </button>
                 </div>
-                <button type="submit" class="login-btn" id="btnLogin">XÁC MINH DANH TÍNH</button>
+
+                <button type="submit" id="btn-login" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-base shadow-xl shadow-cyan-500/40 transition-transform active:scale-95 mt-2">
+                    Đăng Nhập 🚀
+                </button>
             </form>
             
-           <div class="login-footer">
-                <div class="footer-top">
-                    <a href="#" id="btnForgotPassword">Quên mật khẩu?</a>
-                    <a href="register.html" style="color: var(--accent-color)">Tạo tài khoản mới</a>
-                </div>
+            <div class="mt-6 pt-6 border-t border-slate-800 text-xs text-slate-400 space-y-3">
+                <p>
+                    Quên mật khẩu? <br>
+                    <span class="text-slate-300">Vui lòng liên hệ Người giới thiệu (F1) hoặc Admin để được cấp lại.</span>
+                </p>
+                <p>
+                    Chưa có tài khoản? 
+                    <a href="index.html" class="text-cyan-400 font-bold hover:text-cyan-300 transition-colors">Đăng ký ngay</a>
+                </p>
             </div>
         </div>
-    </div>
 
-    <div id="forgotPassModal" class="modal-overlay">
-        <div class="login-box modal-box">
-            <span class="close-modal">&times;</span>
-            <h2 style="margin-top: 10px; font-size: 16px;">KHÔI PHỤC TRUY CẬP</h2>
-            <p style="margin-bottom: 20px;">Nhập Email để nhận lệnh cấp lại mật mã</p>
-            <div class="input-group">
-                <i class="fas fa-envelope"></i>
-                <input type="email" id="resetEmail" placeholder="Email đặc vụ" style="width: 100%; padding: 12px 12px 12px 40px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; outline: none;">
-            </div>
-            <button id="btnConfirmReset" class="login-btn">GỬI YÊU CẦU</button>
-        </div>
-    </div>
+    </main>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { 
-        getAuth, 
-        signInWithEmailAndPassword, 
-        setPersistence, 
-        browserLocalPersistence,
-        signOut,
-        sendPasswordResetEmail 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    
-    import { 
-        getFirestore, doc, getDoc, runTransaction, increment 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <!-- FOOTER -->
+    <footer class="w-full p-4 text-center text-xs text-slate-600 content-layer">
+        SAOVN Platform &copy; 2026. All rights reserved.
+    </footer>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
-        authDomain: "saovn-project.firebaseapp.com",
-        projectId: "saovn-project",
-        storageBucket: "saovn-project.firebasestorage.app",
-        messagingSenderId: "194928117396",
-        appId: "1:194928117396:web:642612a60105add5639681",
-        measurementId: "G-L7Y106VT85"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // --- TÍNH NĂNG CỘNG ĐỒNG (GIỮ NGUYÊN) ---
-    async function updateMemberCount(user) {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists() && userSnap.data().isCounted === false) {
-            const statsRef = doc(db, "metadata", "users_stats");
-            try {
-                await runTransaction(db, async (transaction) => {
-                    const statsDoc = await transaction.get(statsRef);
-                    if (!statsDoc.exists()) {
-                        transaction.set(statsRef, { totalMembers: 1 });
-                    } else {
-                        transaction.update(statsRef, { totalMembers: increment(1) });
-                    }
-                    transaction.update(userRef, { isCounted: true });
-                });
-            } catch (e) { console.error("Lỗi bộ đếm:", e); }
-        }
-    }
-
-    // --- LOGIC ĐĂNG NHẬP (GIỮ NGUYÊN) ---
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const pass = document.getElementById('loginPass').value;
-        const btn = document.getElementById('btnLogin');
-
-        try {
-            btn.disabled = true;
-            btn.innerText = "ĐANG XỬ LÝ...";
-            await setPersistence(auth, browserLocalPersistence);
-            const userCredential = await signInWithEmailAndPassword(auth, email, pass);
-            const user = userCredential.user;
-            await user.reload(); 
+    <!-- JAVASCRIPT UI -->
+    <script>
+        // Hàm bật/tắt hiển thị mật khẩu
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
             
-            if (user.emailVerified) {
-                await updateMemberCount(user);
-                window.location.href = "index.html"; 
+            if (input.type === "password") {
+                input.type = "text";
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />`;
             } else {
-                alert("⚠️ Tài khoản chưa kích hoạt! Hãy kiểm tra Email.");
-                await signOut(auth); 
-                window.location.reload();
+                input.type = "password";
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />`;
             }
-        } catch (error) {
-            alert("Lỗi: Email hoặc mật khẩu không chính xác.");
-            btn.disabled = false;
-            btn.innerText = "XÁC MINH DANH TÍNH";
         }
-    });
+    </script>
 
-    // --- LOGIC MODAL QUÊN MẬT KHẨU (MỚI) ---
-    const modal = document.getElementById('forgotPassModal');
-    const btnOpen = document.getElementById('btnForgotPassword');
-    const btnClose = document.querySelector('.close-modal');
-    const btnConfirm = document.getElementById('btnConfirmReset');
+    <!-- FIREBASE LOGIN LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    btnOpen.onclick = (e) => { e.preventDefault(); modal.style.display = 'flex'; };
-    btnClose.onclick = () => modal.style.display = 'none';
-    window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
+        // Cấu hình Firebase gốc từ hệ thống SAOVN
+        const firebaseConfig = {
+            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+            authDomain: "saovn-project.firebaseapp.com",
+            projectId: "saovn-project",
+            storageBucket: "saovn-project.firebasestorage.app",
+            messagingSenderId: "194928117396",
+            appId: "1:194928117396:web:642612a60105add5639681"
+        };
 
-    btnConfirm.onclick = async () => {
-        const email = document.getElementById('resetEmail').value.trim();
-        if (!email) return alert("Vui lòng nhập Email!");
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-        try {
-            btnConfirm.disabled = true;
-            btnConfirm.innerText = "ĐANG GỬI...";
-            await sendPasswordResetEmail(auth, email);
-            alert("Hệ thống: Liên kết khôi phục đã được gửi vào Email của bạn.");
-            modal.style.display = 'none';
-        } catch (error) {
-            let msg = "Không thể gửi yêu cầu.";
-            if (error.code === 'auth/user-not-found') msg = "Email này chưa đăng ký hệ thống!";
-            alert("Lỗi: " + msg);
-        } finally {
-            btnConfirm.disabled = false;
-            btnConfirm.innerText = "GỬI YÊU CẦU";
-        }
-    };
-</script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const phone = document.getElementById('login-phone').value.trim();
+            const pwd = document.getElementById('login-pwd').value;
+            const btn = document.getElementById('btn-login');
+
+            btn.innerHTML = "Đang xử lý...";
+            btn.disabled = true;
+
+            try {
+                // Tự động ghép đuôi @saovn.com để Firebase nhận diện
+                const fakeEmail = phone + "@saovn.com";
+                
+                // Gọi hàm đăng nhập
+                await signInWithEmailAndPassword(auth, fakeEmail, pwd);
+                
+                // Đăng nhập thành công -> Chuyển hướng
+                window.location.href = "dashboard.html"; 
+                
+            } catch (error) {
+                console.error("Lỗi đăng nhập:", error);
+                
+                // Bắt lỗi thân thiện với người dùng
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
+                    alert("Số điện thoại hoặc mật khẩu không chính xác!");
+                } else if (error.code === 'auth/too-many-requests') {
+                    alert("Bạn đã nhập sai quá nhiều lần. Vui lòng thử lại sau.");
+                } else {
+                    alert("Đăng nhập thất bại: " + error.message);
+                }
+            } finally {
+                btn.innerHTML = "Đăng Nhập 🚀";
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>

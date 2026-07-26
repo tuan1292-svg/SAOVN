@@ -1,485 +1,370 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAOVN | Sáng Tạo Không Giới Hạn</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <title>SAOVN - Nền Tảng Kiếm Tiền Thực Chiến</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .glow-effect {
+            box-shadow: 0 0 50px -10px rgba(14, 165, 233, 0.3);
+        }
+        .step-hidden {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        .step-active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeIn 0.5s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15,23,42,0.3) 0%, rgba(15,23,42,0.8) 100%);
+            z-index: 1;
+        }
+        .bg-image-layer {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            mix-blend-mode: luminosity;
+            z-index: 0;
+        }
+        .content-layer {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <a href="index.html" class="logo-wrapper">
-            <span class="logo-text">SAOVN</span>
-            <span class="logo-slogan">Special Actions Organization for Vietnam</span>
-        </a>
+<body class="bg-slate-950 text-slate-100 antialiased min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-slate-950">
 
-        <div class="menu-toggle" id="mobile-menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </div>
-
-		<nav class="nav-container">
-			<a href="index.html" class="nav-link active">Trang chủ</a>
-			<a href="ve-saovn.html" class="nav-link">Về SAOVN</a>
-			<a href="du-an.html" class="nav-link">Dự án</a>
-			<a href="quy-tac.html" class="nav-link">Quy tắc</a>
-            <a href="quy.html" class="nav-link">Qũy</a>
-            <a href="academy.html" class="nav-link">Học viện</a>
-
-			
-			<a href="register.html" class="nav-link" id="nav-register">Đăng ký</a>
-			<button class="btn-login" id="nav-login-btn" onclick="window.location.href='login.html'">Đăng nhập</button>
-			
-			<div id="user-profile-box" class="user-profile-nav" style="display: none;">
-                <a href="dashboard.html" class="nav-avatar-link" title="Đi tới bảng điều khiển">
-                    <div id="display-avatar" class="nav-avatar">SV</div>
-                    <span id="display-user-name">Đang tải...</span>
-                </a>
-                <button id="auth-logout-btn" class="btn-logout-mini" title="Đăng xuất">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
+    <header class="w-full p-4 border-b border-slate-900 flex items-center justify-between glass-card sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto w-full flex items-center justify-between px-2 sm:px-6 content-layer">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-black text-sm shadow-lg shadow-cyan-500/40">S</div>
+                <span class="font-extrabold tracking-wider text-cyan-400 text-sm">SAOVN PLATFORM</span>
             </div>
-		</nav>
+            
+            <!-- Khối điều hướng mới bên phải -->
+            <div class="flex items-center space-x-4">
+                <a href="login.html" class="flex items-center justify-center px-4 py-1.5 rounded-lg border border-cyan-500/50 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 hover:text-cyan-200 text-xs font-bold uppercase tracking-widest transition-all">
+                    Đăng Nhập
+                </a>
+                <div class="text-xs text-slate-400 font-medium hidden sm:block" id="progress-indicator">Phần 1 / 5</div>
+            </div>
+        </div>
     </header>
 
-    <section class="hero">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <h1 data-aos="zoom-in">SÁNG TẠO <br> <span class="outline">KHÔNG GIỚI HẠN</span></h1>
-            <p data-aos="fade-up" data-aos-delay="200">Tổ chức hoạt động đặc biệt vì Việt Nam</p>
-            <div class="scroll-down">Cuộn xuống để xem ↓</div>
-        </div>
-    </section>
-
-    <section class="section about-section">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up">Về <span class="highlight">SAOVN</span></h2>
-            
-            <div class="about-brief">
-                <p class="about-intro" data-aos="fade-up" data-aos-delay="100">
-                    Từ những trăn trở về bão lũ, kẹt xe và vòng lặp nghèo khó... chúng tôi tin rằng chỉ có <strong>HÀNH ĐỘNG</strong> mới tạo nên thay đổi thực chất.
+    <main class="w-full max-w-xl mx-auto px-4 py-8 sm:py-12 flex-grow flex flex-col justify-center">
+        
+        <!-- PHẦN 1 -->
+        <div id="step-1" class="step-active glass-card p-6 sm:p-10 rounded-3xl glow-effect">
+            <div class="bg-image-layer" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop');"></div>
+            <div class="card-overlay"></div>
+            <div class="content-layer">
+                <div class="text-cyan-400 text-xs font-bold uppercase tracking-widest mb-2">01. Tổng quan nền tảng</div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold mb-4 sm:mb-6 leading-tight">
+                    Nơi Dành Cho Những Người Yêu Tiền & Khát Khao Dòng Tiền
+                </h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-4">
+                    SAOVN không chỉ là một ứng dụng, đây là một <strong class="text-cyan-400">hệ sinh thái kiếm tiền</strong> được thiết kế để bạn tạo ra thu nhập một cách an toàn, minh bạch, sạch sẽ và tuân thủ tuyệt đối pháp luật.
                 </p>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                    Tại đây, chúng tôi tập hợp đủ các phương thức để bạn có thể bắt đầu từ con số 0. Từ việc kiếm tiền thông qua tương tác, bình luận, xem video, cho đến việc <strong class="text-cyan-400">giới thiệu người khác cùng tham gia kiếm tiền với bạn</strong>. 
+                </p>
+                <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-700/50 text-xs sm:text-sm text-slate-300 mb-8 backdrop-blur-md">
+                    💡 <strong class="text-white">Bí mật:</strong> Vẫn còn hàng loạt công việc và tính năng tự động tạo thu nhập khác đang được giữ kín, bạn sẽ thấy sự ngỡ ngàng khi bước vào "Trung tâm điều khiển".
+                </div>
                 
-                <p class="about-text" data-aos="fade-up" data-aos-delay="200">
-                    SAOVN (Special Actions Organization for Vietnam) là cộng đồng tập hợp những con người sẵn sàng đóng góp trí tuệ và thời gian để giải quyết các vấn đề xã hội dựa trên dữ liệu thực tế.
+                <div class="space-y-3">
+                    <button onclick="nextStep(2)" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-sm sm:text-base shadow-lg shadow-cyan-500/25 transition-transform active:scale-95">
+                        Khám phá bí mật tiếp theo &rarr;
+                    </button>
+                    
+                    <a href="login.html" class="block w-full py-3.5 text-center rounded-xl border border-slate-700/80 hover:border-cyan-500/60 hover:bg-slate-800/40 text-slate-400 hover:text-cyan-400 font-semibold text-sm transition-all backdrop-blur-sm">
+                        Đã là thành viên? Đi thẳng tới Đăng nhập
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHẦN 2 -->
+        <div id="step-2" class="step-hidden glass-card p-6 sm:p-10 rounded-3xl glow-effect">
+            <div class="bg-image-layer" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?q=80&w=1000&auto=format&fit=crop');"></div>
+            <div class="card-overlay"></div>
+            <div class="content-layer">
+                <div class="text-cyan-400 text-xs font-bold uppercase tracking-widest mb-2">02. Nghịch lý thị trường</div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold mb-4 sm:mb-6 leading-tight">
+                    Chấm dứt những trò "may rủi" của đầu tư truyền thống
+                </h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-4">
+                    Bạn có nhận ra sự mệt mỏi của thị trường ngoài kia? Đem tiền đi <strong class="text-red-400">đầu tư vàng</strong> thì nơm nớp lo sợ không biết ngày mai giá lên hay xuống. Tham gia các kênh tài chính khác thì như đánh cược vào những <strong class="text-red-400">trò may rủi</strong>, hoặc mỏi mòn chờ đợi khoản cổ tức nhỏ giọt chia mỗi năm một lần.
                 </p>
-
-                <div class="about-action" data-aos="zoom-in" data-aos-delay="300">
-                    <a href="ve-saovn.html" class="btn-main">Khám phá sứ mệnh</a>
-                    <a href="register.html" class="btn-sub" id="btn-join-1">Gia nhập cộng đồng</a>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                    Trái ngược hoàn toàn, phương châm của SAOVN là góp vốn vào kinh doanh thực tế để <strong class="text-cyan-400">nhận lợi nhuận hàng tháng</strong>. Đó mới đúng là bản chất của việc gia tăng thu nhập thụ động an toàn và bền vững!
+                </p>
+                <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-700/50 text-xs sm:text-sm text-slate-300 mb-8 backdrop-blur-md">
+                    💡 <strong class="text-white">Sự thật:</strong> Người giàu thực sự không chơi may rủi. Họ sở hữu chuỗi nhà hàng, quán cafe... và thu <strong class="text-cyan-400">tiền tươi thóc thật</strong> về túi mỗi tháng. Sân chơi kinh doanh đó nay đã mở cửa cho bạn.
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="prevStep(1)" class="w-1/3 py-3.5 rounded-xl border border-slate-600 hover:bg-slate-800 text-slate-200 font-semibold text-sm transition-colors">Quay lại</button>
+                    <button onclick="nextStep(3)" class="w-2/3 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-sm sm:text-base shadow-lg shadow-cyan-500/25 transition-transform active:scale-95">Tiếp theo &rarr;</button>
                 </div>
             </div>
         </div>
-    </section>
 
-    <section class="section problem-solving">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up">SAOVN GIẢI QUYẾT <span class="highlight">BẾ TẮC CỦA BẠN</span></h2>
-            <p class="section-subtitle" data-aos="fade-up">Chúng tôi không chỉ nói về vấn đề, chúng tôi tập hợp để xử lý chúng. Hãy xem bế tắc của bạn có nằm ở đây?</p>
-
-            <div class="problem-grid">
-                <div class="problem-note" data-aos="fade-up">
-                    <div class="note-header"><i class="fas fa-video"></i> TRUYỀN THÔNG & ĐIỆN ẢNH</div>
-                    <div class="note-body">
-                        <h4>Đam mê quay dựng nhưng thiếu máy xịn?</h4>
-                        <p class="pain-point">"Tôi muốn học quay phim chuyên nghiệp nhưng học phí quá cao, tiền mua máy ảnh, lens và máy tính dựng phim là con số không tưởng..."</p>
-                    </div>
-                    <div class="detailed-solution">
-                        <b>Giải pháp SAOVN:</b>
-                        <p>Cung cấp hệ thống thiết bị cao cấp và đội ngũ sản xuất thực tế. Bạn được thực hành trên máy xịn, tham gia các dự án thật cùng Team chuyên nghiệp để thành nghề mà không cần chờ đợi.</p>
-                    </div>
+        <!-- PHẦN 3 -->
+        <div id="step-3" class="step-hidden glass-card p-6 sm:p-10 rounded-3xl glow-effect">
+            <div class="bg-image-layer" style="background-image: url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=1000&auto=format&fit=crop');"></div>
+            <div class="card-overlay"></div>
+            <div class="content-layer">
+                <div class="text-cyan-400 text-xs font-bold uppercase tracking-widest mb-2">03. Giải pháp đột phá</div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold mb-4 sm:mb-6 leading-tight">
+                    Đồng Chủ Sở Hữu Những "Cỗ Máy In Tiền" Khổng Lồ
+                </h2>
+                <p class="text-slate-200 text-sm sm:text-base leading-relaxed mb-4">
+                    Bạn đã bao giờ ngồi trong một quán cafe <strong>Starbucks</strong> hay <strong>Trung Nguyên</strong> đông nghịt khách và thầm nghĩ: <em>"Chủ của chuỗi này đang kiếm được bao nhiêu tiền mỗi ngày?"</em>
+                </p>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-4">
+                    Đừng chỉ đứng nhìn người khác thu lợi từ những cỗ máy đó nữa! Tại SAOVN, bằng cách gom những khoản vốn nhỏ, bạn chính thức trở thành <strong class="text-cyan-400">đồng chủ sở hữu</strong> của những hệ thống kinh doanh quy mô tương tự.
+                </p>
+                <ul class="space-y-4 mb-8">
+                    <li class="flex items-start bg-slate-900/40 p-3 rounded-xl border border-slate-700/50">
+                        <span class="text-cyan-400 mr-3 font-black text-lg">✓</span>
+                        <span class="text-slate-300 text-sm sm:text-base"><strong>Tiền tươi hàng tháng:</strong> Khác với chờ đợi cổ tức 1 năm, lợi nhuận kinh doanh được hạch toán minh bạch và chia thẳng vào ví bạn mỗi tháng.</span>
+                    </li>
+                    <li class="flex items-start bg-slate-900/40 p-3 rounded-xl border border-slate-700/50">
+                        <span class="text-cyan-400 mr-3 font-black text-lg">✓</span>
+                        <span class="text-slate-300 text-sm sm:text-base"><strong>Không pha loãng mập mờ:</strong> Mỗi dự án có mức vốn cố định. Khi cần mở rộng, chúng ta mở dự án mới độc lập, tuyệt đối không giữ lại lợi nhuận để tái đầu tư.</span>
+                    </li>
+                </ul>
+                <div class="flex gap-3">
+                    <button onclick="prevStep(2)" class="w-1/3 py-3.5 rounded-xl border border-slate-600 hover:bg-slate-800 text-slate-200 font-semibold text-sm transition-colors">Quay lại</button>
+                    <button onclick="nextStep(4)" class="w-2/3 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-sm sm:text-base shadow-lg shadow-cyan-500/25 transition-transform active:scale-95">Tiếp theo &rarr;</button>
                 </div>
-
-                <div class="problem-note" data-aos="fade-up" data-aos-delay="100">
-                    <div class="note-header"><i class="fas fa-share-nodes"></i> XÂY DỰNG THƯƠNG HIỆU SỐ</div>
-                    <div class="note-body">
-                        <h4>Làm kênh đơn độc, thiếu tương tác thực?</h4>
-                        <p class="pain-point">"Tôi đang xây kênh kiếm tiền nhưng chỉ có một mình, thời gian và kinh nghiệm còn thiếu để kéo hàng ngàn follow hay tạo ra tương tác thực tế..."</p>
-                    </div>
-                    <div class="detailed-solution">
-                        <b>Giải pháp SAOVN:</b>
-                        <p>Sở hữu ngay sức mạnh từ cộng đồng đặc vụ. Chúng tôi hỗ trợ đẩy viral, tăng tương tác chất lượng thật 100%, tạo nền tảng vững chắc để bạn dễ dàng nhận hợp đồng quảng cáo từ nhãn hàng.</p>
-                    </div>
-                </div>
-
-                <div class="problem-note" data-aos="fade-up" data-aos-delay="200">
-                    <div class="note-header"><i class="fas fa-water"></i> AN TOÀN DÂN SINH</div>
-                    <div class="note-body">
-                        <h4>Bất an khi mùa bão lũ cận kề?</h4>
-                        <p class="pain-point">"Gia đình tôi luôn sống trong lo sợ vì không biết chính xác khi nào nước dâng, thông tin từ tivi thường quá chậm so với thực tế..."</p>
-                    </div>
-                    <div class="detailed-solution">
-                        <b>Giải pháp SAOVN:</b>
-                        <p>Triển khai các trạm quan trắc mực nước tại địa phương và hệ thống cảnh báo qua di động. Dữ liệu thực tế giúp bạn chủ động bảo vệ tính mạng và tài sản.</p>
-                    </div>
-                </div>
-
-                <div class="problem-note" data-aos="fade-up" data-aos-delay="300">
-                    <div class="note-header"><i class="fas fa-traffic-light"></i> GIAO THÔNG ĐÔ THỊ</div>
-                    <div class="note-body">
-                        <h4>Mệt mỏi vì kẹt xe và quy hoạch lỗi?</h4>
-                        <p class="pain-point">"Ngày nào cũng mất hàng giờ trên đường kẹt xe khói bụi, nhìn những điểm nghẽn giao thông mà không ai đứng ra đề xuất thay đổi..."</p>
-                    </div>
-                    <div class="detailed-solution">
-                        <b>Giải pháp SAOVN:</b>
-                        <p>SAOVN tập hợp các đặc vụ chuyên về hạ tầng và dữ liệu để phân tích điểm nghẽn, xây dựng phương án phân luồng tối ưu và kiến nghị trực tiếp đến cơ quan chức năng.</p>
-                    </div>
-                </div>
-
-                <div class="problem-note" data-aos="fade-up" data-aos-delay="400">
-                    <div class="note-header"><i class="fas fa-chart-line"></i> AN SINH XÃ HỘI</div>
-                    <div class="note-body">
-                        <h4>Bế tắc trong vòng lặp thu nhập thấp?</h4>
-                        <p class="pain-point">"Tôi làm việc cật lực nhưng không có định hướng, không có vốn và cũng chẳng có ai dẫn dắt để thoát khỏi cái nghèo..."</p>
-                    </div>
-                    <div class="detailed-solution">
-                        <b>Giải pháp SAOVN:</b>
-                        <p>Xây dựng lộ trình thoát nghèo bền vững qua đào tạo kỹ năng thực chiến và hỗ trợ vốn từ quỹ SAOVN cho các mô hình kinh doanh khả thi tại địa phương.</p>
-                    </div>
-                </div>
-
-                <div class="problem-note" data-aos="fade-up" data-aos-delay="500">
-                    <div class="note-header"><i class="fas fa-brain"></i> HỌC VIỆN TÀI NĂNG</div>
-                    <div class="note-body">
-                        <h4>Có ý tưởng tốt nhưng đơn độc?</h4>
-                        <p class="pain-point">"Tôi có giải pháp công nghệ giúp ích cho xã hội nhưng bạn bè bảo viển vông, tôi không tìm được người đồng hành..."</p>
-                    </div>
-                    <div class="detailed-solution">
-                        <b>Giải pháp SAOVN:</b>
-                        <p>Học viện SAOVN là nơi hội tụ các 'máy não' sáng tạo. Chúng tôi cung cấp môi trường làm việc chung, cố vấn chuyên môn và cộng đồng hỗ trợ bạn hiện thực hóa ý tưởng.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="problem-cta" data-aos="zoom-in">
-                <div class="cta-message">
-                    <h3>Vấn đề của bạn chưa xuất hiện?</h3>
-                    <p>Đừng ngần ngại gia nhập! SAOVN luôn ở đây để lắng nghe điều bạn đang gặp phải. Chúng tôi sẵn sàng tìm giải pháp, cung cấp nguồn lực và cùng bạn giải quyết nó. SAOVN là nơi đáng tham gia, đáng sống và đáng cống hiến vì một Việt Nam tốt đẹp hơn.</p>
-                </div>
-                <a href="register.html" class="btn-main" id="btn-join-2">GIA NHẬP & CHIA SẺ VẤN ĐỀ</a>
             </div>
         </div>
-    </section>
 
-    <section class="section stats-section">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up">Dữ Liệu <span class="highlight">Thực Tế</span></h2>
-            
-            <div class="dashboard-grid">
-                <div class="dash-card" data-aos="fade-up" data-aos-delay="0">
-                    <div class="card-header">
-                        <span class="dot-live"></span> <span class="card-label">Thành viên tham gia</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="stat-number" id="member-count" data-target="0">0</h3>
-                        <div class="mini-chart bar-chart">
-                            <div class="bar-line"></div><div class="bar-line"></div>
-                            <div class="bar-line"></div><div class="bar-line"></div>
-                            <div class="bar-line"></div><div class="bar-line"></div>
-                        </div>
-                    </div>
-                    <p class="card-footer">↑ 12% so với tháng trước</p>
+        <!-- PHẦN 4 -->
+        <div id="step-4" class="step-hidden glass-card p-6 sm:p-10 rounded-3xl glow-effect">
+            <div class="bg-image-layer" style="background-image: url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1000&auto=format&fit=crop');"></div>
+            <div class="card-overlay"></div>
+            <div class="content-layer">
+                <div class="text-cyan-400 text-xs font-bold uppercase tracking-widest mb-2">04. Lợi thế độc quyền</div>
+                <h2 class="text-2xl sm:text-4xl font-extrabold mb-4 sm:mb-6 leading-tight">
+                    Vũ khí tối thượng: 100% có sẵn đầu ra không lo ế
+                </h2>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                    Mở kinh doanh bên ngoài rủi ro rất cao vì sợ vắng khách. Nhưng với SAOVN, chúng ta cầm chắc phần thắng nhờ <strong class="text-cyan-400">cộng đồng thành viên khổng lồ</strong>.
+                </p>
+                <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+                    Khi chúng ta rót vốn mở chuỗi <strong>Quán Cafe, Nhà hàng, hay Cửa hàng tiện lợi...</strong> thì chính hàng chục ngàn thành viên là khách hàng tiêu thụ nội bộ ngay lập tức! Sản phẩm làm ra đã có sẵn người dùng, triệt tiêu mọi rủi ro và tiền cứ thế xoay vòng sinh lãi.
+                </p>
+                <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-700/50 text-xs sm:text-sm text-slate-300 mb-8 backdrop-blur-md">
+                    🤫 <em class="text-slate-200">Bên cạnh đó, còn rất nhiều mô hình kinh doanh "đẻ trứng vàng" đột phá khác đang được giữ kín, chỉ dành riêng cho thành viên chính thức thấy khi đăng nhập.</em>
                 </div>
+                <div class="flex gap-3">
+                    <button onclick="prevStep(3)" class="w-1/3 py-3.5 rounded-xl border border-slate-600 hover:bg-slate-800 text-slate-200 font-semibold text-sm transition-colors">Quay lại</button>
+                    <button onclick="nextStep(5)" class="w-2/3 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-sm sm:text-base shadow-lg shadow-cyan-500/25 transition-transform active:scale-95">Tôi muốn tham gia &rarr;</button>
+                </div>
+            </div>
+        </div>
 
-                <div class="dash-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="card-header">
-                        <span class="status-icon">⚡</span> <span class="card-label">Dự án hoàn thành</span>
+        <!-- PHẦN 5: CỔNG GIA NHẬP (CÓ FIREBASE) -->
+        <div id="step-5" class="step-hidden glass-card p-6 sm:p-10 rounded-3xl border border-cyan-500/40 glow-effect">
+            <div class="bg-image-layer" style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1000&auto=format&fit=crop');"></div>
+            <div class="card-overlay"></div>
+            <div class="content-layer">
+                <div class="text-center mb-6">
+                    <span class="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold uppercase tracking-wider">Cổng Kích Hoạt</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mt-3 mb-4">Gia Nhập Cùng Đế Chế SAOVN</h2>
+                    <div class="text-left bg-slate-900/70 p-4 rounded-2xl border border-cyan-500/30 mb-6 backdrop-blur-md">
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <span class="text-cyan-400 mr-2 font-bold text-lg">⚡</span>
+                                <span class="text-slate-200 text-sm">Phí kích hoạt 1 năm: <strong class="text-cyan-400 text-base">Chỉ 100.000 VNĐ</strong>.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-cyan-400 mr-2 font-bold text-lg">🎁</span>
+                                <span class="text-slate-200 text-sm">Thưởng <strong class="text-cyan-400 text-base">50.000 VNĐ (50%)</strong> khi giới thiệu 1 người tham gia.</span>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="card-body">
-                        <h3 class="stat-number" data-target="14">0</h3>
-                        <div class="mini-chart circle-chart">
-                            <svg viewBox="0 0 36 36" class="circular-chart">
-                                <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path class="circle" stroke-dasharray="80, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                </div>
+                
+                <form id="register-form" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Họ và tên</label>
+                        <input type="text" id="reg-name" placeholder="Nguyễn Văn A" required class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-400 backdrop-blur-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Số điện thoại / Zalo</label>
+                        <input type="tel" id="reg-phone" placeholder="0912345678" required class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-400 backdrop-blur-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">SĐT người giới thiệu (Nếu có)</label>
+                        <input type="tel" id="reg-ref" placeholder="Nhập SĐT người đã giới thiệu bạn" class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-400 backdrop-blur-sm">
+                    </div>
+                    
+                    <div class="relative">
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Mật khẩu đăng nhập</label>
+                        <input type="password" id="pwd" placeholder="••••••••" required class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-2.5 pr-10 text-sm text-slate-100 focus:outline-none focus:border-cyan-400 backdrop-blur-sm">
+                        <button type="button" onclick="togglePassword('pwd', 'eye-pwd')" class="absolute right-3 top-[28px] text-slate-400 hover:text-cyan-400 focus:outline-none">
+                            <svg id="eye-pwd" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
-                        </div>
+                        </button>
                     </div>
-                    <p class="card-footer">Đang triển khai: 03</p>
-                </div>
-
-                <div class="dash-card highlight-card" data-aos="fade-up" data-aos-delay="400">
-                    <div class="card-header">
-                        <span class="money-icon">$</span> <span class="card-label">Quỹ huy động (VNĐ)</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="money-wrapper">
-							<h3 class="stat-number" id="fund_stats" data-target="0">0</h3>
-							<span class="unit">VNĐ</span> 
-						</div>
-                        <div class="mini-chart line-chart">
-                            <svg viewBox="0 0 100 30" class="trending-line">
-                                <polyline fill="none" stroke="#00d2ff" stroke-width="2" points="0,25 20,20 40,22 60,10 80,15 100,5" />
+                    
+                    <div class="relative">
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Nhập lại mật khẩu</label>
+                        <input type="password" id="pwd-confirm" placeholder="••••••••" required class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-2.5 pr-10 text-sm text-slate-100 focus:outline-none focus:border-cyan-400 backdrop-blur-sm">
+                        <button type="button" onclick="togglePassword('pwd-confirm', 'eye-confirm')" class="absolute right-3 top-[28px] text-slate-400 hover:text-cyan-400 focus:outline-none">
+                            <svg id="eye-confirm" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
-                        </div>
+                        </button>
                     </div>
-                    <p class="card-footer live-text">Đang cập nhật real-time...</p>
-                </div>
+                    
+                    <button type="submit" id="btn-register" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-base shadow-xl shadow-cyan-500/40 transition-transform active:scale-95 mt-4">
+                        Kích Hoạt Tài Khoản 100K 🚀
+                    </button>
+                </form>
+                
+                <button onclick="prevStep(4)" class="w-full mt-4 text-center text-xs text-slate-400 hover:text-cyan-400 transition-colors">
+                    &larr; Xem lại các phần trước
+                </button>
             </div>
         </div>
-    </section>
+    </main>
 
-    <section class="section projects-section">
-        <div class="container">
-            <h2 class="section-title" data-aos="fade-up">Dự Án <span class="highlight">Tiêu Biểu</span></h2>
-            
-            <div class="project-grid">
-                <div class="project-card" data-aos="fade-right">
-                    <div class="card-img">
-                        <img src="https://images.unsplash.com/photo-1547619292-8816ee7cdd50?auto=format&fit=crop&w=600&q=80" alt="Hệ thống cảnh báo lũ">
-                    </div>
-                    <div class="card-content">
-                        <span class="card-tag">Thiên tai</span>
-                        <h3>Giải Pháp Bão Lũ</h3>
-                        <p>Hệ thống giám sát lưu lượng xả lũ thủy điện và cảnh báo sớm dựa trên dữ liệu thực tế.</p>
-                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="card-img">
-                        <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=800&q=80" alt="Giao thông thông minh">
-                    </div>
-                    <div class="card-content">
-                        <span class="card-tag">Giao thông</span>
-                        <h3>Giải pháp Ùn tắc Đô thị</h3>
-                        <p>Phân tích điểm nghẽn và đề xuất phương án phân luồng, quy hoạch hạ tầng khả thi.</p>
-                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
-                    </div>
-                </div>
-
-                <div class="project-card" data-aos="fade-left" data-aos-delay="400">
-                    <div class="card-img">
-                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=600&q=80" alt="Hỗ trợ thoát nghèo">
-                    </div>
-                    <div class="card-content">
-                        <span class="card-tag">An sinh</span>
-                        <h3>Thoát nghèo bền vững</h3>
-                        <p>Xây dựng lộ trình hỗ trợ các hoàn cảnh khó khăn tìm hướng đi mới và ổn định cuộc sống.</p>
-                        <a href="du-an.html" class="btn-card">Xem chi tiết</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container footer-grid" data-aos="fade-up">
-            <div class="footer-brand">
-                <h3>SAOVN</h3>
-                <p>Special Actions Organization for Vietnam</p>
-                <p class="footer-slogan">Sáng tạo không giới hạn - Nâng tầm vị thế Việt.</p>
-            </div>
-
-            <div class="footer-contact">
-                <h4>Liên Hệ</h4>
-                <p>📍 Địa chỉ: Quận 1, TP. Hồ Chí Minh, Việt Nam</p>
-                <p>📞 Điện thoại: 0867 179 857</p>
-                <p>✉️ Email: saovn.official@gmail.com</p>
-            </div>
-
-            <div class="footer-socials">
-                <h4>Kết Nối</h4>
-                <div class="social-icons">
-                    <a href="#" class="social-link">TikTok</a>
-                    <a href="https://www.youtube.com/@SAOVNOfficial" class="social-link">YouTube</a>
-                    <a href="#" class="social-link">Discord</a>
-                    <a href="https://www.facebook.com/profile.php?id=61581585313701" class="social-link">Facebook</a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p class="copyright">&copy; 2026 SAOVN. All Rights Reserved.</p>
-        </div>
+    <footer class="w-full p-4 text-center text-xs text-slate-600 relative z-10">
+        SAOVN Platform &copy; 2026. All rights reserved.
     </footer>
 
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <!-- JAVASCRIPT UI -->
     <script>
-        // Init AOS
-        AOS.init({ duration: 1000, once: true });
-
-        // Mobile Menu Toggle
-        const menu = document.querySelector('#mobile-menu');
-        const menuLinks = document.querySelector('.nav-container');
-
-        menu.addEventListener('click', function() {
-            menu.classList.toggle('is-active');
-            menuLinks.classList.toggle('active');
-        });
-        
-        // 1. HEADER SCROLL EFFECT
-        const header = document.querySelector('header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+        function showStep(stepNum) {
+            for (let i = 1; i <= 5; i++) {
+                const el = document.getElementById('step-' + i);
+                el.classList.remove('step-active');
+                el.classList.add('step-hidden');
             }
-        });
+            const target = document.getElementById('step-' + stepNum);
+            target.classList.remove('step-hidden');
+            target.classList.add('step-active');
+            document.getElementById('progress-indicator').innerText = stepNum < 5 ? `Phần ${stepNum} / 5` : 'Cổng gia nhập';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        function nextStep(stepNum) { showStep(stepNum); }
+        function prevStep(stepNum) { showStep(stepNum); }
+        
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />`;
+            } else {
+                input.type = "password";
+                icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />`;
+            }
+        }
+    </script>
 
-        // 2. COUNTER ANIMATION LOGIC
-        const stats = document.querySelectorAll('.stat-number');
-        let hasAnimated = false;
+    <!-- FIREBASE REGISTRATION LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const animateCounters = () => {
-            stats.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                const isFloat = counter.getAttribute('data-is-float') === 'true';
-                const duration = 2000; 
-                const frameRate = 20; 
-                const totalFrames = duration / frameRate;
-                const increment = target / totalFrames;
-                
-                let current = 0;
-
-                const updateCount = () => {
-                    current += increment;
-                    if (current < target) {
-                        const value = isFloat ? current.toFixed(1) : Math.ceil(current);
-						counter.innerText = Number(value).toLocaleString('vi-VN');
-                        setTimeout(updateCount, frameRate);
-                    } else {
-                        counter.innerText = isFloat ? target : target;
-                    }
-                };
-                updateCount();
-            });
+        // Cấu hình Firebase gốc từ hệ thống SAOVN
+        const firebaseConfig = {
+            apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
+            authDomain: "saovn-project.firebaseapp.com",
+            projectId: "saovn-project",
+            storageBucket: "saovn-project.firebasestorage.app",
+            messagingSenderId: "194928117396",
+            appId: "1:194928117396:web:642612a60105add5639681"
         };
 
-        // Kích hoạt khi cuộn đến section Stats
-        window.addEventListener('scroll', () => {
-            const statsSection = document.querySelector('.stats-section');
-            if(statsSection) {
-                const triggerPoint = window.innerHeight * 0.8; 
-                const sectionTop = statsSection.getBoundingClientRect().top;
-                if (sectionTop < triggerPoint && !hasAnimated) {
-                    animateCounters();
-                    hasAnimated = true;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('reg-name').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const refPhone = document.getElementById('reg-ref').value.trim();
+            const pwd = document.getElementById('pwd').value;
+            const pwdConfirm = document.getElementById('pwd-confirm').value;
+            const btn = document.getElementById('btn-register');
+
+            if (pwd !== pwdConfirm) {
+                alert("Mật khẩu nhập lại không khớp!");
+                return;
+            }
+
+            btn.innerHTML = "Đang xử lý...";
+            btn.disabled = true;
+
+            try {
+                // Tạo Email giả lập từ Số điện thoại để Firebase chấp nhận
+                const fakeEmail = phone + "@saovn.com";
+                const userCredential = await createUserWithEmailAndPassword(auth, fakeEmail, pwd);
+                const user = userCredential.user;
+
+                // Ghi nhận thông tin người dùng vào Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    fullName: name,
+                    phone: phone,
+                    refPhone: refPhone,
+                    role: "member",
+                    status: "pending_activation",
+                    createdAt: serverTimestamp()
+                });
+
+                // Thông báo chào mừng và điều hướng sang trang Đăng nhập
+                alert("Đăng ký thành công! Chào mừng bạn gia nhập SAOVN.\nVui lòng đăng nhập lại để vào Trung tâm tài chính.");
+                window.location.href = "login.html"; 
+                
+            } catch (error) {
+                console.error("Firebase Error:", error);
+                if (error.code === 'auth/email-already-in-use') {
+                    alert("Số điện thoại này đã được đăng ký. Vui lòng đăng nhập!");
+                } else if (error.code === 'auth/weak-password') {
+                    alert("Mật khẩu quá yếu, vui lòng chọn mật khẩu từ 6 ký tự trở lên.");
+                } else {
+                    alert("Đăng ký thất bại: " + error.message);
                 }
+            } finally {
+                btn.innerHTML = "Kích Hoạt Tài Khoản 100K 🚀";
+                btn.disabled = false;
             }
         });
     </script>
-	<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-    // Cấu hình Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
-        authDomain: "saovn-project.firebaseapp.com",
-        projectId: "saovn-project",
-        storageBucket: "saovn-project.firebasestorage.app",
-        messagingSenderId: "194928117396",
-        appId: "1:194928117396:web:642612a60105add5639681"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-	
-	// --- HÀM LẤY SỐ THÀNH VIÊN ---
-    async function fetchMemberStats() {
-        try {
-            const statsDocRef = doc(db, "metadata", "users_stats"); 
-            const statsDocSnap = await getDoc(statsDocRef);
-            if (statsDocSnap.exists()) {
-                const data = statsDocSnap.data();
-                const total = data.totalMembers || 0; 
-                const memberElement = document.getElementById('member-count');
-                if (memberElement) {
-                    memberElement.setAttribute('data-target', total);
-                    if (window.scrollY > memberElement.offsetTop - window.innerHeight) {
-                        memberElement.innerText = total;
-                    }
-                }
-            }
-        } catch (e) { console.error(e); }
-    }
-    fetchMemberStats();
-
-    // --- LOGIC AUTH & AVATAR ĐỒNG BỘ ---
-    const userProfileBox = document.getElementById('user-profile-box');
-    const loginBtn = document.getElementById('nav-login-btn');
-    const registerLink = document.getElementById('nav-register');
-    const displayUserName = document.getElementById('display-user-name');
-    const displayAvatar = document.getElementById('display-avatar');
-
-    const btnJoin1 = document.getElementById('btn-join-1');
-    const btnJoin2 = document.getElementById('btn-join-2');
-
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            userProfileBox.style.display = 'flex';
-            if(loginBtn) loginBtn.style.display = 'none';
-            if(registerLink) registerLink.style.display = 'none';
-
-            // --- THÊM MỚI: Đổi nút thành "Vào Dashboard" ---
-    if(btnJoin1) {
-        btnJoin1.href = "dashboard.html";
-        btnJoin1.innerText = "Vào Bảng Điều Khiển";
-    }
-    if(btnJoin2) {
-        btnJoin2.href = "dashboard.html";
-        btnJoin2.innerText = "ĐI TỚI BẢNG ĐIỀU KHIỂN";
-    }
-
-            try {
-                const userDocSnap = await getDoc(doc(db, "users", user.uid));
-                if (userDocSnap.exists()) {
-                    const data = userDocSnap.data();
-                    displayUserName.innerText = data.fullName || user.email.split('@')[0];
-                    
-                    // Hiển thị Avatar (Ưu tiên ảnh từ Firestore)
-                    if (data.photoURL) {
-                        displayAvatar.innerText = "";
-                        displayAvatar.style.backgroundImage = `url('${data.photoURL}')`;
-                    } else {
-                        // Backup nếu không có ảnh
-                        displayAvatar.innerText = (data.fullName || "U").charAt(0).toUpperCase();
-                        displayAvatar.style.backgroundImage = "none";
-                    }
-                }
-            } catch (e) {
-                displayUserName.innerText = user.email.split('@')[0];
-            }
-        } else {
-            userProfileBox.style.display = 'none';
-            if(loginBtn) loginBtn.style.display = 'block';
-            if(registerLink) registerLink.style.display = 'block';
-            // --- THÊM MỚI: Trả lại nút "Đăng ký" ban đầu ---
-    if(btnJoin1) {
-        btnJoin1.href = "register.html";
-        btnJoin1.innerText = "Gia nhập cộng đồng";
-    }
-    if(btnJoin2) {
-        btnJoin2.href = "register.html";
-        btnJoin2.innerText = "GIA NHẬP & CHIA SẺ VẤN ĐỀ";
-    }
-        }
-    });
-
-    document.getElementById('auth-logout-btn').onclick = () => {
-        signOut(auth).then(() => window.location.reload());
-    };
-	
-    async function loadFundStatus() {
-        const fundRef = doc(db, "metadata", "fund_stats");
-        onSnapshot(fundRef, (docSnap) => {
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                const amount = data.amount || 0;
-                const displayElem = document.getElementById('fund_stats');
-                if (displayElem) {
-                    displayElem.setAttribute('data-target', amount);
-                    displayElem.innerText = amount.toLocaleString('vi-VN');
-                }
-            }
-        });
-    }
-    loadFundStatus();
-</script>
 </body>
 </html>
