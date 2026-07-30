@@ -553,6 +553,7 @@ if (bankInfo) {
     document.getElementById('saved-bank-display').classList.remove('hidden');
     document.getElementById('display-bank-code').innerText = bankInfo.bankCode;
     document.getElementById('display-bank-name').innerText = bankInfo.bankName;
+    document.getElementById('bank-form').classList.add('hidden');
     
     window.rawBankAcc = bankInfo.bankAcc;
     window.isBankAccMasked = true;
@@ -569,6 +570,7 @@ if (bankInfo) {
     // Nếu chưa có hoặc vừa xóa, ẩn FUI Card đi và xóa form
     document.getElementById('saved-bank-display').classList.add('hidden');
     document.getElementById('bank-form').reset();
+    document.getElementById('bank-form').classList.remove('hidden');
 }
 
 
@@ -833,9 +835,10 @@ window.toggleBankAcc = function() {
 
 // Tính năng chỉnh sửa
 window.editBankInfo = function() {
-    // Chỉ cần focus vào form vì dữ liệu đã tự động điền sẵn
+    // 1. Mở lại form cho người dùng sửa
+    document.getElementById('bank-form').classList.remove('hidden');
+    // 2. Focus vào ô chọn ngân hàng
     document.getElementById('bank-code').focus();
-    alert("Thông tin hiện tại đã có sẵn trên Form. Vui lòng chỉnh sửa và bấm 'Đồng Bộ' lại!");
 }
 
 // Tính năng xóa liên kết thẻ
