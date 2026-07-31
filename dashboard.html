@@ -564,8 +564,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        // Bổ sung addDoc vào import của firestore
-        import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // Đã bổ sung thêm setDoc vào danh sách import
+        import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc, deleteField, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
@@ -581,12 +581,15 @@
         const db = getFirestore(app);
 
         window.rawBankAcc = ""; 
-window.isBankAccMasked = true;
+        window.isBankAccMasked = true;
+        
+        // Biến toàn cục lưu trữ trạng thái nhiệm vụ của User hiện tại
+        window.userSubmissions = {};
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                // 1. Lắng nghe thông tin cơ bản của User
                 const docRef = doc(db, "users", user.uid);
-                
                 onSnapshot(docRef, (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
@@ -613,33 +616,27 @@ window.isBankAccMasked = true;
                         document.getElementById('ref-link').innerText = `saovn.com/ref/${phone}`;
                         document.getElementById('deposit-syntax').innerText = phone;
 
-                        // Kiểm tra và hiển thị dữ liệu thẻ ngân hàng nếu có
-const bankInfo = data.bankInfo;
-if (bankInfo) {
-    document.getElementById('saved-bank-display').classList.remove('hidden');
-    document.getElementById('display-bank-code').innerText = bankInfo.bankCode;
-    document.getElementById('display-bank-name').innerText = bankInfo.bankName;
-    document.getElementById('bank-form').classList.add('hidden');
-    
-    window.rawBankAcc = bankInfo.bankAcc;
-    window.isBankAccMasked = true;
-    
-    // Khởi tạo trạng thái che số mặc định
-    document.getElementById('display-bank-acc').innerText = window.rawBankAcc.length > 4 ? "**** **** " + window.rawBankAcc.slice(-4) : window.rawBankAcc;
-    document.getElementById('eye-icon').className = "fa-solid fa-eye-slash";
-    
-    // Điền ngược dữ liệu vào form để tiện chỉnh sửa
-    document.getElementById('bank-code').value = bankInfo.bankCode;
-    document.getElementById('bank-acc').value = window.rawBankAcc;
-    document.getElementById('bank-name').value = bankInfo.bankName;
-} else {
-    // Nếu chưa có hoặc vừa xóa, ẩn FUI Card đi và xóa form
-    document.getElementById('saved-bank-display').classList.add('hidden');
-    document.getElementById('bank-form').reset();
-    document.getElementById('bank-form').classList.remove('hidden');
-}
+                        // Ngân hàng
+                        const bankInfo = data.bankInfo;
+                        if (bankInfo) {
+                            document.getElementById('saved-bank-display').classList.remove('hidden');
+                            document.getElementById('display-bank-code').innerText = bankInfo.bankCode;
+                            document.getElementById('display-bank-name').innerText = bankInfo.bankName;
+                            document.getElementById('bank-form').classList.add('hidden');
+                            window.rawBankAcc = bankInfo.bankAcc;
+                            window.isBankAccMasked = true;
+                            document.getElementById('display-bank-acc').innerText = window.rawBankAcc.length > 4 ? "**** **** " + window.rawBankAcc.slice(-4) : window.rawBankAcc;
+                            document.getElementById('eye-icon').className = "fa-solid fa-eye-slash";
+                            document.getElementById('bank-code').value = bankInfo.bankCode;
+                            document.getElementById('bank-acc').value = window.rawBankAcc;
+                            document.getElementById('bank-name').value = bankInfo.bankName;
+                        } else {
+                            document.getElementById('saved-bank-display').classList.add('hidden');
+                            document.getElementById('bank-form').reset();
+                            document.getElementById('bank-form').classList.remove('hidden');
+                        }
 
-
+                        // Trạng thái kích hoạt
                         const statusBadge = document.getElementById('user-status-badge');
                         if (data.status === 'active') {
                             statusBadge.innerText = '✓ Đã kích hoạt';
@@ -654,17 +651,54 @@ if (bankInfo) {
                         }
 
                         loadTeamData(phone);
-                        loadTasks();
                     }
                 });
+
+                // 2. LẮNG NGHE TRẠNG THÁI NHIỆM VỤ CỦA USER THEO THỜI GIAN THỰC
+                const subQuery = query(collection(db, "task_submissions"), where("userId", "==", user.uid));
+                onSnapshot(subQuery, (subSnap) => {
+                    window.userSubmissions = {};
+                    subSnap.forEach(docSnap => {
+                        const subData = docSnap.data();
+                        window.userSubmissions[subData.taskId] = subData.status;
+                        
+                        // Tự động cập nhật lại nút bấm nếu nhiệm vụ đã được render
+                        if (window.updateTaskUI) {
+                            window.updateTaskUI(subData.taskId, subData.status);
+                        }
+                    });
+                    
+                    // Gọi hàm loadTasks sau khi đã lấy được trạng thái
+                    loadTasks();
+                });
+
             } else {
                 window.location.href = "login.html";
             }
         });
 
+        // Hàm cập nhật Giao diện nút bấm siêu tốc (không cần load lại cả danh sách)
+        window.updateTaskUI = function(taskId, status) {
+            const btn = document.getElementById(`zalo-btn-${taskId}`);
+            if (!btn) return; 
+
+            if (status === 'pending') {
+                btn.innerHTML = `⏳ Đang chờ duyệt`;
+                btn.className = `flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-orange-500/20 text-orange-400 border border-orange-500/40 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-not-allowed`;
+                btn.onclick = null; // Khóa nút
+            } else if (status === 'approved') {
+                btn.innerHTML = `✓ Đã duyệt`;
+                btn.className = `flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-teal-500/20 text-teal-400 border border-teal-500/40 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-not-allowed`;
+                btn.onclick = null; // Khóa nút
+            } else if (status === 'rejected') {
+                btn.innerHTML = `❌ Bị từ chối (Gửi lại)`;
+                btn.className = `flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 border border-red-500/40 hover:bg-red-500 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2`;
+                btn.onclick = function() { sendProofViaZalo(this, taskId); }; // Mở lại quyền bấm
+            }
+        };
+
         function loadTeamData(myPhone) {
             const teamQuery = query(collection(db, "users"), where("refPhone", "==", myPhone));
-            
             onSnapshot(teamQuery, (snap) => {
                 let totalF1 = snap.size;
                 let listHtml = "";
@@ -675,11 +709,8 @@ if (bankInfo) {
                     snap.forEach(docSnap => {
                         const f1Data = docSnap.data();
                         const f1Name = f1Data.fullName || "Thành viên";
-                        
                         let f1Phone = f1Data.phone || "N/A";
-                        if (f1Phone.length >= 10) {
-                            f1Phone = f1Phone.substring(0, 4) + "***" + f1Phone.substring(f1Phone.length - 3);
-                        }
+                        if (f1Phone.length >= 10) f1Phone = f1Phone.substring(0, 4) + "***" + f1Phone.substring(f1Phone.length - 3);
 
                         const isAppr = f1Data.status === 'active';
                         const badge = isAppr
@@ -700,23 +731,23 @@ if (bankInfo) {
                         `;
                     });
                 }
-
                 document.getElementById('f1-count').innerText = totalF1;
                 document.getElementById('f1-list').innerHTML = listHtml;
             });
         }
 
-        document.getElementById('btn-logout').addEventListener('click', () => {
-            signOut(auth).then(() => window.location.href = "login.html");
-        });
-
+        document.getElementById('btn-logout').addEventListener('click', () => { signOut(auth).then(() => window.location.href = "login.html"); });
         window.copyRefLink = function() {
             const linkText = document.getElementById('ref-link').innerText;
             navigator.clipboard.writeText(linkText).then(() => alert("Đã copy link: " + linkText));
         };
 
-        // Hàm render nhiệm vụ tự động
+        // Hàm render nhiệm vụ kết hợp với Trạng thái
+        let isTasksLoaded = false;
         function loadTasks() {
+            if (isTasksLoaded) return; // Tránh render lại toàn bộ list làm mất bộ đếm YouTube
+            isTasksLoaded = true;
+
             const tasksQuery = query(collection(db, "tasks"), where("status", "==", "active"));
             
             onSnapshot(tasksQuery, (snap) => {
@@ -730,11 +761,13 @@ if (bankInfo) {
                 snap.forEach(docSnap => {
                     const task = docSnap.data();
                     const taskId = docSnap.id;
-                    
                     let actionAreaHTML = "";
+                    
+                    // Lấy trạng thái hiện tại của nhiệm vụ này từ biến toàn cục
+                    const subStatus = window.userSubmissions[taskId];
 
                     if (task.type === "external_video") {
-                        // LOẠI 1: XEM VIDEO YOUTUBE (Có đếm ngược)
+                        // LOẠI 1: XEM VIDEO YOUTUBE
                         actionAreaHTML = `
                             <div class="flex flex-col gap-2 w-full mt-3 pt-3 border-t border-slate-800/80">
                                 <div class="text-[10px] text-red-400 bg-red-950/50 p-2 rounded border border-red-900/50">
@@ -749,24 +782,32 @@ if (bankInfo) {
                             </div>
                         `;
                     } else {
-                        // LOẠI 2: TƯƠNG TÁC MXH (Báo cáo qua Zalo)
+                        // LOẠI 2: TƯƠNG TÁC MXH (Có check trạng thái Zalo)
+                        let zaloBtnHTML = "";
+                        if (subStatus === 'pending') {
+                            zaloBtnHTML = `<button id="zalo-btn-${taskId}" disabled class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-orange-500/20 text-orange-400 border border-orange-500/40 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-not-allowed">⏳ Đang chờ duyệt</button>`;
+                        } else if (subStatus === 'approved') {
+                            zaloBtnHTML = `<button id="zalo-btn-${taskId}" disabled class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-teal-500/20 text-teal-400 border border-teal-500/40 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-not-allowed">✓ Đã duyệt</button>`;
+                        } else if (subStatus === 'rejected') {
+                            zaloBtnHTML = `<button id="zalo-btn-${taskId}" onclick="sendProofViaZalo(this, '${taskId}')" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-red-500/20 text-red-400 border border-red-500/40 hover:bg-red-500 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2">❌ Bị từ chối (Gửi lại)</button>`;
+                        } else {
+                            zaloBtnHTML = `<button id="zalo-btn-${taskId}" onclick="sendProofViaZalo(this, '${taskId}')" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 hover:bg-cyan-500 hover:text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-comment-dots"></i> <span>Báo cáo Zalo</span></button>`;
+                        }
+
                         actionAreaHTML = `
                             <div class="pt-3 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 w-full">
                                 <span class="text-[10px] text-slate-500">Nền tảng: <strong class="text-slate-300 uppercase">${task.platform || 'Khác'}</strong></span>
                                 <div class="flex gap-2 w-full sm:w-auto">
                                     <button onclick="window.open('${task.link}', '_blank')" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all text-center">Tới Link</button>
-                                    <button onclick="sendProofViaZalo(this, '${taskId}')" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 hover:bg-cyan-500 hover:text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-2">
-                                        <i class="fa-solid fa-comment-dots"></i> <span>Báo cáo Zalo</span>
-                                    </button>
+                                    ${zaloBtnHTML}
                                 </div>
                             </div>
                         `;
                     }
 
-                    // Tùy chỉnh màu sắc dựa theo loại nhiệm vụ
+                    // Style thẻ
                     let cardStyle = "border-slate-800 hover:border-cyan-500/40";
                     let badgeStyle = "bg-blue-500/20 text-blue-400 border border-blue-500/30";
-                    
                     if (task.type === 'external_video') {
                         cardStyle = "border-red-500/20 bg-red-950/10 hover:border-red-500/50";
                         badgeStyle = "bg-red-500/20 text-red-400 border border-red-500/30";
@@ -792,12 +833,11 @@ if (bankInfo) {
                         </div>
                     `;
                 });
-                
                 taskList.innerHTML = html;
             });
         }
 
-        // Logic Zalo thay thế cho hàm tải ảnh cũ
+        // Logic Zalo Đã được nâng cấp sử dụng setDoc
         window.sendProofViaZalo = async function(btnElement, taskId) {
             const user = auth.currentUser;
             if (!user) {
@@ -806,17 +846,16 @@ if (bankInfo) {
             }
 
             // ĐIỀN SỐ ĐIỆN THOẠI ZALO CỦA ADMIN TẠI ĐÂY (Bỏ số 0 ở đầu, thay bằng 84)
-            // Ví dụ: Zalo số 0912345678 thì điền 84912345678
             const adminZaloPhone = "84867179857"; 
 
-            // Đổi UI của nút thành trạng thái Đang tải (Loading)
-            const originalHTML = btnElement.innerHTML;
+            // Cập nhật UI thành Loading
             btnElement.innerHTML = `<svg class="animate-spin h-4 w-4 text-cyan-400 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span>Đang xử lý...</span>`;
             btnElement.classList.add('opacity-50', 'pointer-events-none');
 
             try {
-                // 1. Tạo bản ghi "pending" trên Firestore để addash của bạn nắm được
-                await addDoc(collection(db, "task_submissions"), {
+                // Dùng setDoc thay vì addDoc để mỗi User chỉ có 1 bản ghi duy nhất cho 1 nhiệm vụ
+                const submissionRef = doc(db, "task_submissions", user.uid + "_" + taskId);
+                await setDoc(submissionRef, {
                     userId: user.uid,
                     taskId: taskId,
                     proofMethod: "zalo",
@@ -824,25 +863,21 @@ if (bankInfo) {
                     timestamp: new Date().toISOString()
                 });
 
-                // 2. Cập nhật UI thành công
-                btnElement.innerHTML = `✓ Đã báo cáo`;
-                btnElement.classList.remove('opacity-50', 'bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/40');
-                btnElement.classList.add('bg-teal-500/20', 'text-teal-400', 'border-teal-500/40');
+                // Ngay lập tức gọi hàm cập nhật giao diện thành "Đang chờ duyệt"
+                if (window.updateTaskUI) {
+                    window.updateTaskUI(taskId, 'pending');
+                }
 
-                // 3. Chuyển hướng sang Zalo với tin nhắn được soạn sẵn
-                // encodeURIComponent để đảm bảo text không bị lỗi font hoặc xuống dòng
+                // Mở Zalo
                 const messageText = `Chào Admin, mình nộp ảnh hoàn thành nhiệm vụ:\n- Mã User: ${user.uid}\n- Mã Task: ${taskId}\n(Vui lòng gửi ảnh minh chứng xuống phía dưới)`;
                 const zaloLink = `https://zalo.me/${adminZaloPhone}?text=${encodeURIComponent(messageText)}`;
-                
-                // Mở Zalo ở tab mới
                 window.open(zaloLink, '_blank');
                 
             } catch (error) {
                 console.error("Lỗi tạo báo cáo:", error);
                 alert("Lỗi kết nối. Vui lòng thử lại!");
-                // Khôi phục lại nút như cũ nếu lỗi
-                btnElement.innerHTML = originalHTML;
-                btnElement.classList.remove('opacity-50', 'pointer-events-none');
+                // Trả nút về trạng thái cũ nếu lỗi
+                window.updateTaskUI(taskId, null); 
             }
         };
 
@@ -850,17 +885,14 @@ if (bankInfo) {
             window.open(link, '_blank');
             const actionArea = document.getElementById(`task-action-area-${taskId}`);
             
-            // Random độ trễ tự nhiên (5-25s) để chống bot Youtube
             const randomOffset = Math.floor(Math.random() * 20) + 5; 
             let penaltySeconds = 0;
             let statusMessage = "Đang đếm ngược";
 
-            // Giả lập lấy userTrustScore (nếu ở script module bạn gán biến này vào window.userTrustScore)
             const currentTrust = window.userTrustScore || 100;
-
             if (currentTrust < 80) {
-                penaltySeconds = 30; // Phạt 30s với user có độ uy tín thấp
-                statusMessage = "Bạn bị cộng 30s chờ do Điểm Tín Nhiệm thấp";
+                penaltySeconds = 30; 
+                statusMessage = "Phạt 30s do Tín Nhiệm thấp";
             }
 
             let totalRequiredSeconds = baseSeconds + randomOffset + penaltySeconds;
@@ -897,77 +929,72 @@ if (bankInfo) {
         };
 
         window.saveBankInfo = async function() {
-    const bankCode = document.getElementById('bank-code').value;
-    const bankAcc = document.getElementById('bank-acc').value;
-    const bankName = document.getElementById('bank-name').value.toUpperCase();
+            const bankCode = document.getElementById('bank-code').value;
+            const bankAcc = document.getElementById('bank-acc').value;
+            const bankName = document.getElementById('bank-name').value.toUpperCase();
 
-    if (!bankCode || !bankAcc || !bankName) {
-        alert("Khước từ: Vui lòng điền đầy đủ thông tin ngân hàng!");
-        return;
-    }
+            if (!bankCode || !bankAcc || !bankName) {
+                alert("Khước từ: Vui lòng điền đầy đủ thông tin ngân hàng!");
+                return;
+            }
 
-    const user = auth.currentUser;
-    if (user) {
-        try {
-            const userRef = doc(db, "users", user.uid);
-            await updateDoc(userRef, {
-                bankInfo: {
-                    bankCode: bankCode,
-                    bankAcc: bankAcc,
-                    bankName: bankName,
-                    updatedAt: new Date().toISOString()
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    const userRef = doc(db, "users", user.uid);
+                    await updateDoc(userRef, {
+                        bankInfo: {
+                            bankCode: bankCode,
+                            bankAcc: bankAcc,
+                            bankName: bankName,
+                            updatedAt: new Date().toISOString()
+                        }
+                    });
+                    alert("Đồng bộ liên kết thẻ thành công!");
+                } catch (error) {
+                    console.error("Lỗi đồng bộ:", error);
+                    alert("Mất kết nối với máy chủ, vui lòng thử lại.");
                 }
-            });
-            alert("Đồng bộ liên kết thẻ thành công!");
-        } catch (error) {
-            console.error("Lỗi đồng bộ:", error);
-            alert("Mất kết nối với máy chủ, vui lòng thử lại.");
+            }
+        };
+
+        window.toggleBankAcc = function() {
+            const displayEl = document.getElementById('display-bank-acc');
+            const iconEl = document.getElementById('eye-icon');
+            
+            if (window.isBankAccMasked) {
+                displayEl.innerText = window.rawBankAcc;
+                iconEl.classList.remove('fa-eye-slash');
+                iconEl.classList.add('fa-eye');
+            } else {
+                displayEl.innerText = window.rawBankAcc.length > 4 ? "**** **** " + window.rawBankAcc.slice(-4) : window.rawBankAcc; 
+                iconEl.classList.remove('fa-eye');
+                iconEl.classList.add('fa-eye-slash');
+            }
+            window.isBankAccMasked = !window.isBankAccMasked;
         }
-    }
-};
 
-// Tính năng bật/tắt mắt thần
-window.toggleBankAcc = function() {
-    const displayEl = document.getElementById('display-bank-acc');
-    const iconEl = document.getElementById('eye-icon');
-    
-    if (window.isBankAccMasked) {
-        displayEl.innerText = window.rawBankAcc; // Hiện rõ số
-        iconEl.classList.remove('fa-eye-slash');
-        iconEl.classList.add('fa-eye');
-    } else {
-        displayEl.innerText = window.rawBankAcc.length > 4 ? "**** **** " + window.rawBankAcc.slice(-4) : window.rawBankAcc; // Che số
-        iconEl.classList.remove('fa-eye');
-        iconEl.classList.add('fa-eye-slash');
-    }
-    window.isBankAccMasked = !window.isBankAccMasked;
-}
+        window.editBankInfo = function() {
+            document.getElementById('bank-form').classList.remove('hidden');
+            document.getElementById('bank-code').focus();
+        }
 
-// Tính năng chỉnh sửa
-window.editBankInfo = function() {
-    // 1. Mở lại form cho người dùng sửa
-    document.getElementById('bank-form').classList.remove('hidden');
-    // 2. Focus vào ô chọn ngân hàng
-    document.getElementById('bank-code').focus();
-}
-
-// Tính năng xóa liên kết thẻ
-window.deleteBankInfo = async function() {
-    if(confirm("CẢNH BÁO: Bạn có chắc chắn muốn gỡ liên kết thẻ ngân hàng này? Bạn sẽ không thể nhận được tiền nếu không có thẻ.")) {
-        const user = auth.currentUser;
-        if (user) {
-            try {
-                await updateDoc(doc(db, "users", user.uid), {
-                    bankInfo: deleteField() // Xóa hẳn trường bankInfo trên Firestore
-                });
-                alert("Đã gỡ liên kết thẻ thành công!");
-            } catch (error) {
-                console.error("Lỗi xóa thẻ:", error);
-                alert("Lỗi hệ thống, không thể gỡ thẻ lúc này.");
+        window.deleteBankInfo = async function() {
+            if(confirm("CẢNH BÁO: Bạn có chắc chắn muốn gỡ liên kết thẻ ngân hàng này? Bạn sẽ không thể nhận được tiền nếu không có thẻ.")) {
+                const user = auth.currentUser;
+                if (user) {
+                    try {
+                        await updateDoc(doc(db, "users", user.uid), {
+                            bankInfo: deleteField() 
+                        });
+                        alert("Đã gỡ liên kết thẻ thành công!");
+                    } catch (error) {
+                        console.error("Lỗi xóa thẻ:", error);
+                        alert("Lỗi hệ thống, không thể gỡ thẻ lúc này.");
+                    }
+                }
             }
         }
-    }
-}
     </script>
 </body>
 </html>
