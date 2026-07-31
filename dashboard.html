@@ -564,7 +564,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // Bổ sung addDoc vào import của firestore
+        import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc, deleteField, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
@@ -748,16 +749,15 @@ if (bankInfo) {
                             </div>
                         `;
                     } else {
-                        // LOẠI 2: TƯƠNG TÁC MXH (Nộp ảnh)
+                        // LOẠI 2: TƯƠNG TÁC MXH (Báo cáo qua Zalo)
                         actionAreaHTML = `
                             <div class="pt-3 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 w-full">
                                 <span class="text-[10px] text-slate-500">Nền tảng: <strong class="text-slate-300 uppercase">${task.platform || 'Khác'}</strong></span>
                                 <div class="flex gap-2 w-full sm:w-auto">
                                     <button onclick="window.open('${task.link}', '_blank')" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition-all text-center">Tới Link</button>
-                                    <label class="flex-1 sm:flex-none cursor-pointer px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 hover:bg-cyan-500 hover:text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-1">
-                                        <span>📷 Gửi Ảnh</span>
-                                        <input type="file" class="hidden" accept="image/*" onchange="uploadProof(event, '${taskId}')">
-                                    </label>
+                                    <button onclick="sendProofViaZalo(this, '${taskId}')" class="flex-1 sm:flex-none px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 hover:bg-cyan-500 hover:text-slate-950 text-xs font-bold transition-all flex items-center justify-center gap-2">
+                                        <i class="fa-solid fa-comment-dots"></i> <span>Báo cáo Zalo</span>
+                                    </button>
                                 </div>
                             </div>
                         `;
@@ -797,8 +797,53 @@ if (bankInfo) {
             });
         }
 
-        window.uploadProof = function(event, taskId) {
-            alert('Đang tải ảnh minh chứng cho nhiệm vụ: ' + taskId + '.');
+        // Logic Zalo thay thế cho hàm tải ảnh cũ
+        window.sendProofViaZalo = async function(btnElement, taskId) {
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Bạn cần đăng nhập để thực hiện thao tác này!");
+                return;
+            }
+
+            // ĐIỀN SỐ ĐIỆN THOẠI ZALO CỦA ADMIN TẠI ĐÂY (Bỏ số 0 ở đầu, thay bằng 84)
+            // Ví dụ: Zalo số 0912345678 thì điền 84912345678
+            const adminZaloPhone = "84867179857"; 
+
+            // Đổi UI của nút thành trạng thái Đang tải (Loading)
+            const originalHTML = btnElement.innerHTML;
+            btnElement.innerHTML = `<svg class="animate-spin h-4 w-4 text-cyan-400 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span>Đang xử lý...</span>`;
+            btnElement.classList.add('opacity-50', 'pointer-events-none');
+
+            try {
+                // 1. Tạo bản ghi "pending" trên Firestore để addash của bạn nắm được
+                await addDoc(collection(db, "task_submissions"), {
+                    userId: user.uid,
+                    taskId: taskId,
+                    proofMethod: "zalo",
+                    status: "pending", 
+                    timestamp: new Date().toISOString()
+                });
+
+                // 2. Cập nhật UI thành công
+                btnElement.innerHTML = `✓ Đã báo cáo`;
+                btnElement.classList.remove('opacity-50', 'bg-cyan-500/20', 'text-cyan-400', 'border-cyan-500/40');
+                btnElement.classList.add('bg-teal-500/20', 'text-teal-400', 'border-teal-500/40');
+
+                // 3. Chuyển hướng sang Zalo với tin nhắn được soạn sẵn
+                // encodeURIComponent để đảm bảo text không bị lỗi font hoặc xuống dòng
+                const messageText = `Chào Admin, mình nộp ảnh hoàn thành nhiệm vụ:\n- Mã User: ${user.uid}\n- Mã Task: ${taskId}\n(Vui lòng gửi ảnh minh chứng xuống phía dưới)`;
+                const zaloLink = `https://zalo.me/${adminZaloPhone}?text=${encodeURIComponent(messageText)}`;
+                
+                // Mở Zalo ở tab mới
+                window.open(zaloLink, '_blank');
+                
+            } catch (error) {
+                console.error("Lỗi tạo báo cáo:", error);
+                alert("Lỗi kết nối. Vui lòng thử lại!");
+                // Khôi phục lại nút như cũ nếu lỗi
+                btnElement.innerHTML = originalHTML;
+                btnElement.classList.remove('opacity-50', 'pointer-events-none');
+            }
         };
 
         window.startExternalVideoTask = function(link, baseSeconds, taskId) {
