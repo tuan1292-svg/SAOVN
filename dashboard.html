@@ -81,7 +81,7 @@
                         <button onclick="document.getElementById('deposit-modal').classList.remove('hidden')" class="flex-1 sm:flex-none px-8 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-sm font-black transition-all text-center shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:scale-105 uppercase tracking-wider">
                             Nạp Tiền
                         </button>
-                        <button onclick="alert('Vui lòng cập nhật ngân hàng ở mục Cá Nhân trước.')" class="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-cyan-500/50 hover:border-cyan-400 text-sm font-bold transition-all text-center uppercase tracking-wider">
+                        <button onclick="openWithdrawModal()" class="flex-1 sm:flex-none px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-cyan-500/50 hover:border-cyan-400 text-sm font-bold transition-all text-center uppercase tracking-wider">
                             Rút Tiền
                         </button>
                     </div>
@@ -303,15 +303,28 @@
                 </div>
             </div>
 
-            <!-- Bảng Thống Kê Điểm -->
-            <div class="glass-card rounded-2xl p-4 border border-slate-800 flex justify-between items-center bg-slate-900/50">
-                <div>
-                    <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Tổng điểm tích lũy</div>
-                    <div class="text-2xl font-black text-cyan-400" id="task-total-points">0 <span class="text-sm text-cyan-500/70 font-bold">Điểm</span></div>
+            <!-- BẢNG THỐNG KÊ QUY ĐỔI ĐIỂM -->
+            <div class="glass-card rounded-2xl p-4 border border-slate-800 bg-slate-900/50">
+                <div class="grid grid-cols-3 gap-2 divide-x divide-slate-700/50">
+                    <div class="text-center">
+                        <div class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Điểm (Tháng Này)</div>
+                        <div class="text-lg font-black text-cyan-400" id="task-monthly-points">0</div>
+                    </div>
+                    <div class="text-center px-2">
+                        <div class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Ước tính (Tháng)</div>
+                        <div class="text-lg font-black text-teal-400" id="task-estimated-income">0 đ</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-[10px] text-slate-500 uppercase tracking-wider mb-1">Tỷ Trọng Của Bạn</div>
+                        <div class="text-lg font-black text-white" id="task-percentage">0%</div>
+                    </div>
                 </div>
-                <div class="text-right">
-                    <div class="text-xs text-slate-500 uppercase tracking-wider mb-1">Điểm Tín Nhiệm</div>
-                    <div class="text-xl font-black text-white" id="user-trust-score">100 <span class="text-sm text-slate-500 font-normal">/ 100</span></div>
+                <div class="mt-3 pt-3 border-t border-slate-800/50 text-[10px] text-slate-400 flex justify-between px-2 bg-slate-950/30 rounded py-2">
+                    <span>Quỹ QC: <strong class="text-white" id="sys-revenue">0 đ</strong></span>
+                    <span>Tổng điểm HT (Tháng): <strong class="text-white" id="sys-monthly-points">0</strong></span>
+                </div>
+                <div class="mt-2 text-[10px] text-slate-500 text-center">
+                    Điểm tích lũy từ khi tham gia đến nay: <strong class="text-cyan-400" id="task-total-points">0</strong> P
                 </div>
             </div>
 
@@ -478,9 +491,8 @@
             
             <div class="text-center p-5 bg-slate-900/50 rounded-2xl border border-slate-700 mb-6">
                 <div class="w-48 h-48 mx-auto bg-white p-2 rounded-xl mb-4 shadow-[0_0_15px_rgba(6,182,212,0.4)] flex items-center justify-center border-4 border-cyan-500 overflow-hidden relative group">
-    <!-- THAY LINK ẢNH QR CỦA BẠN VÀO THUỘC TÍNH src BÊN DƯỚI -->
-    <img src="msb.jpg" alt="Mã QR Chuyển Khoản" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110">
-</div>
+                    <img src="msb.jpg" alt="Mã QR Chuyển Khoản" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-110">
+                </div>
                 <p class="text-xs text-slate-400 mb-2">Chuyển khoản với nội dung:</p>
                 <div class="inline-block bg-slate-950 border border-cyan-500/30 text-cyan-400 font-mono font-bold text-lg px-4 py-2 rounded-lg">
                     NAP <span id="deposit-syntax">SĐT</span>
@@ -488,6 +500,38 @@
             </div>
             <div class="text-xs text-slate-400 text-center leading-relaxed">
                 Hệ thống AI sẽ tự động quét giao dịch và cộng tiền vào ví của bạn trong vòng <strong class="text-cyan-400">1 - 3 phút Nếu sau 3 phút mà chưa thấy phản hồi thì hãy liên hệ với Admin để được cập nhật nhé!</strong>.
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP RÚT TIỀN -->
+    <div id="withdraw-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 border border-cyan-500/50 shadow-[0_0_40px_rgba(6,182,212,0.2)] relative">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-extrabold text-cyan-400 uppercase tracking-wider">Lệnh Rút Tiền</h3>
+                <button onclick="document.getElementById('withdraw-modal').classList.add('hidden')" class="text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700 flex justify-between items-center">
+                    <span class="text-xs text-slate-400">Số dư khả dụng:</span>
+                    <span class="text-lg font-black text-white" id="withdraw-available-balance">0 VNĐ</span>
+                </div>
+
+                <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700">
+                    <div class="text-xs text-slate-400 mb-1">Rút về tài khoản:</div>
+                    <div class="text-sm font-bold text-cyan-400 uppercase truncate" id="withdraw-bank-details">CHƯA LIÊN KẾT</div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Số tiền cần rút (VNĐ)</label>
+                    <input type="number" id="withdraw-amount" placeholder="Nhập số tiền..." class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-lg font-bold text-slate-100 focus:outline-none focus:border-cyan-400">
+                    <div class="text-[10px] text-slate-500 mt-1">* Tối thiểu 50,000 VNĐ</div>
+                </div>
+
+                <button onclick="submitWithdrawRequest()" id="btn-submit-withdraw" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 text-sm font-black transition-all text-center shadow-[0_0_15px_rgba(6,182,212,0.4)] uppercase tracking-wider mt-4">
+                    Tạo Lệnh Rút
+                </button>
             </div>
         </div>
     </div>
@@ -563,25 +607,59 @@
         window.rawBankAcc = ""; 
         window.isBankAccMasked = true;
 
-        // Quản lý biến toàn cục
         window.userSubmissions = {};
         window.allTasks = {}; 
-        window.activeVideoTaskId = null; // Khóa trong cùng 1 tab
+        window.activeVideoTaskId = null; 
+        
+        // CÁC BIẾN TÍNH TOÁN THEO THÁNG
+        window.systemMonthlyPoints = 1; 
+        window.systemMonthlyRevenue = 0;
+        window.userTaskPoints = 0; // Điểm All-time
+        window.userMonthlyTaskPoints = 0; // Điểm tháng này
 
-        // SỰ KIỆN TỰ ĐỘNG NHẢ KHÓA ĐA TAB KHI ĐÓNG TRANG ĐỘT NGỘT (KHÔNG CỘNG ĐIỂM)
         window.addEventListener('beforeunload', () => {
             if (window.activeVideoTaskId) {
                 localStorage.removeItem('saovn_video_lock');
             }
         });
 
+        // HÀM CẬP NHẬT TỶ TRỌNG & THU NHẬP ƯỚC TÍNH
+        window.updateEstimatedIncome = function() {
+            let percentage = window.userMonthlyTaskPoints / window.systemMonthlyPoints;
+            if (percentage > 1) percentage = 1;
+            if (isNaN(percentage) || !isFinite(percentage)) percentage = 0;
+            
+            let estimated = Math.floor(percentage * window.systemMonthlyRevenue);
+            document.getElementById('task-estimated-income').innerText = estimated.toLocaleString('vi-VN') + ' đ';
+            document.getElementById('task-percentage').innerText = (percentage * 100).toFixed(2) + '%';
+        };
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // 1. Lắng nghe thông tin cơ bản của User
+                // LẮNG NGHE QUỸ CHUNG TỪ HỆ THỐNG
+                const sysRef = doc(db, "system", "task_stats");
+                onSnapshot(sysRef, (sysSnap) => {
+                    if (sysSnap.exists()) {
+                        const sysData = sysSnap.data();
+                        // Sử dụng điểm của Tháng Này (monthlyTotalPoints)
+                        window.systemMonthlyPoints = Number(sysData.monthlyTotalPoints) || Number(sysData.totalPoints) || 1;
+                        window.systemMonthlyRevenue = Number(sysData.monthlyRevenue) || 0;
+                        
+                        document.getElementById('sys-revenue').innerText = window.systemMonthlyRevenue.toLocaleString('vi-VN') + ' đ';
+                        document.getElementById('sys-monthly-points').innerText = window.systemMonthlyPoints.toLocaleString('vi-VN');
+                        
+                        window.updateEstimatedIncome();
+                    }
+                });
+
+                // LẮNG NGHE THÔNG TIN CỦA USER
                 const docRef = doc(db, "users", user.uid);
                 onSnapshot(docRef, (docSnap) => {
                     if (docSnap.exists()) {
                         const data = docSnap.data();
+
+                        window.currentBalance = Number(data.balance) || 0;
+                        window.userBankInfo = data.bankInfo || null;
                         
                         const fullName = data.fullName || "Thành viên";
                         document.getElementById('user-fullname').innerText = fullName;
@@ -590,16 +668,23 @@
                         const balance = Number(data.balance) || 0;
                         const f1Bonus = Number(data.f1Bonus) || 0;
                         const totalDeposit = Number(data.totalDeposit) || 0;
-                        const taskPoints = Number(data.taskPoints) || 0; 
                         const taskIncome = Number(data.taskIncome) || 0;
+                        
+                        // Lấy riêng Điểm All-time và Điểm Tháng
+                        window.userTaskPoints = Number(data.taskPoints) || 0; 
+                        window.userMonthlyTaskPoints = Number(data.monthlyTaskPoints) || 0; 
 
                         document.getElementById('user-balance').innerText = balance.toLocaleString('vi-VN');
                         document.getElementById('overview-bonus').innerText = f1Bonus.toLocaleString('vi-VN') + " đ";
                         document.getElementById('f1-bonus').innerText = f1Bonus.toLocaleString('vi-VN') + " đ";
                         document.getElementById('overview-deposit').innerText = totalDeposit.toLocaleString('vi-VN') + " đ";
-                        
-                        document.getElementById('task-total-points').innerHTML = `${taskPoints.toLocaleString('vi-VN')} <span class="text-sm text-cyan-500/70 font-bold">Điểm</span>`;
                         document.getElementById('overview-task-income').innerText = taskIncome.toLocaleString('vi-VN') + " đ";
+                        
+                        // HIỂN THỊ ĐIỂM
+                        document.getElementById('task-total-points').innerText = window.userTaskPoints.toLocaleString('vi-VN');
+                        document.getElementById('task-monthly-points').innerText = window.userMonthlyTaskPoints.toLocaleString('vi-VN');
+
+                        window.updateEstimatedIncome();
 
                         const phone = data.phone || user.email.split('@')[0];
                         document.getElementById('ref-link').innerText = `saovn.com/ref/${phone}`;
@@ -625,7 +710,6 @@
                             document.getElementById('bank-form').classList.remove('hidden');
                         }
 
-                        // Trạng thái kích hoạt
                         const statusBadge = document.getElementById('user-status-badge');
                         if (data.status === 'active') {
                             statusBadge.innerText = '✓ Đã kích hoạt';
@@ -643,7 +727,6 @@
                     }
                 });
 
-                // 2. LẮNG NGHE TRẠNG THÁI NHIỆM VỤ
                 const subQuery = query(collection(db, "task_submissions"), where("userId", "==", user.uid));
                 onSnapshot(subQuery, (subSnap) => {
                     window.userSubmissions = {};
@@ -752,25 +835,42 @@
                     return;
                 }
 
-                let html = "";
-                snap.forEach(docSnap => {
-                    const task = docSnap.data();
-                    const taskId = docSnap.id;
-                    
-                    window.allTasks[taskId] = task;
+                let videoTasks = [];
+                let activeTasks = [];
+                let pendingTasks = [];
+                let completedTasks = [];
 
+                snap.forEach(docSnap => {
+                    let task = docSnap.data();
+                    task.id = docSnap.id;
+                    task.subStatus = window.userSubmissions[task.id];
+                    
+                    window.allTasks[task.id] = task;
+
+                    if (task.subStatus === 'pending') {
+                        pendingTasks.push(task);
+                    } else if (task.subStatus === 'approved' && !task.repeatable) {
+                        completedTasks.push(task);
+                    } else if (task.type === 'video' || task.type === 'external_video') {
+                        videoTasks.push(task);
+                    } else {
+                        activeTasks.push(task);
+                    }
+                });
+
+                const sortedTasks = [...videoTasks, ...activeTasks, ...pendingTasks, ...completedTasks];
+
+                let html = "";
+                sortedTasks.forEach(task => {
+                    const taskId = task.id;
+                    const subStatus = task.subStatus;
                     let actionAreaHTML = "";
-                    const subStatus = window.userSubmissions[taskId];
 
                     if (task.type === "video" || task.type === "external_video") {
                         let platformName = task.platform === 'tiktok' ? 'TikTok' : 'YouTube';
                         let btnColor = task.platform === 'tiktok' ? 'bg-black text-white hover:bg-zinc-800 shadow-[0_0_15px_rgba(255,255,255,0.2)]' : 'bg-red-600 text-white hover:bg-red-500 shadow-[0_0_15px_rgba(220,38,38,0.4)]';
                         let platformIcon = task.platform === 'tiktok' ? 'fa-tiktok' : 'fa-youtube';
-
-                        // BỔ SUNG LỜI NHẮC CHO TIKTOK TẠI ĐÂY
-                        let tiktokWarningHTML = task.platform === 'tiktok' 
-                            ? `<div class="text-[10px] text-yellow-400 bg-yellow-900/20 px-2 py-1 rounded mt-1 text-center italic border border-yellow-900/30">Mẹo: Nên mở bằng Chrome/Safari nếu bị văng ra trang chủ TikTok.</div>`
-                            : "";
+                        let tiktokWarningHTML = task.platform === 'tiktok' ? `<div class="text-[10px] text-yellow-400 bg-yellow-900/20 px-2 py-1 rounded mt-1 text-center italic border border-yellow-900/30">Mẹo: Nên mở bằng Chrome/Safari nếu bị văng ra trang chủ TikTok.</div>` : "";
 
                         actionAreaHTML = `
                             <div class="flex flex-col gap-2 w-full mt-3 pt-3 border-t border-slate-800/80">
@@ -813,8 +913,10 @@
                         `;
                     }
 
+                    let cardOpacity = (subStatus === 'approved' && !task.repeatable) ? "opacity-50 grayscale-[50%]" : "opacity-100";
                     let cardStyle = "border-slate-800 hover:border-cyan-500/40";
                     let badgeStyle = "bg-blue-500/20 text-blue-400 border border-blue-500/30";
+                    
                     if (task.type === 'video' || task.type === 'external_video') {
                         if (task.platform === 'tiktok') {
                             cardStyle = "border-zinc-500/20 bg-zinc-900/30 hover:border-zinc-400/50";
@@ -828,7 +930,7 @@
                     }
 
                     html += `
-                        <div class="glass-card rounded-2xl p-4 border transition-all ${cardStyle}">
+                        <div class="glass-card rounded-2xl p-4 border transition-all ${cardStyle} ${cardOpacity}">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded ${badgeStyle} mb-1 inline-block">
@@ -858,13 +960,14 @@
             btnElement.innerHTML = `<svg class="animate-spin h-4 w-4 text-cyan-400 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span>Đang xử lý...</span>`;
             btnElement.classList.add('opacity-50', 'pointer-events-none');
 
-            // Lấy thông tin chi tiết của nhiệm vụ từ danh sách đã tải
             const task = window.allTasks[taskId];
             const taskTitle = task ? task.title : "Không xác định";
             const taskPlatform = task ? (task.platform || "Khác").toUpperCase() : "KHÁC";
+            
+            const submissionId = user.uid + "_" + taskId;
 
             try {
-                const submissionRef = doc(db, "task_submissions", user.uid + "_" + taskId);
+                const submissionRef = doc(db, "task_submissions", submissionId);
                 await setDoc(submissionRef, {
                     userId: user.uid,
                     taskId: taskId,
@@ -875,9 +978,16 @@
 
                 if (window.updateTaskUI) window.updateTaskUI(taskId, 'pending');
 
-                // Tự động điền đầy đủ Tên nhiệm vụ, Nền tảng và Mã Task
-                const messageText = `Chào Admin, mình nộp ảnh hoàn thành nhiệm vụ:\n- Tên nhiệm vụ: ${taskTitle}\n- Nền tảng: ${taskPlatform}\n- Mã Task: ${taskId}\n- Mã User: ${user.uid}\n(Vui lòng gửi ảnh minh chứng xuống phía dưới)`;
-                window.open(`https://zalo.me/${adminZaloPhone}?text=${encodeURIComponent(messageText)}`, '_blank');
+                const messageText = `Chào Admin, mình nộp ảnh minh chứng:\n- Nhiệm vụ: ${taskTitle}\n- Nền tảng: ${taskPlatform}\n- MÃ BÁO CÁO: ${submissionId}\n\n(Ảnh minh chứng bên dưới👇)`;
+                
+                try {
+                    await navigator.clipboard.writeText(messageText);
+                    alert("✅ Hệ thống đã tự động COPY cú pháp báo cáo!\n\nKhi Zalo mở ra, bạn chỉ cần bấm DÁN (Paste) vào khung chat và gửi kèm ảnh minh chứng là xong.");
+                } catch (err) {
+                    console.log("Trình duyệt không hỗ trợ copy tự động.", err);
+                }
+
+                window.open(`https://zalo.me/${adminZaloPhone}`, '_blank');
                 
             } catch (error) {
                 console.error("Lỗi:", error);
@@ -886,30 +996,23 @@
         };
 
         window.startExternalVideoTask = function(link, baseSeconds, taskId, points) {
-            
-            // 1. CHỐNG HACK MỞ NHIỀU TAB: Kiểm tra khóa localStorage
             const crossTabLock = localStorage.getItem('saovn_video_lock');
             const now = Date.now();
-            // Khóa chặn nếu có tab khác đang chạy (giới hạn an toàn là 5 phút - 300,000ms để tránh kẹt khóa mãi mãi do lỗi)
             if (crossTabLock && (now - parseInt(crossTabLock)) < 300000) {
                 alert("⚠ HỆ THỐNG CẢNH BÁO: Phát hiện bạn đang đếm ngược một nhiệm vụ Video ở Tab/Cửa sổ trình duyệt khác. Vui lòng hoàn thành bên đó trước khi mở video mới!");
                 return;
             }
 
-            // 2. CHỐNG HACK TRONG 1 TAB: Kiểm tra biến khóa nội bộ
             if (window.activeVideoTaskId && window.activeVideoTaskId !== taskId) {
                 alert("Bạn đang thực hiện một nhiệm vụ video khác trong tab này. Vui lòng chờ đếm ngược kết thúc!");
                 return;
             }
 
             window.open(link, '_blank');
-            
-            // 3. BẬT KHÓA 2 LỚP
             window.activeVideoTaskId = taskId; 
             localStorage.setItem('saovn_video_lock', Date.now().toString());
 
             const actionArea = document.getElementById(`task-action-area-${taskId}`);
-            
             const randomOffset = Math.floor(Math.random() * 20) + 5; 
             let penaltySeconds = 0;
             let statusMessage = "Đang đếm ngược";
@@ -954,7 +1057,6 @@
         };
 
         window.claimVideoPoints = async function(taskId, points) {
-            // MỞ KHÓA 2 LỚP KHI HOÀN THÀNH
             window.activeVideoTaskId = null; 
             localStorage.removeItem('saovn_video_lock');
 
@@ -962,9 +1064,19 @@
             if (user && points > 0) {
                 try {
                     const userRef = doc(db, "users", user.uid);
-                    await updateDoc(userRef, {
-                        taskPoints: increment(points) 
-                    });
+                    const sysRef = doc(db, "system", "task_stats");
+
+                    // Chạy song song: Cộng điểm cá nhân và cộng điểm hệ thống
+                    await Promise.all([
+                        updateDoc(userRef, {
+                            taskPoints: increment(points),
+                            monthlyTaskPoints: increment(points)
+                        }),
+                        setDoc(sysRef, {
+                            totalPoints: increment(points),
+                            monthlyTotalPoints: increment(points)
+                        }, { merge: true })
+                    ]);
                     
                     resetVideoTaskUI(taskId);
                     
@@ -986,11 +1098,7 @@
             let platformName = task.platform === 'tiktok' ? 'TikTok' : 'YouTube';
             let btnColor = task.platform === 'tiktok' ? 'bg-black text-white hover:bg-zinc-800 shadow-[0_0_15px_rgba(255,255,255,0.2)]' : 'bg-red-600 text-white hover:bg-red-500 shadow-[0_0_15px_rgba(220,38,38,0.4)]';
             let platformIcon = task.platform === 'tiktok' ? 'fa-tiktok' : 'fa-youtube';
-
-            // Bổ sung lại lời nhắc cho TikTok sau khi reset
-            let tiktokWarningHTML = task.platform === 'tiktok' 
-                ? `<div class="text-[10px] text-yellow-400 bg-yellow-900/20 px-2 py-1 rounded mt-1 text-center italic border border-yellow-900/30">Mẹo: Nên mở bằng Chrome/Safari nếu bị văng ra trang chủ TikTok.</div>`
-                : "";
+            let tiktokWarningHTML = task.platform === 'tiktok' ? `<div class="text-[10px] text-yellow-400 bg-yellow-900/20 px-2 py-1 rounded mt-1 text-center italic border border-yellow-900/30">Mẹo: Nên mở bằng Chrome/Safari nếu bị văng ra trang chủ TikTok.</div>` : "";
 
             actionArea.innerHTML = `
                 <button onclick="startExternalVideoTask('${task.link}', ${task.requiredSeconds || 60}, '${taskId}', ${task.points || 0})" 
@@ -1001,7 +1109,6 @@
             `;
         }
 
-        // CÁC HÀM XỬ LÝ BANK INFO 
         window.saveBankInfo = async function() {
             const bankCode = document.getElementById('bank-code').value;
             const bankAcc = document.getElementById('bank-acc').value;
@@ -1069,6 +1176,70 @@
                 }
             }
         }
+
+        window.openWithdrawModal = function() {
+            if (!window.userBankInfo || !window.userBankInfo.bankAcc) {
+                alert("Bạn chưa liên kết thẻ ngân hàng. Vui lòng cập nhật thông tin thẻ để nhận tiền!");
+                switchTab('profile'); 
+                return;
+            }
+            
+            document.getElementById('withdraw-available-balance').innerText = window.currentBalance.toLocaleString('vi-VN') + " VNĐ";
+            document.getElementById('withdraw-bank-details').innerText = `${window.userBankInfo.bankCode} - ${window.userBankInfo.bankAcc}`;
+            document.getElementById('withdraw-amount').value = '';
+            
+            document.getElementById('withdraw-modal').classList.remove('hidden');
+        };
+
+        window.submitWithdrawRequest = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const amountInput = document.getElementById('withdraw-amount').value;
+            const amount = Number(amountInput);
+            const minWithdraw = 50000;
+
+            if (!amount || amount < minWithdraw) {
+                alert(`Số tiền rút tối thiểu là ${minWithdraw.toLocaleString('vi-VN')} VNĐ.`);
+                return;
+            }
+
+            if (amount > window.currentBalance) {
+                alert("Số dư khả dụng không đủ để thực hiện lệnh rút này!");
+                return;
+            }
+
+            const btn = document.getElementById('btn-submit-withdraw');
+            btn.innerHTML = 'Đang xử lý...';
+            btn.disabled = true;
+
+            try {
+                const withdrawRef = doc(collection(db, "withdrawals"));
+                await setDoc(withdrawRef, {
+                    userId: user.uid,
+                    fullName: document.getElementById('user-fullname').innerText,
+                    amount: amount,
+                    bankInfo: window.userBankInfo,
+                    status: "pending", 
+                    timestamp: new Date().toISOString()
+                });
+
+                const userRef = doc(db, "users", user.uid);
+                await updateDoc(userRef, {
+                    balance: increment(-amount)
+                });
+
+                alert("Tạo lệnh rút tiền thành công! Hệ thống đã ghi nhận và đang chờ admin xử lý.");
+                document.getElementById('withdraw-modal').classList.add('hidden');
+                
+            } catch (error) {
+                console.error("Lỗi tạo lệnh rút:", error);
+                alert("Có lỗi mạng xảy ra, vui lòng thử lại.");
+            } finally {
+                btn.innerHTML = 'Tạo Lệnh Rút';
+                btn.disabled = false;
+            }
+        };
     </script>
 </body>
 </html>
