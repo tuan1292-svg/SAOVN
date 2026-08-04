@@ -87,7 +87,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-slate-800/80 relative z-10">
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mt-8 pt-6 border-t border-slate-800/80 relative z-10">
                     <div>
                         <div class="text-xs text-slate-500 mb-1">Lãi dự án</div>
                         <div class="text-sm sm:text-lg font-bold text-teal-400">0 đ</div>
@@ -104,6 +104,10 @@
                         <div class="text-xs text-slate-500 mb-1">Tổng tiền nạp</div>
                         <div class="text-sm sm:text-lg font-bold text-cyan-400" id="overview-deposit">0 đ</div>
                     </div>
+                    <div class="border-t sm:border-t-0 sm:border-l border-slate-800 pt-4 sm:pt-0 sm:pl-4 border-l">
+                        <div class="text-xs text-slate-500 mb-1">Tổng tiền rút</div>
+                        <div class="text-sm sm:text-lg font-bold text-orange-400" id="overview-withdraw">0 đ</div>
+                    </div>
                 </div>
             </section>
         </div>
@@ -114,143 +118,11 @@
                 <h2 class="text-xl font-extrabold flex items-center gap-2"><span class="text-cyan-400">⚡</span> Sàn Dự Án Góp Vốn</h2>
             </div>
 
-            <div class="grid sm:grid-cols-2 gap-4">
-                <!-- Dự án 1 -->
-                <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-teal-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase">Đang gọi vốn</div>
-                    <div class="flex items-start gap-4 mb-4 mt-2">
-                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-2xl">☕</div>
-                        <div>
-                            <h3 class="font-bold text-base group-hover:text-cyan-400 transition-colors">SAOVN Coffee & Lounge</h3>
-                            <p class="text-xs text-slate-400">Chuỗi cafe kết nối cộng đồng thành viên.</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 mb-5 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-400">Mức vốn 1 suất:</span><span class="font-bold text-cyan-400">500,000 VNĐ</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Lợi tức chia hàng tháng:</span><span class="font-bold text-teal-400">4% - 6% / Tháng</span></div>
-                    </div>
-                    <div class="mb-4">
-                        <div class="flex justify-between text-[10px] font-semibold mb-1"><span class="text-slate-300">Huy động: 320Tr / 500Tr</span><span class="text-cyan-400">64%</span></div>
-                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                            <div class="bg-cyan-500 h-2 rounded-full progress-bar-striped" style="width: 64%"></div>
-                        </div>
-                    </div>
-                    <button class="w-full py-2.5 rounded-lg bg-slate-800 group-hover:bg-cyan-500 group-hover:text-slate-950 border border-slate-700 group-hover:border-transparent text-sm font-bold transition-all">Góp Vốn Ngay</button>
-                </div>
-
-                <!-- Dự án 2 -->
-                <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-teal-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase">Đang gọi vốn</div>
-                    <div class="flex items-start gap-4 mb-4 mt-2">
-                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-2xl">🍲</div>
-                        <div>
-                            <h3 class="font-bold text-base group-hover:text-cyan-400 transition-colors">SAOVN Food & Restaurant</h3>
-                            <p class="text-xs text-slate-400">Chuỗi nhà hàng ẩm thực tiêu dùng nội bộ.</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 mb-5 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-400">Mức vốn 1 suất:</span><span class="font-bold text-cyan-400">1,000,000 VNĐ</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Lợi tức chia hàng tháng:</span><span class="font-bold text-teal-400">5% - 8% / Tháng</span></div>
-                    </div>
-                    <div class="mb-4">
-                        <div class="flex justify-between text-[10px] font-semibold mb-1"><span class="text-slate-300">Huy động: 450Tr / 1 Tỷ</span><span class="text-cyan-400">45%</span></div>
-                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                            <div class="bg-cyan-500 h-2 rounded-full progress-bar-striped" style="width: 45%"></div>
-                        </div>
-                    </div>
-                    <button class="w-full py-2.5 rounded-lg bg-slate-800 group-hover:bg-cyan-500 group-hover:text-slate-950 border border-slate-700 group-hover:border-transparent text-sm font-bold transition-all">Góp Vốn Ngay</button>
-                </div>
-
-                <!-- Dự án 3 -->
-                <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-cyan-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase">Sắp mở bán</div>
-                    <div class="flex items-start gap-4 mb-4 mt-2">
-                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-2xl">🏪</div>
-                        <div>
-                            <h3 class="font-bold text-base group-hover:text-cyan-400 transition-colors">SAOVN Mart 24/7</h3>
-                            <p class="text-xs text-slate-400">Cửa hàng tiện lợi tiêu dùng thiết yếu.</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 mb-5 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-400">Mức vốn 1 suất:</span><span class="font-bold text-cyan-400">500,000 VNĐ</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Lợi tức chia hàng tháng:</span><span class="font-bold text-teal-400">4.5% - 7% / Tháng</span></div>
-                    </div>
-                    <div class="mb-4">
-                        <div class="flex justify-between text-[10px] font-semibold mb-1"><span class="text-slate-300">Huy động: 50Tr / 300Tr</span><span class="text-cyan-400">16%</span></div>
-                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                            <div class="bg-cyan-500 h-2 rounded-full progress-bar-striped" style="width: 16%"></div>
-                        </div>
-                    </div>
-                    <button class="w-full py-2.5 rounded-lg bg-slate-800 group-hover:bg-cyan-500 group-hover:text-slate-950 border border-slate-700 group-hover:border-transparent text-sm font-bold transition-all">Đăng Ký Suất Giữ Chỗ</button>
-                </div>
-
-                <!-- Dự án 4 -->
-                <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-teal-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase">Đang gọi vốn</div>
-                    <div class="flex items-start gap-4 mb-4 mt-2">
-                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-2xl">💻</div>
-                        <div>
-                            <h3 class="font-bold text-base group-hover:text-cyan-400 transition-colors">SAOVN Coworking Hub</h3>
-                            <p class="text-xs text-slate-400">Không gian làm việc chung cho Freelancer & Startup.</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 mb-5 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-400">Mức vốn 1 suất:</span><span class="font-bold text-cyan-400">1,000,000 VNĐ</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Lợi tức chia hàng tháng:</span><span class="font-bold text-teal-400">5% - 7.5% / Tháng</span></div>
-                    </div>
-                    <div class="mb-4">
-                        <div class="flex justify-between text-[10px] font-semibold mb-1"><span class="text-slate-300">Huy động: 560Tr / 800Tr</span><span class="text-cyan-400">70%</span></div>
-                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                            <div class="bg-cyan-500 h-2 rounded-full progress-bar-striped" style="width: 70%"></div>
-                        </div>
-                    </div>
-                    <button class="w-full py-2.5 rounded-lg bg-slate-800 group-hover:bg-cyan-500 group-hover:text-slate-950 border border-slate-700 group-hover:border-transparent text-sm font-bold transition-all">Góp Vốn Ngay</button>
-                </div>
-
-                <!-- Dự án 5 -->
-                <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-teal-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase">Đang gọi vốn</div>
-                    <div class="flex items-start gap-4 mb-4 mt-2">
-                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-2xl">📸</div>
-                        <div>
-                            <h3 class="font-bold text-base group-hover:text-cyan-400 transition-colors">SAOVN Creative Studio</h3>
-                            <p class="text-xs text-slate-400">Không gian Studio chụp ảnh, quay Podcast & Livestream.</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 mb-5 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-400">Mức vốn 1 suất:</span><span class="font-bold text-cyan-400">500,000 VNĐ</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Lợi tức chia hàng tháng:</span><span class="font-bold text-teal-400">6% - 9% / Tháng</span></div>
-                    </div>
-                    <div class="mb-4">
-                        <div class="flex justify-between text-[10px] font-semibold mb-1"><span class="text-slate-300">Huy động: 280Tr / 400Tr</span><span class="text-cyan-400">70%</span></div>
-                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                            <div class="bg-cyan-500 h-2 rounded-full progress-bar-striped" style="width: 70%"></div>
-                        </div>
-                    </div>
-                    <button class="w-full py-2.5 rounded-lg bg-slate-800 group-hover:bg-cyan-500 group-hover:text-slate-950 border border-slate-700 group-hover:border-transparent text-sm font-bold transition-all">Góp Vốn Ngay</button>
-                </div>
-
-                <!-- Dự án 6 -->
-                <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-cyan-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase">Sắp mở bán</div>
-                    <div class="flex items-start gap-4 mb-4 mt-2">
-                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-2xl">💧</div>
-                        <div>
-                            <h3 class="font-bold text-base group-hover:text-cyan-400 transition-colors">SAOVN Pure Water</h3>
-                            <p class="text-xs text-slate-400">Nhà máy sản xuất nước tinh khiết đóng chai tiêu dùng nội bộ.</p>
-                        </div>
-                    </div>
-                    <div class="space-y-2 mb-5 text-xs">
-                        <div class="flex justify-between"><span class="text-slate-400">Mức vốn 1 suất:</span><span class="font-bold text-cyan-400">500,000 VNĐ</span></div>
-                        <div class="flex justify-between"><span class="text-slate-400">Lợi tức chia hàng tháng:</span><span class="font-bold text-teal-400">5% - 8% / Tháng</span></div>
-                    </div>
-                    <div class="mb-4">
-                        <div class="flex justify-between text-[10px] font-semibold mb-1"><span class="text-slate-300">Huy động: 80Tr / 200Tr</span><span class="text-cyan-400">40%</span></div>
-                        <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                            <div class="bg-cyan-500 h-2 rounded-full progress-bar-striped" style="width: 40%"></div>
-                        </div>
-                    </div>
-                    <button class="w-full py-2.5 rounded-lg bg-slate-800 group-hover:bg-cyan-500 group-hover:text-slate-950 border border-slate-700 group-hover:border-transparent text-sm font-bold transition-all">Đăng Ký Suất Giữ Chỗ</button>
+            <!-- Khu vực tải động dữ liệu dự án -->
+            <div class="grid sm:grid-cols-2 gap-4" id="invest-list">
+                <div class="col-span-2 text-center text-slate-500 py-8 bg-slate-900/50 rounded-2xl border border-slate-800">
+                    <svg class="animate-spin h-6 w-6 mx-auto mb-2 text-cyan-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Đang tải danh sách dự án...
                 </div>
             </div>
         </div>
@@ -477,6 +349,20 @@
                     </div>
                 </div>
             </section>
+
+            <!-- THÊM SECTION LỊCH SỬ GIAO DỊCH VÀO TAB CÁ NHÂN TẠI ĐÂY -->
+            <section class="glass-card rounded-3xl p-6 border border-slate-800 mt-6 shadow-[0_0_20px_rgba(0,0,0,0.2)] relative overflow-hidden">
+                <div class="flex items-center justify-between mb-4 relative z-10">
+                    <h3 class="text-lg font-extrabold flex items-center gap-2 text-white uppercase tracking-wider">
+                        <span class="text-cyan-400"><i class="fa-solid fa-clock-rotate-left"></i></span> Lịch Sử Giao Dịch
+                    </h3>
+                </div>
+                <div id="transaction-history-list" class="space-y-3 relative z-10 max-h-[300px] overflow-y-auto pr-1">
+                    <div class="text-center text-slate-500 text-sm py-6 bg-slate-900/50 rounded-xl border border-slate-800">
+                        Đang tải dữ liệu...
+                    </div>
+                </div>
+            </section>
         </div>
 
     </main>
@@ -614,8 +500,8 @@
         // CÁC BIẾN TÍNH TOÁN THEO THÁNG
         window.systemMonthlyPoints = 1; 
         window.systemMonthlyRevenue = 0;
-        window.userTaskPoints = 0; // Điểm All-time
-        window.userMonthlyTaskPoints = 0; // Điểm tháng này
+        window.userTaskPoints = 0; 
+        window.userMonthlyTaskPoints = 0; 
 
         window.addEventListener('beforeunload', () => {
             if (window.activeVideoTaskId) {
@@ -632,6 +518,10 @@
             let estimated = Math.floor(percentage * window.systemMonthlyRevenue);
             document.getElementById('task-estimated-income').innerText = estimated.toLocaleString('vi-VN') + ' đ';
             document.getElementById('task-percentage').innerText = (percentage * 100).toFixed(2) + '%';
+
+            let totalTaskEarned = (window.userPaidTaskIncome || 0) + estimated;
+            const overviewTaskEl = document.getElementById('overview-task-income');
+            if(overviewTaskEl) overviewTaskEl.innerText = totalTaskEarned.toLocaleString('vi-VN') + ' đ';
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -641,7 +531,6 @@
                 onSnapshot(sysRef, (sysSnap) => {
                     if (sysSnap.exists()) {
                         const sysData = sysSnap.data();
-                        // Sử dụng điểm của Tháng Này (monthlyTotalPoints)
                         window.systemMonthlyPoints = Number(sysData.monthlyTotalPoints) || Number(sysData.totalPoints) || 1;
                         window.systemMonthlyRevenue = Number(sysData.monthlyRevenue) || 0;
                         
@@ -668,9 +557,9 @@
                         const balance = Number(data.balance) || 0;
                         const f1Bonus = Number(data.f1Bonus) || 0;
                         const totalDeposit = Number(data.totalDeposit) || 0;
-                        const taskIncome = Number(data.taskIncome) || 0;
+                        window.userPaidTaskIncome = Number(data.taskIncome) || 0; 
+                        const totalWithdraw = Number(data.totalWithdraw) || 0; 
                         
-                        // Lấy riêng Điểm All-time và Điểm Tháng
                         window.userTaskPoints = Number(data.taskPoints) || 0; 
                         window.userMonthlyTaskPoints = Number(data.monthlyTaskPoints) || 0; 
 
@@ -678,9 +567,8 @@
                         document.getElementById('overview-bonus').innerText = f1Bonus.toLocaleString('vi-VN') + " đ";
                         document.getElementById('f1-bonus').innerText = f1Bonus.toLocaleString('vi-VN') + " đ";
                         document.getElementById('overview-deposit').innerText = totalDeposit.toLocaleString('vi-VN') + " đ";
-                        document.getElementById('overview-task-income').innerText = taskIncome.toLocaleString('vi-VN') + " đ";
+                        document.getElementById('overview-withdraw').innerText = totalWithdraw.toLocaleString('vi-VN') + " đ";
                         
-                        // HIỂN THỊ ĐIỂM
                         document.getElementById('task-total-points').innerText = window.userTaskPoints.toLocaleString('vi-VN');
                         document.getElementById('task-monthly-points').innerText = window.userMonthlyTaskPoints.toLocaleString('vi-VN');
 
@@ -724,6 +612,8 @@
                         }
 
                         loadTeamData(phone);
+                        loadTransactionHistory(user.uid); 
+                        loadProjects(); // Gọi hàm load dự án
                     }
                 });
 
@@ -746,6 +636,64 @@
                 window.location.href = "login.html";
             }
         });
+
+        // ================= LOGIC DỰ ÁN (MỚI) =================
+        window.loadProjects = function() {
+            const q = query(collection(db, "projects"));
+            onSnapshot(q, (snap) => {
+                const list = document.getElementById('invest-list');
+                if (snap.empty) {
+                    list.innerHTML = `<div class="col-span-2 text-center text-slate-500 py-8 bg-slate-900/50 rounded-2xl border border-slate-800">Hiện chưa có dự án nào đang mở bán.</div>`;
+                    return;
+                }
+                
+                let html = '';
+                snap.forEach(docSnap => {
+                    const p = docSnap.data();
+                    let progress = 0;
+                    if(p.totalCapital > 0) progress = Math.min(100, (p.raised / p.totalCapital) * 100);
+                    
+                    let badgeClass = p.status === 'coming_soon' ? 'bg-cyan-500' : (p.status === 'closed' ? 'bg-slate-500' : 'bg-teal-500');
+                    let badgeText = p.status === 'coming_soon' ? 'Sắp mở bán' : (p.status === 'closed' ? 'Đã đóng' : 'Đang gọi vốn');
+                    let btnText = p.status === 'coming_soon' ? 'Đăng Ký Suất Giữ Chỗ' : 'Góp Vốn Ngay';
+                    if(p.status === 'closed') btnText = 'Đã Đóng Kêu Gọi';
+
+                    const formatMoney = (val) => {
+                        if (val >= 1000000000) return (val / 1000000000).toLocaleString('vi-VN', {maximumFractionDigits: 2}) + ' Tỷ';
+                        if (val >= 1000000) return (val / 1000000).toLocaleString('vi-VN', {maximumFractionDigits: 0}) + 'Tr';
+                        return val.toLocaleString('vi-VN');
+                    };
+
+                    html += `
+                    <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
+                        <div class="absolute top-0 right-0 ${badgeClass} text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase">${badgeText}</div>
+                        <div class="flex items-start gap-4 mb-4 mt-2">
+                            <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-2xl">${p.icon || '💼'}</div>
+                            <div>
+                                <h3 class="font-bold text-base group-hover:text-cyan-400 transition-colors">${p.title}</h3>
+                                <p class="text-xs text-slate-400">${p.desc}</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 mb-5 text-xs">
+                            <div class="flex justify-between"><span class="text-slate-400">Mức vốn 1 suất:</span><span class="font-bold text-cyan-400">${Number(p.packagePrice).toLocaleString('vi-VN')} VNĐ</span></div>
+                            <div class="flex justify-between"><span class="text-slate-400">Lợi tức chia hàng tháng:</span><span class="font-bold text-teal-400">${p.interest}</span></div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-[10px] font-semibold mb-1">
+                                <span class="text-slate-300">Huy động: ${formatMoney(Number(p.raised || 0))} / ${formatMoney(Number(p.totalCapital || 0))}</span>
+                                <span class="text-cyan-400">${progress.toFixed(1)}%</span>
+                            </div>
+                            <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
+                                <div class="bg-cyan-500 h-2 rounded-full progress-bar-striped" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                        <button class="w-full py-2.5 rounded-lg bg-slate-800 ${p.status !== 'closed' ? 'group-hover:bg-cyan-500 group-hover:text-slate-950 border border-slate-700 group-hover:border-transparent' : 'opacity-50 cursor-not-allowed border border-slate-800'} text-sm font-bold transition-all">${btnText}</button>
+                    </div>
+                    `;
+                });
+                list.innerHTML = html;
+            });
+        }
 
         function loadTeamData(myPhone) {
             const teamQuery = query(collection(db, "users"), where("refPhone", "==", myPhone));
@@ -783,6 +731,64 @@
                 }
                 document.getElementById('f1-count').innerText = totalF1;
                 document.getElementById('f1-list').innerHTML = listHtml;
+            });
+        }
+
+        // HÀM LẤY LỊCH SỬ NẠP RÚT
+        window.loadTransactionHistory = function(uid) {
+            const wQuery = query(collection(db, "withdrawals"), where("userId", "==", uid));
+            
+            onSnapshot(wQuery, (snap) => {
+                const historyList = document.getElementById('transaction-history-list');
+                let txs = [];
+                
+                snap.forEach(docSnap => {
+                    let data = docSnap.data();
+                    data.id = docSnap.id;
+                    data.type = 'withdraw'; 
+                    txs.push(data);
+                });
+
+                if (txs.length === 0) {
+                    historyList.innerHTML = `<div class="text-center text-slate-500 text-xs py-6 bg-slate-900/50 rounded-xl border border-slate-800">Chưa có phát sinh giao dịch nào.</div>`;
+                    return;
+                }
+
+                txs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                let html = "";
+                txs.forEach(tx => {
+                    let dateStr = new Date(tx.timestamp).toLocaleString('vi-VN');
+                    let isWithdraw = tx.type === 'withdraw';
+                    let amountColor = isWithdraw ? 'text-white' : 'text-cyan-400';
+                    let sign = isWithdraw ? '-' : '+';
+                    
+                    let statusColor = tx.status === 'pending' ? 'text-orange-400' : (tx.status === 'approved' ? 'text-teal-400' : 'text-red-400');
+                    let statusText = tx.status === 'pending' ? 'Đang xử lý' : (tx.status === 'approved' ? 'Thành công' : 'Từ chối');
+                    
+                    let icon = isWithdraw ? '<i class="fa-solid fa-arrow-up-right-from-square"></i>' : '<i class="fa-solid fa-arrow-down-to-bracket"></i>';
+                    let iconBg = isWithdraw ? 'bg-orange-500/10 border-orange-500/20 text-orange-400' : 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400';
+                    let title = isWithdraw ? 'Rút tiền' : 'Nạp tiền';
+
+                    html += `
+                        <div class="flex justify-between items-center p-3 bg-slate-900/40 hover:bg-slate-800/60 rounded-xl border border-slate-800 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl border ${iconBg} flex items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                                    ${icon}
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-200 uppercase tracking-wider">${title}</div>
+                                    <div class="text-[10px] text-slate-500">${dateStr}</div>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm font-black ${amountColor}">${sign} ${Number(tx.amount).toLocaleString('vi-VN')} đ</div>
+                                <div class="text-[10px] font-bold ${statusColor} border border-current px-1.5 py-0.5 rounded inline-block mt-1">${statusText}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                historyList.innerHTML = html;
             });
         }
 
@@ -1066,7 +1072,6 @@
                     const userRef = doc(db, "users", user.uid);
                     const sysRef = doc(db, "system", "task_stats");
 
-                    // Chạy song song: Cộng điểm cá nhân và cộng điểm hệ thống
                     await Promise.all([
                         updateDoc(userRef, {
                             taskPoints: increment(points),
