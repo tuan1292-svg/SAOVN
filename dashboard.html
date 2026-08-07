@@ -422,6 +422,40 @@
         </div>
     </div>
 
+    <!-- POPUP GÓP VỐN -->
+    <div id="invest-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="glass-card w-full max-w-sm rounded-3xl p-6 border border-teal-500/50 shadow-[0_0_40px_rgba(20,184,166,0.2)] relative">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-extrabold text-teal-400 uppercase tracking-wider">Xác Nhận Góp Vốn</h3>
+                <button onclick="closeInvestModal()" class="text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700">
+                    <div class="text-xs text-slate-400 mb-1">Dự án:</div>
+                    <div class="text-sm font-bold text-white uppercase" id="invest-project-title">TÊN DỰ ÁN</div>
+                </div>
+                
+                <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700 flex justify-between items-center">
+                    <span class="text-xs text-slate-400">Số dư khả dụng:</span>
+                    <span class="text-lg font-black text-cyan-400" id="invest-available-balance">0 VNĐ</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Số tiền muốn góp (VNĐ)</label>
+                    <input type="number" id="invest-amount" placeholder="Nhập số tiền..." class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-lg font-bold text-slate-100 focus:outline-none focus:border-teal-400">
+                    <div class="text-[10px] text-slate-500 mt-1" id="invest-min-hint">* Tối thiểu: 0 VNĐ</div>
+                </div>
+
+                <input type="hidden" id="invest-project-id">
+                
+                <button onclick="submitInvestment()" id="btn-submit-invest" class="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-slate-950 text-sm font-black transition-all text-center shadow-[0_0_15px_rgba(20,184,166,0.4)] uppercase tracking-wider mt-4">
+                    Xác Nhận Xuống Tiền
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- BOTTOM MOBILE NAVIGATION -->
     <nav class="sm:hidden fixed bottom-0 left-0 w-full glass-card border-t border-slate-800 pb-safe z-50">
         <div class="flex justify-around items-center p-2 text-[10px] sm:text-xs font-medium">
@@ -632,14 +666,33 @@
                     loadTasks();
                 });
 
+                // LẮNG NGHE LỊCH SỬ GÓP VỐN CỦA USER
+                const contribQuery = query(collection(db, "project_contributions"), where("userId", "==", user.uid));
+                onSnapshot(contribQuery, (contribSnap) => {
+                    window.myContributions = {};
+                    contribSnap.forEach(docSnap => {
+                        const data = docSnap.data();
+                        if (!window.myContributions[data.projectId]) {
+                            window.myContributions[data.projectId] = { approved: 0, pending: 0 };
+                        }
+                        if (data.status === 'approved') {
+                            window.myContributions[data.projectId].approved += Number(data.amount);
+                        } else if (data.status === 'pending') {
+                            window.myContributions[data.projectId].pending += Number(data.amount);
+                        }
+                    });
+                    if (window.isProjectsLoaded) window.loadProjects(); // Render lại giao diện dự án khi có thay đổi
+                });
+
             } else {
                 window.location.href = "login.html";
             }
         });
 
-        // ================= LOGIC DỰ ÁN (MỚI) =================
+        // ================= LOGIC DỰ ÁN (ĐÃ ĐỒNG BỘ VỚI ADMIN) =================
         window.loadProjects = function() {
-            const q = query(collection(db, "projects"));
+            window.isProjectsLoaded = true;
+            const q = query(collection(db, "investment_projects"));
             onSnapshot(q, (snap) => {
                 const list = document.getElementById('invest-list');
                 if (snap.empty) {
@@ -650,13 +703,37 @@
                 let html = '';
                 snap.forEach(docSnap => {
                     const p = docSnap.data();
-                    let progress = 0;
-                    if(p.totalCapital > 0) progress = Math.min(100, (p.raised / p.totalCapital) * 100);
+                    const projectId = docSnap.id;
                     
-                    let badgeClass = p.status === 'coming_soon' ? 'bg-cyan-500' : (p.status === 'closed' ? 'bg-slate-500' : 'bg-teal-500');
-                    let badgeText = p.status === 'coming_soon' ? 'Sắp mở bán' : (p.status === 'closed' ? 'Đã đóng' : 'Đang gọi vốn');
-                    let btnText = p.status === 'coming_soon' ? 'Đăng Ký Suất Giữ Chỗ' : 'Góp Vốn Ngay';
-                    if(p.status === 'closed') btnText = 'Đã Đóng Kêu Gọi';
+                    let raised = Number(p.raisedAmount || 0);
+                    let target = Number(p.targetAmount || 0);
+                    let progress = 0;
+                    if(target > 0) progress = Math.min(100, (raised / target) * 100);
+                    
+                    let badgeClass = p.status === 'active' ? 'bg-teal-500' : (p.status === 'closed' ? 'bg-slate-500' : 'bg-cyan-500');
+                    let badgeText = p.status === 'active' ? 'Đang gọi vốn' : (p.status === 'closed' ? 'Đã đóng' : (p.status === 'running' ? 'Đang chạy' : 'Hoàn thành'));
+
+                    // KIỂM TRA SỐ TIỀN BẢN THÂN ĐÃ GÓP
+                    let myInvest = window.myContributions && window.myContributions[projectId] ? window.myContributions[projectId] : { approved: 0, pending: 0 };
+                    let myInvestHTML = '';
+                    if (myInvest.approved > 0 || myInvest.pending > 0) {
+                        myInvestHTML = `
+                            <div class="mt-4 mb-2 p-3 bg-teal-950/30 border border-teal-500/20 rounded-xl">
+                                <div class="text-[10px] text-teal-500 font-bold uppercase tracking-wider mb-1">Vốn Bạn Đã Tham Gia</div>
+                                ${myInvest.approved > 0 ? `<div class="flex justify-between text-xs"><span class="text-slate-400">Thành công:</span><span class="font-bold text-teal-400">${myInvest.approved.toLocaleString('vi-VN')} ₫</span></div>` : ''}
+                                ${myInvest.pending > 0 ? `<div class="flex justify-between text-xs"><span class="text-slate-400">Đang chờ duyệt:</span><span class="font-bold text-orange-400">${myInvest.pending.toLocaleString('vi-VN')} ₫</span></div>` : ''}
+                            </div>
+                        `;
+                    }
+
+                    // TẠO NÚT GÓP VỐN
+                    let btnHTML = '';
+                    if (p.status === 'active') {
+                        btnHTML = `<button onclick="openInvestModal('${projectId}', '${p.title}', ${p.minInvestment || 0})" class="w-full py-2.5 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 border border-slate-700 hover:border-transparent text-sm font-bold transition-all mt-4">Góp Vốn Ngay</button>`;
+                    } else {
+                        let btnText = p.status === 'closed' ? 'Đã Đóng Kêu Gọi' : 'Dự Án Đang Chạy';
+                        btnHTML = `<button disabled class="w-full py-2.5 rounded-lg opacity-50 cursor-not-allowed border border-slate-800 text-sm font-bold bg-slate-800 mt-4">${btnText}</button>`;
+                    }
 
                     const formatMoney = (val) => {
                         if (val >= 1000000000) return (val / 1000000000).toLocaleString('vi-VN', {maximumFractionDigits: 2}) + ' Tỷ';
@@ -665,35 +742,101 @@
                     };
 
                     html += `
-                    <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
-                        <div class="absolute top-0 right-0 ${badgeClass} text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase">${badgeText}</div>
-                        <div class="flex items-start gap-4 mb-4 mt-2">
-                            <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-2xl">${p.icon || '💼'}</div>
-                            <div>
-                                <h3 class="font-bold text-base group-hover:text-cyan-400 transition-colors">${p.title}</h3>
-                                <p class="text-xs text-slate-400">${p.desc}</p>
+                    <div class="glass-card rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition-all group relative overflow-hidden flex flex-col justify-between">
+                        <div>
+                            <div class="absolute top-0 right-0 ${badgeClass} text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-lg uppercase">${badgeText}</div>
+                            <div class="flex items-start gap-4 mb-4 mt-2">
+                                <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-2xl">${p.icon || '💼'}</div>
+                                <div>
+                                    <h3 class="font-bold text-base group-hover:text-cyan-400 transition-colors">${p.title}</h3>
+                                    <p class="text-xs text-slate-400 line-clamp-2">${p.description || 'Không có mô tả'}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="space-y-2 mb-5 text-xs">
-                            <div class="flex justify-between"><span class="text-slate-400">Mức vốn 1 suất:</span><span class="font-bold text-cyan-400">${Number(p.packagePrice).toLocaleString('vi-VN')} VNĐ</span></div>
-                            <div class="flex justify-between"><span class="text-slate-400">Lợi tức chia hàng tháng:</span><span class="font-bold text-teal-400">${p.interest}</span></div>
-                        </div>
-                        <div class="mb-4">
-                            <div class="flex justify-between text-[10px] font-semibold mb-1">
-                                <span class="text-slate-300">Huy động: ${formatMoney(Number(p.raised || 0))} / ${formatMoney(Number(p.totalCapital || 0))}</span>
-                                <span class="text-cyan-400">${progress.toFixed(1)}%</span>
+                            <div class="space-y-2 mb-4 text-xs">
+                                <div class="flex justify-between"><span class="text-slate-400">Mức góp tối thiểu:</span><span class="font-bold text-cyan-400">${Number(p.minInvestment || 0).toLocaleString('vi-VN')} VNĐ</span></div>
+                                <div class="flex justify-between"><span class="text-slate-400">Lợi tức kỳ vọng:</span><span class="font-bold text-teal-400">${p.roi || 'Đang cập nhật'}</span></div>
                             </div>
-                            <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
-                                <div class="bg-cyan-500 h-2 rounded-full progress-bar-striped" style="width: ${progress}%"></div>
+                            <div class="mb-2">
+                                <div class="flex justify-between text-[10px] font-semibold mb-1">
+                                    <span class="text-slate-300">Huy động: ${formatMoney(raised)} / ${formatMoney(target)}</span>
+                                    <span class="text-cyan-400">${progress.toFixed(1)}%</span>
+                                </div>
+                                <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800">
+                                    <div class="bg-cyan-500 h-2 rounded-full progress-bar-striped" style="width: ${progress}%"></div>
+                                </div>
                             </div>
+                            ${myInvestHTML}
                         </div>
-                        <button class="w-full py-2.5 rounded-lg bg-slate-800 ${p.status !== 'closed' ? 'group-hover:bg-cyan-500 group-hover:text-slate-950 border border-slate-700 group-hover:border-transparent' : 'opacity-50 cursor-not-allowed border border-slate-800'} text-sm font-bold transition-all">${btnText}</button>
+                        ${btnHTML}
                     </div>
                     `;
                 });
                 list.innerHTML = html;
             });
         }
+
+        window.openInvestModal = function(projectId, title, minInvestment) {
+            document.getElementById('invest-project-title').innerText = title;
+            document.getElementById('invest-available-balance').innerText = window.currentBalance.toLocaleString('vi-VN') + " VNĐ";
+            document.getElementById('invest-min-hint').innerText = "* Tối thiểu: " + minInvestment.toLocaleString('vi-VN') + " VNĐ";
+            document.getElementById('invest-project-id').value = projectId;
+            document.getElementById('invest-amount').value = '';
+            
+            window.currentMinInvest = minInvestment;
+            document.getElementById('invest-modal').classList.remove('hidden');
+        };
+
+        window.closeInvestModal = function() {
+            document.getElementById('invest-modal').classList.add('hidden');
+        };
+
+        window.submitInvestment = async function() {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const amount = Number(document.getElementById('invest-amount').value);
+            const projectId = document.getElementById('invest-project-id').value;
+            
+            if (!amount || amount < window.currentMinInvest) {
+                alert(`Số tiền tối thiểu để tham gia dự án này là ${window.currentMinInvest.toLocaleString('vi-VN')} VNĐ.`);
+                return;
+            }
+
+            if (amount > window.currentBalance) {
+                alert("Số dư khả dụng không đủ! Vui lòng nạp thêm tiền vào ví.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-submit-invest');
+            btn.innerHTML = 'Đang xử lý...';
+            btn.disabled = true;
+
+            try {
+                const userRef = doc(db, "users", user.uid);
+                await updateDoc(userRef, {
+                    balance: increment(-amount) // Trừ tiền trong ví
+                });
+
+                const contribRef = doc(collection(db, "project_contributions"));
+                await setDoc(contribRef, {
+                    userId: user.uid,
+                    projectId: projectId,
+                    amount: amount,
+                    status: "pending", 
+                    timestamp: serverTimestamp()
+                });
+
+                alert("Tạo lệnh góp vốn thành công! Hệ thống đã ghi nhận số tiền Đang chờ duyệt.");
+                window.closeInvestModal();
+                
+            } catch (error) {
+                console.error("Lỗi khi góp vốn:", error);
+                alert("Có lỗi mạng xảy ra, vui lòng thử lại.");
+            } finally {
+                btn.innerHTML = 'Xác Nhận Xuống Tiền';
+                btn.disabled = false;
+            }
+        };
 
         function loadTeamData(myPhone) {
             const teamQuery = query(collection(db, "users"), where("refPhone", "==", myPhone));
@@ -734,41 +877,62 @@
             });
         }
 
-        // HÀM LẤY LỊCH SỬ NẠP RÚT
+        // HÀM LẤY LỊCH SỬ GIAO DỊCH (NẠP, RÚT, GÓP VỐN)
         window.loadTransactionHistory = function(uid) {
             const wQuery = query(collection(db, "withdrawals"), where("userId", "==", uid));
+            const cQuery = query(collection(db, "project_contributions"), where("userId", "==", uid));
+            const dQuery = query(collection(db, "deposits"), where("userId", "==", uid)); 
             
-            onSnapshot(wQuery, (snap) => {
-                const historyList = document.getElementById('transaction-history-list');
-                let txs = [];
-                
-                snap.forEach(docSnap => {
-                    let data = docSnap.data();
-                    data.id = docSnap.id;
-                    data.type = 'withdraw'; 
-                    txs.push(data);
-                });
+            const historyList = document.getElementById('transaction-history-list');
+            
+            let withdrawTxs = [];
+            let contribTxs = [];
+            let depositTxs = [];
 
+            const renderTransactions = () => {
+                let txs = [...withdrawTxs, ...contribTxs, ...depositTxs];
+                
                 if (txs.length === 0) {
                     historyList.innerHTML = `<div class="text-center text-slate-500 text-xs py-6 bg-slate-900/50 rounded-xl border border-slate-800">Chưa có phát sinh giao dịch nào.</div>`;
                     return;
                 }
 
-                txs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                // Sắp xếp thời gian (xử lý cả kiểu ISO String và Firestore Timestamp)
+                txs.sort((a, b) => {
+                    const timeA = a.timestamp ? (a.timestamp.seconds ? a.timestamp.seconds * 1000 : new Date(a.timestamp).getTime()) : 0;
+                    const timeB = b.timestamp ? (b.timestamp.seconds ? b.timestamp.seconds * 1000 : new Date(b.timestamp).getTime()) : 0;
+                    return timeB - timeA;
+                });
 
                 let html = "";
                 txs.forEach(tx => {
-                    let dateStr = new Date(tx.timestamp).toLocaleString('vi-VN');
-                    let isWithdraw = tx.type === 'withdraw';
-                    let amountColor = isWithdraw ? 'text-white' : 'text-cyan-400';
-                    let sign = isWithdraw ? '-' : '+';
+                    let dateStr = "Đang cập nhật";
+                    if(tx.timestamp) {
+                        const dateObj = tx.timestamp.seconds ? new Date(tx.timestamp.seconds * 1000) : new Date(tx.timestamp);
+                        dateStr = dateObj.toLocaleString('vi-VN');
+                    }
+
+                    // Phân loại giao dịch để hiển thị màu và dấu (+ / -)
+                    let sign = tx.type === 'deposit' ? '+' : '-';
+                    let amountColor = tx.type === 'deposit' ? 'text-cyan-400' : 'text-white';
                     
                     let statusColor = tx.status === 'pending' ? 'text-orange-400' : (tx.status === 'approved' ? 'text-teal-400' : 'text-red-400');
                     let statusText = tx.status === 'pending' ? 'Đang xử lý' : (tx.status === 'approved' ? 'Thành công' : 'Từ chối');
                     
-                    let icon = isWithdraw ? '<i class="fa-solid fa-arrow-up-right-from-square"></i>' : '<i class="fa-solid fa-arrow-down-to-bracket"></i>';
-                    let iconBg = isWithdraw ? 'bg-orange-500/10 border-orange-500/20 text-orange-400' : 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400';
-                    let title = isWithdraw ? 'Rút tiền' : 'Nạp tiền';
+                    let icon, iconBg, title;
+                    if(tx.type === 'withdraw') {
+                        icon = '<i class="fa-solid fa-arrow-up-right-from-square"></i>';
+                        iconBg = 'bg-orange-500/10 border-orange-500/20 text-orange-400';
+                        title = 'Rút tiền';
+                    } else if (tx.type === 'invest') {
+                        icon = '<i class="fa-solid fa-file-invoice-dollar"></i>';
+                        iconBg = 'bg-teal-500/10 border-teal-500/20 text-teal-400';
+                        title = 'Góp vốn dự án';
+                    } else { // deposit
+                        icon = '<i class="fa-solid fa-arrow-down-to-bracket"></i>';
+                        iconBg = 'bg-cyan-500/10 border-cyan-500/20 text-cyan-400';
+                        title = 'Nạp tiền';
+                    }
 
                     html += `
                         <div class="flex justify-between items-center p-3 bg-slate-900/40 hover:bg-slate-800/60 rounded-xl border border-slate-800 transition-colors">
@@ -789,6 +953,24 @@
                     `;
                 });
                 historyList.innerHTML = html;
+            };
+
+            onSnapshot(wQuery, (snap) => {
+                withdrawTxs = [];
+                snap.forEach(docSnap => { let d = docSnap.data(); d.id = docSnap.id; d.type = 'withdraw'; withdrawTxs.push(d); });
+                renderTransactions();
+            });
+
+            onSnapshot(cQuery, (snap) => {
+                contribTxs = [];
+                snap.forEach(docSnap => { let d = docSnap.data(); d.id = docSnap.id; d.type = 'invest'; contribTxs.push(d); });
+                renderTransactions();
+            });
+
+            onSnapshot(dQuery, (snap) => {
+                depositTxs = [];
+                snap.forEach(docSnap => { let d = docSnap.data(); d.id = docSnap.id; d.type = 'deposit'; depositTxs.push(d); });
+                renderTransactions();
             });
         }
 
