@@ -509,7 +509,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc, deleteField, setDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, collection, query, where, updateDoc, deleteField, setDoc, increment, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBa3zOMwQr-KO77c5SsXEar8ycoRkmFbLk",
@@ -812,13 +812,17 @@
             btn.disabled = true;
 
             try {
+                const batch = writeBatch(db);
+
+                // Lệnh 1: Trừ tiền
                 const userRef = doc(db, "users", user.uid);
-                await updateDoc(userRef, {
-                    balance: increment(-amount) // Trừ tiền trong ví
+                batch.update(userRef, {
+                    balance: increment(-amount)
                 });
 
+                // Lệnh 2: Tạo vé góp vốn
                 const contribRef = doc(collection(db, "project_contributions"));
-                await setDoc(contribRef, {
+                batch.set(contribRef, {
                     userId: user.uid,
                     projectId: projectId,
                     amount: amount,
@@ -826,12 +830,15 @@
                     timestamp: serverTimestamp()
                 });
 
+                // Thực thi đồng thời cả 2 lệnh
+                await batch.commit();
+
                 alert("Tạo lệnh góp vốn thành công! Hệ thống đã ghi nhận số tiền Đang chờ duyệt.");
                 window.closeInvestModal();
                 
             } catch (error) {
                 console.error("Lỗi khi góp vốn:", error);
-                alert("Có lỗi mạng xảy ra, vui lòng thử lại.");
+                alert("Giao dịch bị từ chối! Vui lòng kiểm tra lại số dư hoặc kết nối mạng.");
             } finally {
                 btn.innerHTML = 'Xác Nhận Xuống Tiền';
                 btn.disabled = false;
@@ -1402,8 +1409,17 @@
             btn.disabled = true;
 
             try {
+                const batch = writeBatch(db);
+
+                // Lệnh 1: Trừ tiền
+                const userRef = doc(db, "users", user.uid);
+                batch.update(userRef, {
+                    balance: increment(-amount)
+                });
+
+                // Lệnh 2: Tạo lệnh rút
                 const withdrawRef = doc(collection(db, "withdrawals"));
-                await setDoc(withdrawRef, {
+                batch.set(withdrawRef, {
                     userId: user.uid,
                     fullName: document.getElementById('user-fullname').innerText,
                     amount: amount,
@@ -1412,17 +1428,15 @@
                     timestamp: new Date().toISOString()
                 });
 
-                const userRef = doc(db, "users", user.uid);
-                await updateDoc(userRef, {
-                    balance: increment(-amount)
-                });
+                // Thực thi đồng thời
+                await batch.commit();
 
                 alert("Tạo lệnh rút tiền thành công! Hệ thống đã ghi nhận và đang chờ admin xử lý.");
                 document.getElementById('withdraw-modal').classList.add('hidden');
                 
             } catch (error) {
                 console.error("Lỗi tạo lệnh rút:", error);
-                alert("Có lỗi mạng xảy ra, vui lòng thử lại.");
+                alert("Giao dịch bị từ chối! Số dư của bạn không đủ hợp lệ.");
             } finally {
                 btn.innerHTML = 'Tạo Lệnh Rút';
                 btn.disabled = false;
