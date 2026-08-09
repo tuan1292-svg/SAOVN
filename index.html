@@ -373,8 +373,8 @@
 
     // 2. Lưu vào bộ nhớ tạm hoặc điền thẳng vào form
     if (refPhone) {
-        // Nếu form đăng ký của bạn đã nằm sẵn trong HTML (chỉ bị ẩn đi bằng CSS)
-        const refInput = document.getElementById('input-nguoi-gioi-thieu'); // Nhớ đổi đúng ID của bạn
+        // Sử dụng đúng ID "reg-ref" từ HTML của bạn
+        const refInput = document.getElementById('reg-ref'); 
         
         if (refInput) {
             refInput.value = refPhone;
