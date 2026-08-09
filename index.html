@@ -365,6 +365,30 @@
                 btn.disabled = false;
             }
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+    // 1. Đọc tham số ref từ URL ngay khi vào trang (ví dụ: saovn.com/?ref=0987654321)
+    const urlParams = new URLSearchParams(window.location.search);
+    const refPhone = urlParams.get('ref');
+
+    // 2. Lưu vào bộ nhớ tạm hoặc điền thẳng vào form
+    if (refPhone) {
+        // Nếu form đăng ký của bạn đã nằm sẵn trong HTML (chỉ bị ẩn đi bằng CSS)
+        const refInput = document.getElementById('input-nguoi-gioi-thieu'); // Nhớ đổi đúng ID của bạn
+        
+        if (refInput) {
+            refInput.value = refPhone;
+            refInput.readOnly = true; // Khóa input để ứng viên không tự ý sửa đổi
+            
+            // Highlight viền Cyan đặc trưng để người dùng chú ý
+            refInput.classList.add('bg-slate-900', 'text-cyan-400', 'border-cyan-500/50');
+        } else {
+            // Trường hợp code form đăng ký của bạn được JavaScript render ra sau cùng, 
+            // hãy lưu biến này vào window để lát sau gọi ra điền vào
+            window.refPhoneData = refPhone; 
+        }
+    }
+});
     </script>
 </body>
 </html>

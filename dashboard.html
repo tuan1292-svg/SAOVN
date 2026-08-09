@@ -671,7 +671,8 @@
                         window.updateEstimatedIncome();
 
                         const phone = data.phone || (user.email ? user.email.split('@')[0] : user.uid.substring(0, 8));
-                        document.getElementById('ref-link').innerText = `saovn.com/ref/${phone}`;
+                        // Thay đổi định dạng link để dễ bắt dữ liệu
+                        document.getElementById('ref-link').innerText = `https://saovn.vercel.app/?ref=${phone}`;
                         document.getElementById('deposit-syntax').innerText = phone;
 
                         // Ngân hàng
