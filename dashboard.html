@@ -198,12 +198,12 @@
                 </div>
             </div>
 
-            <!-- KHU VỰC ĐẶC QUYỀN QUY ĐỔI ĐIỂM (CẬP NHẬT TỰ ĐỘNG) -->
+            <!-- KHU VỰC ĐẶC QUYỀN QUY ĐỔI ĐIỂM -->
             <div class="glass-card rounded-2xl p-5 border border-cyan-500/30 bg-gradient-to-br from-slate-900 to-cyan-950/20 relative overflow-hidden mt-6 mb-6">
                 <div class="absolute -right-10 -top-10 w-32 h-32 bg-cyan-500/10 blur-2xl rounded-full"></div>
                 
                 <h3 class="text-sm font-black text-cyan-400 uppercase tracking-widest mb-4 flex items-center gap-2 relative z-10">
-                    <i class="fa-solid fa-right-left"></i> Đặc Quyền Quy Đổi Điểm
+                    <i class="fa-solid fa-right-left"></i> Đặc Quyền Của Bạn
                 </h3>
                 
                 <div class="grid sm:grid-cols-2 gap-4 relative z-10">
@@ -225,7 +225,7 @@
                             <span class="font-bold text-white text-sm">Quảng Bá Kênh Cá Nhân</span>
                         </div>
                         <p class="text-xs text-slate-300 leading-relaxed mb-4">
-                            Dùng điểm <strong class="text-yellow-400">(điểm tháng)</strong> để đổi lấy <strong class="text-cyan-400">lượt xem/tương tác thực</strong> từ cộng đồng cho kênh YouTube, TikTok của chính bạn.
+                            Sử dụng <strong class="text-yellow-400">Điểm (Tháng)</strong> hoặc <strong class="text-teal-400">Số dư VNĐ</strong> để đổi lấy <strong class="text-cyan-400">lượt xem/tương tác thực</strong> từ cộng đồng.
                         </p>
                         <button onclick="openTrafficExchangeModal()" class="w-full py-2.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-slate-950 text-xs font-bold transition-all shadow-[0_0_10px_rgba(6,182,212,0.3)]">
                             <i class="fa-solid fa-bolt mr-1"></i> Thiết Lập Chiến Dịch Ngay
@@ -338,7 +338,7 @@
                     </button>
                 </form>
 
-                <!-- KHU VỰC HIỂN THỊ THẺ ĐÃ LƯU (FUI Style) -->
+                <!-- KHU VỰC HIỂN THỊ THẺ ĐÃ LƯU -->
                 <div id="saved-bank-display" class="hidden border-t border-slate-800 pt-6 mt-2 relative">
                     <h3 class="text-xs font-bold text-cyan-400 mb-3 uppercase tracking-wider">Tài khoản liên kết hiện tại</h3>
                     
@@ -384,7 +384,7 @@
                 </div>
             </section>
 
-            <!-- THÊM SECTION LỊCH SỬ GIAO DỊCH VÀO TAB CÁ NHÂN TẠI ĐÂY -->
+            <!-- SECTION LỊCH SỬ GIAO DỊCH -->
             <section class="glass-card rounded-3xl p-6 border border-slate-800 mt-6 shadow-[0_0_20px_rgba(0,0,0,0.2)] relative overflow-hidden">
                 <div class="flex items-center justify-between mb-4 relative z-10">
                     <h3 class="text-lg font-extrabold flex items-center gap-2 text-white uppercase tracking-wider">
@@ -412,11 +412,24 @@
             </div>
 
             <div class="space-y-4">
-                <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700 flex justify-between items-center">
-                    <span class="text-xs text-slate-400">Điểm Tháng hiện có:</span>
-                    <span class="text-lg font-black text-cyan-400" id="traffic-available-points">0 P</span>
+                <div class="bg-slate-900/50 rounded-xl p-4 border border-slate-700 flex flex-col gap-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-400">Điểm Tháng hiện có:</span>
+                        <span class="text-lg font-black text-cyan-400" id="traffic-available-points">0 P</span>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-slate-800 pt-3">
+                        <span class="text-xs text-slate-400">Số dư VNĐ khả dụng:</span>
+                        <span class="text-lg font-black text-teal-400" id="traffic-available-balance">0 đ</span>
+                    </div>
                 </div>
-                <p class="text-[10px] text-slate-500 italic text-center -mt-2 mb-2">Hệ thống chỉ sử dụng Điểm của Tháng Này để quy đổi tương tác.</p>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Phương thức thanh toán *</label>
+                    <select id="traffic-payment-method" onchange="calculateTraffic()" class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400">
+                        <option value="points">Thanh toán bằng Điểm Tháng</option>
+                        <option value="vnd">Thanh toán bằng Số dư VNĐ</option>
+                    </select>
+                </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Loại tương tác cần quy đổi *</label>
@@ -436,10 +449,10 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1 flex justify-between">
-                        <span>Số điểm tháng muốn dùng *</span>
-                        <span class="text-cyan-400 text-[10px]">1 Lượt = 50 Điểm</span>
+                        <span id="traffic-spend-label">Số điểm tháng muốn dùng *</span>
+                        <span class="text-cyan-400 text-[10px]" id="traffic-rate-hint">1 Lượt = 50 Điểm</span>
                     </label>
-                    <input type="number" id="traffic-points-spend" oninput="calculateTraffic()" placeholder="Nhập số điểm..." class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-lg font-bold text-slate-100 focus:outline-none focus:border-cyan-400">
+                    <input type="number" id="traffic-points-spend" oninput="calculateTraffic()" placeholder="Nhập số lượng..." class="w-full bg-slate-950/80 border border-slate-700 rounded-xl px-4 py-3 text-lg font-bold text-slate-100 focus:outline-none focus:border-cyan-400">
                 </div>
 
                 <div class="bg-cyan-950/30 rounded-xl p-4 border border-cyan-500/30 text-center">
@@ -650,9 +663,11 @@
         // CÁC HÀM XỬ LÝ POPUP ĐỔI TRAFFIC
         window.openTrafficExchangeModal = function() {
             document.getElementById('traffic-available-points').innerText = (window.userMonthlyTaskPoints || 0).toLocaleString('vi-VN') + " P";
+            document.getElementById('traffic-available-balance').innerText = (window.currentBalance || 0).toLocaleString('vi-VN') + " đ";
             document.getElementById('traffic-link').value = '';
             document.getElementById('traffic-points-spend').value = '';
             document.getElementById('traffic-result-count').innerText = '0';
+            document.getElementById('traffic-payment-method').value = 'points';
             document.getElementById('traffic-modal').classList.remove('hidden');
             window.calculateTraffic(); // Cập nhật label loại tương tác
         };
@@ -662,9 +677,21 @@
         };
 
         window.calculateTraffic = function() {
-            let points = Number(document.getElementById('traffic-points-spend').value) || 0;
-            if(points < 0) points = 0;
-            let interactions = Math.floor(points / 50); // 1 lượt = 50 điểm
+            let amount = Number(document.getElementById('traffic-points-spend').value) || 0;
+            if(amount < 0) amount = 0;
+            
+            let paymentMethod = document.getElementById('traffic-payment-method').value;
+            let interactions = 0;
+            
+            if (paymentMethod === 'points') {
+                interactions = Math.floor(amount / 50); // 1 lượt = 50 điểm
+                document.getElementById('traffic-rate-hint').innerText = "1 Lượt = 50 Điểm";
+                document.getElementById('traffic-spend-label').innerText = "Số điểm tháng muốn dùng *";
+            } else {
+                interactions = Math.floor(amount / 100); // 1 lượt = 100 VNĐ
+                document.getElementById('traffic-rate-hint').innerText = "1 Lượt = 100 VNĐ";
+                document.getElementById('traffic-spend-label').innerText = "Số tiền VNĐ muốn dùng *";
+            }
             
             document.getElementById('traffic-result-count').innerText = interactions.toLocaleString('vi-VN');
             
@@ -776,9 +803,10 @@
                         document.getElementById('task-total-points').innerText = window.userTaskPoints.toLocaleString('vi-VN');
                         document.getElementById('task-monthly-points').innerText = window.userMonthlyTaskPoints.toLocaleString('vi-VN');
 
-                        // Cập nhật điểm khả dụng trong popup nếu nó đang mở
+                        // Cập nhật điểm và tiền khả dụng trong popup nếu nó đang mở
                         if(document.getElementById('traffic-available-points')) {
                             document.getElementById('traffic-available-points').innerText = window.userMonthlyTaskPoints.toLocaleString('vi-VN') + " P";
+                            document.getElementById('traffic-available-balance').innerText = window.currentBalance.toLocaleString('vi-VN') + " đ";
                         }
 
                         window.updateEstimatedIncome();
@@ -867,7 +895,8 @@
             if (!user) return;
 
             const link = document.getElementById('traffic-link').value.trim();
-            const pointsSpent = Number(document.getElementById('traffic-points-spend').value);
+            const amountSpent = Number(document.getElementById('traffic-points-spend').value);
+            const paymentMethod = document.getElementById('traffic-payment-method').value;
             
             const selectEl = document.getElementById('traffic-type');
             const typeValue = selectEl.value;
@@ -878,18 +907,28 @@
                 return;
             }
 
-            if (pointsSpent < 50) {
-                alert("Số điểm tối thiểu để quy đổi là 50 điểm (tương đương 1 lượt)!");
-                return;
+            // Xử lý kiểm tra theo phương thức thanh toán
+            if (paymentMethod === 'points') {
+                if (amountSpent < 50) {
+                    alert("Số điểm tối thiểu để quy đổi là 50 điểm (tương đương 1 lượt)!");
+                    return;
+                }
+                if (amountSpent > window.userMonthlyTaskPoints) {
+                    alert("Số điểm tháng hiện tại của bạn không đủ để thực hiện quy đổi này!");
+                    return;
+                }
+            } else {
+                if (amountSpent < 100) {
+                    alert("Số tiền tối thiểu để quy đổi là 100 VNĐ (tương đương 1 lượt)!");
+                    return;
+                }
+                if (amountSpent > window.currentBalance) {
+                    alert("Số dư VNĐ của bạn không đủ để thực hiện quy đổi này!");
+                    return;
+                }
             }
 
-            // CHỈ SỬ DỤNG ĐIỂM THÁNG NÀY ĐỂ ĐỔI
-            if (pointsSpent > window.userMonthlyTaskPoints) {
-                alert("Số điểm tháng hiện tại của bạn không đủ để thực hiện quy đổi này!");
-                return;
-            }
-
-            const interactions = Math.floor(pointsSpent / 50);
+            const interactions = paymentMethod === 'points' ? Math.floor(amountSpent / 50) : Math.floor(amountSpent / 100);
 
             const btn = document.getElementById('btn-submit-traffic');
             btn.innerHTML = 'Đang xử lý...';
@@ -901,78 +940,104 @@
                     const sysRef = doc(db, "system", "task_stats");
                     
                     const userDoc = await transaction.get(userRef);
-                    const sysDoc = await transaction.get(sysRef);
-                    
-                    if (!userDoc.exists() || !sysDoc.exists()) {
-                        throw new Error("Lỗi dữ liệu hệ thống!");
+                    // Chỉ lấy dữ liệu hệ thống nếu thanh toán bằng điểm
+                    let sysDoc = null;
+                    if (paymentMethod === 'points') {
+                        sysDoc = await transaction.get(sysRef);
                     }
-
+                    
+                    if (!userDoc.exists()) {
+                        throw new Error("Lỗi dữ liệu người dùng!");
+                    }
                     const userData = userDoc.data();
-                    const sysData = sysDoc.data();
 
-                    const currentTaskPoints = Number(userData.taskPoints || 0);
-                    const currentMonthlyPoints = Number(userData.monthlyTaskPoints || 0);
+                    if (paymentMethod === 'points') {
+                        if (!sysDoc || !sysDoc.exists()) throw new Error("Lỗi dữ liệu hệ thống!");
+                        const sysData = sysDoc.data();
 
-                    const sysTotalPoints = Number(sysData.totalPoints || 0);
-                    const sysMonthlyTotalPoints = Number(sysData.monthlyTotalPoints || 0);
+                        const currentTaskPoints = Number(userData.taskPoints || 0);
+                        const currentMonthlyPoints = Number(userData.monthlyTaskPoints || 0);
+                        const sysTotalPoints = Number(sysData.totalPoints || 0);
+                        const sysMonthlyTotalPoints = Number(sysData.monthlyTotalPoints || 0);
 
-                    // Kiểm tra lại lần nữa trong Transaction để đảm bảo điểm tháng không bị âm
-                    if (currentMonthlyPoints < pointsSpent) {
-                        throw new Error("Không đủ điểm tháng");
+                        if (currentMonthlyPoints < amountSpent) {
+                            throw new Error("Không đủ điểm tháng");
+                        }
+
+                        let deductTotal = amountSpent; 
+                        if (currentTaskPoints < deductTotal) {
+                            deductTotal = currentTaskPoints; 
+                        }
+                        
+                        let sysDeductTotal = amountSpent;
+                        if (sysTotalPoints < sysDeductTotal) sysDeductTotal = sysTotalPoints;
+                        let sysDeductMonthly = amountSpent;
+                        if (sysMonthlyTotalPoints < sysDeductMonthly) sysDeductMonthly = sysMonthlyTotalPoints;
+
+                        // Trừ điểm User
+                        transaction.update(userRef, {
+                            taskPoints: currentTaskPoints - deductTotal,
+                            monthlyTaskPoints: currentMonthlyPoints - amountSpent
+                        });
+
+                        // Trừ điểm Hệ thống
+                        transaction.update(sysRef, {
+                            totalPoints: sysTotalPoints - sysDeductTotal,
+                            monthlyTotalPoints: sysMonthlyTotalPoints - sysDeductMonthly
+                        });
+
+                        // Ghi nhận Request bằng Điểm
+                        const requestRef = doc(collection(db, "traffic_requests"));
+                        transaction.set(requestRef, {
+                            userId: user.uid,
+                            fullName: document.getElementById('user-fullname').innerText,
+                            link: link,
+                            type: typeValue,
+                            typeName: typeText,
+                            paymentMethod: 'points',
+                            pointsSpent: amountSpent,
+                            pointsTotalDeducted: deductTotal,
+                            sysMonthlyPointsDeducted: sysDeductMonthly,
+                            sysTotalPointsDeducted: sysDeductTotal,
+                            interactions: interactions,
+                            status: "pending", 
+                            timestamp: serverTimestamp()
+                        });
+
+                    } else { // THANH TOÁN BẰNG VNĐ
+                        const currentBal = Number(userData.balance || 0);
+                        if (currentBal < amountSpent) {
+                            throw new Error("Không đủ số dư VNĐ");
+                        }
+
+                        // Trừ số dư VNĐ
+                        transaction.update(userRef, {
+                            balance: currentBal - amountSpent
+                        });
+
+                        // Ghi nhận Request bằng VNĐ
+                        const requestRef = doc(collection(db, "traffic_requests"));
+                        transaction.set(requestRef, {
+                            userId: user.uid,
+                            fullName: document.getElementById('user-fullname').innerText,
+                            link: link,
+                            type: typeValue,
+                            typeName: typeText,
+                            paymentMethod: 'vnd',
+                            amountSpent: amountSpent,
+                            interactions: interactions,
+                            status: "pending", 
+                            timestamp: serverTimestamp()
+                        });
                     }
-
-                    // TÍNH TOÁN TRỪ ĐIỂM: Giờ đây việc trừ điểm sẽ dựa trên điểm tháng
-                    let deductTotal = pointsSpent; // Trừ tổng điểm bằng với số điểm tháng xuất ra
-                    if (currentTaskPoints < deductTotal) {
-                        deductTotal = currentTaskPoints; // Đề phòng trường hợp lỗi data tổng điểm nhỏ hơn điểm tháng
-                    }
-                    
-                    let sysDeductTotal = pointsSpent;
-                    if (sysTotalPoints < sysDeductTotal) {
-                        sysDeductTotal = sysTotalPoints;
-                    }
-
-                    let sysDeductMonthly = pointsSpent;
-                    if (sysMonthlyTotalPoints < sysDeductMonthly) {
-                        sysDeductMonthly = sysMonthlyTotalPoints;
-                    }
-
-                    // Cập nhật User
-                    transaction.update(userRef, {
-                        taskPoints: currentTaskPoints - deductTotal,
-                        monthlyTaskPoints: currentMonthlyPoints - pointsSpent
-                    });
-
-                    // Cập nhật Hệ thống
-                    transaction.update(sysRef, {
-                        totalPoints: sysTotalPoints - sysDeductTotal,
-                        monthlyTotalPoints: sysMonthlyTotalPoints - sysDeductMonthly
-                    });
-
-                    // Ghi nhận Request
-                    const requestRef = doc(collection(db, "traffic_requests"));
-                    transaction.set(requestRef, {
-                        userId: user.uid,
-                        fullName: document.getElementById('user-fullname').innerText,
-                        link: link,
-                        type: typeValue,
-                        typeName: typeText,
-                        pointsSpent: pointsSpent,
-                        pointsTotalDeducted: deductTotal, // Lưu lại điểm tổng đã trừ
-                        sysMonthlyPointsDeducted: sysDeductMonthly, // Lưu lại điểm tháng hệ thống đã trừ
-                        sysTotalPointsDeducted: sysDeductTotal, // Lưu lại điểm tổng hệ thống đã trừ
-                        interactions: interactions,
-                        status: "pending", 
-                        timestamp: serverTimestamp()
-                    });
                 });
 
                 alert(`Khởi tạo chiến dịch thành công!\nHệ thống đã ghi nhận yêu cầu ${interactions} lượt ${typeText} cho kênh của bạn.\nAdmin sẽ duyệt và đưa yêu cầu này lên Trung Tâm Nhiệm Vụ trong thời gian sớm nhất!`);
                 window.closeTrafficExchangeModal();
 
             } catch (error) {
-                console.error("Lỗi khi đổi điểm traffic:", error);
-                alert("Đã xảy ra lỗi kết nối hoặc không đủ điểm tháng, vui lòng kiểm tra lại!");
+                console.error("Lỗi khi đổi điểm/tiền traffic:", error);
+                alert("Đã xảy ra lỗi kết nối hoặc tài sản không đủ, vui lòng kiểm tra lại!");
             } finally {
                 btn.innerHTML = 'Xác Nhận Khởi Tạo';
                 btn.disabled = false;
