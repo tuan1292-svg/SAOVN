@@ -390,7 +390,29 @@
     }
 });
     </script>
-    <script src="https://pl31293590.profitableratecpmnetwork.com/d6/b9/db/d6b9dbd501d91680f3eaa2426d1a589b.js"></script>
+    <script>
+  (function() {
+    // Kiểm tra xem trình duyệt đã từng bật popup trong 24h qua chưa
+    var lastShown = localStorage.getItem('adsterra_pop_time');
+    var now = new Date().getTime();
+    var timeLimit = 24 * 60 * 60 * 1000; // 24 giờ (có thể đổi thành 1 * 60 * 60 * 1000 cho 1 giờ)
+
+    if (!lastShown || (now - parseInt(lastShown)) > timeLimit) {
+      // Nếu chưa bật hoặc đã qua 24h -> Tải mã Adsterra
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      // THAY ĐƯỜNG LINK SCRIPT ADSTERRA CỦA BẠN VÀO DÒNG DƯỚI DÂY:
+      s.src = 'https://pl31293590.profitableratecpmnetwork.com/d6/b9/db/d6b9dbd501d91680f3eaa2426d1a589b.js'; 
+      document.body.appendChild(s);
+
+      // Đánh dấu đã bật ngay cú click đầu tiên
+      window.addEventListener('click', function markPopup() {
+        localStorage.setItem('adsterra_pop_time', new Date().getTime());
+        window.removeEventListener('click', markPopup);
+      }, { once: true });
+    }
+  })();
+</script>
 
 </body>
 </html>
