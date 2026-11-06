@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi" class="scroll-smooth">
 <head>
@@ -401,6 +402,24 @@
 
     </main>
 
+    <!-- POPUP CẢNH BÁO TRÌNH DUYỆT CỐC CỐC -->
+    <div id="coccoc-warning-modal" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+        <div class="glass-card w-full max-w-md rounded-3xl p-6 border border-red-500/50 shadow-[0_0_40px_rgba(239,68,68,0.3)] text-center">
+            <div class="w-16 h-16 rounded-2xl bg-red-500/20 text-red-400 flex items-center justify-center text-3xl mx-auto mb-4 border border-red-500/30">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-lg font-extrabold text-red-400 uppercase tracking-wider mb-2">Trình Duyệt Không Được Hỗ Trợ</h3>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
+                Hệ thống phát hiện bạn đang sử dụng trình duyệt <strong class="text-white">Cốc Cốc</strong>. Tính năng tích lũy điểm và làm nhiệm vụ đã bị <strong class="text-red-400">tạm khóa</strong> trên trình duyệt này.<br><br>Vui lòng chuyển sang sử dụng <strong class="text-cyan-400">Google Chrome, Safari, Microsoft Edge hoặc Firefox</strong> để tiếp tục tham gia và nhận thưởng!
+            </p>
+            <div class="space-y-2">
+                <button onclick="copyCurrentLink()" class="w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-slate-950 text-xs font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                    <i class="fa-solid fa-copy mr-1"></i> Sao chép liên kết mở ở trình duyệt khác
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- POPUP ĐỔI ĐIỂM LẤY TRAFFIC -->
     <div id="traffic-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
         <div class="glass-card w-full max-w-md rounded-3xl p-6 border border-cyan-500/50 shadow-[0_0_40px_rgba(6,182,212,0.2)] relative max-h-[90vh] overflow-y-auto">
@@ -662,6 +681,10 @@
 
         // CÁC HÀM XỬ LÝ POPUP ĐỔI TRAFFIC
         window.openTrafficExchangeModal = function() {
+            if (window.isCocCocRestricted) {
+                alert("Trình duyệt Cốc Cốc bị hạn chế thực hiện tính năng này!");
+                return;
+            }
             document.getElementById('traffic-available-points').innerText = (window.userMonthlyTaskPoints || 0).toLocaleString('vi-VN') + " P";
             document.getElementById('traffic-available-balance').innerText = (window.currentBalance || 0).toLocaleString('vi-VN') + " đ";
             document.getElementById('traffic-link').value = '';
@@ -669,7 +692,7 @@
             document.getElementById('traffic-result-count').innerText = '0';
             document.getElementById('traffic-payment-method').value = 'points';
             document.getElementById('traffic-modal').classList.remove('hidden');
-            window.calculateTraffic(); // Cập nhật label loại tương tác
+            window.calculateTraffic();
         };
 
         window.closeTrafficExchangeModal = function() {
@@ -699,6 +722,31 @@
             let typeText = selectEl.options[selectEl.selectedIndex].text;
             document.getElementById('traffic-result-label').innerText = "Lượt " + typeText;
         };
+
+        // HÀM KIỂM TRA TRÌNH DUYỆT CỐC CỐC
+        window.isCocCocRestricted = false;
+        function checkCocCocBrowser() {
+            const ua = navigator.userAgent;
+            if (/coc[_\s]?coc/i.test(ua)) {
+                window.isCocCocRestricted = true;
+                const warningModal = document.getElementById('coccoc-warning-modal');
+                if (warningModal) {
+                    warningModal.classList.remove('hidden');
+                }
+                return true;
+            }
+            return false;
+        }
+
+        window.copyCurrentLink = function() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert("Đã sao chép liên kết! Hãy mở Google Chrome, Safari hoặc trình duyệt khác và dán vào để tiếp tục sử dụng.");
+            });
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            checkCocCocBrowser();
+        });
     </script>
 
     <!-- FIREBASE LOGIC -->
@@ -728,7 +776,6 @@
         window.activeVideoTaskId = null; 
         window.allProjectsData = {};
         
-        // CÁC BIẾN TÍNH TOÁN THEO THÁNG
         window.systemMonthlyPoints = 1; 
         window.systemMonthlyRevenue = 0;
         window.userTaskPoints = 0; 
@@ -740,7 +787,6 @@
             }
         });
 
-        // HÀM CẬP NHẬT TỶ TRỌNG & THU NHẬP ƯỚC TÍNH
         window.updateEstimatedIncome = function() {
             let percentage = window.userMonthlyTaskPoints / window.systemMonthlyPoints;
             if (percentage > 1) percentage = 1;
@@ -757,7 +803,6 @@
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // LẮNG NGHE QUỸ CHUNG TỪ HỆ THỐNG
                 const sysRef = doc(db, "system", "task_stats");
                 onSnapshot(sysRef, (sysSnap) => {
                     if (sysSnap.exists()) {
@@ -772,7 +817,6 @@
                     }
                 });
 
-                // LẮNG NGHE THÔNG TIN CỦA USER
                 const docRef = doc(db, "users", user.uid);
                 onSnapshot(docRef, (docSnap) => {
                     if (docSnap.exists()) {
@@ -803,7 +847,6 @@
                         document.getElementById('task-total-points').innerText = window.userTaskPoints.toLocaleString('vi-VN');
                         document.getElementById('task-monthly-points').innerText = window.userMonthlyTaskPoints.toLocaleString('vi-VN');
 
-                        // Cập nhật điểm và tiền khả dụng trong popup nếu nó đang mở
                         if(document.getElementById('traffic-available-points')) {
                             document.getElementById('traffic-available-points').innerText = window.userMonthlyTaskPoints.toLocaleString('vi-VN') + " P";
                             document.getElementById('traffic-available-balance').innerText = window.currentBalance.toLocaleString('vi-VN') + " đ";
@@ -815,7 +858,6 @@
                         document.getElementById('ref-link').innerText = `https://saovn.vercel.app/?ref=${phone}`;
                         document.getElementById('deposit-syntax').innerText = phone;
 
-                        // Ngân hàng
                         const bankInfo = data.bankInfo;
                         if (bankInfo) {
                             document.getElementById('saved-bank-display').classList.remove('hidden');
@@ -889,8 +931,12 @@
             }
         });
 
-        // ================= XỬ LÝ KHỞI TẠO CHIẾN DỊCH QUY ĐỔI TRAFFIC =================
         window.submitTrafficExchange = async function() {
+            if (window.isCocCocRestricted) {
+                alert("🚫 Trình duyệt Cốc Cốc bị hạn chế đổi điểm và tham gia nhiệm vụ. Vui lòng chuyển sang trình duyệt khác!");
+                return;
+            }
+
             const user = auth.currentUser;
             if (!user) return;
 
@@ -907,7 +953,6 @@
                 return;
             }
 
-            // Xử lý kiểm tra theo phương thức thanh toán
             if (paymentMethod === 'points') {
                 if (amountSpent < 50) {
                     alert("Số điểm tối thiểu để quy đổi là 50 điểm (tương đương 1 lượt)!");
@@ -940,7 +985,6 @@
                     const sysRef = doc(db, "system", "task_stats");
                     
                     const userDoc = await transaction.get(userRef);
-                    // Chỉ lấy dữ liệu hệ thống nếu thanh toán bằng điểm
                     let sysDoc = null;
                     if (paymentMethod === 'points') {
                         sysDoc = await transaction.get(sysRef);
@@ -974,19 +1018,16 @@
                         let sysDeductMonthly = amountSpent;
                         if (sysMonthlyTotalPoints < sysDeductMonthly) sysDeductMonthly = sysMonthlyTotalPoints;
 
-                        // Trừ điểm User
                         transaction.update(userRef, {
                             taskPoints: currentTaskPoints - deductTotal,
                             monthlyTaskPoints: currentMonthlyPoints - amountSpent
                         });
 
-                        // Trừ điểm Hệ thống
                         transaction.update(sysRef, {
                             totalPoints: sysTotalPoints - sysDeductTotal,
                             monthlyTotalPoints: sysMonthlyTotalPoints - sysDeductMonthly
                         });
 
-                        // Ghi nhận Request bằng Điểm
                         const requestRef = doc(collection(db, "traffic_requests"));
                         transaction.set(requestRef, {
                             userId: user.uid,
@@ -1004,18 +1045,16 @@
                             timestamp: serverTimestamp()
                         });
 
-                    } else { // THANH TOÁN BẰNG VNĐ
+                    } else {
                         const currentBal = Number(userData.balance || 0);
                         if (currentBal < amountSpent) {
                             throw new Error("Không đủ số dư VNĐ");
                         }
 
-                        // Trừ số dư VNĐ
                         transaction.update(userRef, {
                             balance: currentBal - amountSpent
                         });
 
-                        // Ghi nhận Request bằng VNĐ
                         const requestRef = doc(collection(db, "traffic_requests"));
                         transaction.set(requestRef, {
                             userId: user.uid,
@@ -1032,7 +1071,9 @@
                     }
                 });
 
-                alert(`Khởi tạo chiến dịch thành công!\nHệ thống đã ghi nhận yêu cầu ${interactions} lượt ${typeText} cho kênh của bạn.\nAdmin sẽ duyệt và đưa yêu cầu này lên Trung Tâm Nhiệm Vụ trong thời gian sớm nhất!`);
+                alert(`Khởi tạo chiến dịch thành công!
+Hệ thống đã ghi nhận yêu cầu ${interactions} lượt ${typeText} cho kênh của bạn.
+Admin sẽ duyệt và đưa yêu cầu này lên Trung Tâm Nhiệm Vụ trong thời gian sớm nhất!`);
                 window.closeTrafficExchangeModal();
 
             } catch (error) {
@@ -1044,7 +1085,6 @@
             }
         };
 
-        // ================= LOGIC DỰ ÁN =================
         window.loadProjects = function() {
             window.isProjectsLoaded = true;
             const q = query(collection(db, "investment_projects"));
@@ -1566,6 +1606,11 @@
         }
 
         window.sendProofViaZalo = async function(btnElement, taskId) {
+            if (window.isCocCocRestricted) {
+                alert("🚫 Trình duyệt Cốc Cốc bị hạn chế nộp báo cáo và nhận điểm. Vui lòng chuyển sang trình duyệt khác!");
+                return;
+            }
+
             const user = auth.currentUser;
             if (!user) { alert("Bạn cần đăng nhập!"); return; }
 
@@ -1592,11 +1637,18 @@
 
                 if (window.updateTaskUI) window.updateTaskUI(taskId, 'pending');
 
-                const messageText = `Chào Admin, mình nộp ảnh minh chứng:\n- Nhiệm vụ: ${taskTitle}\n- Nền tảng: ${taskPlatform}\n- MÃ BÁO CÁO: ${submissionId}\n\n(Ảnh minh chứng bên dưới👇)`;
+                const messageText = `Chào Admin, mình nộp ảnh minh chứng:
+- Nhiệm vụ: ${taskTitle}
+- Nền tảng: ${taskPlatform}
+- MÃ BÁO CÁO: ${submissionId}
+
+(Ảnh minh chứng bên dưới👇)`;
                 
                 try {
                     await navigator.clipboard.writeText(messageText);
-                    alert(`✅ Hệ thống đã tự động COPY cú pháp báo cáo!\n\nKhi Zalo mở ra, bạn chỉ cần bấm DÁN (Paste) vào khung chat và gửi kèm ảnh minh chứng là xong.`);
+                    alert(`✅ Hệ thống đã tự động COPY cú pháp báo cáo!
+
+Khi Zalo mở ra, bạn chỉ cần bấm DÁN (Paste) vào khung chat và gửi kèm ảnh minh chứng là xong.`);
                 } catch (err) {
                     console.log("Trình duyệt không hỗ trợ copy tự động.", err);
                 }
@@ -1610,6 +1662,11 @@
         };
 
         window.startExternalVideoTask = function(link, baseSeconds, taskId, points) {
+            if (window.isCocCocRestricted) {
+                alert("🚫 Trình duyệt Cốc Cốc bị hạn chế thực hiện xem video nhận điểm. Vui lòng chuyển sang trình duyệt khác!");
+                return;
+            }
+
             const crossTabLock = localStorage.getItem('saovn_video_lock');
             const now = Date.now();
             if (crossTabLock && (now - parseInt(crossTabLock)) < 300000) {
@@ -1631,12 +1688,6 @@
             let penaltySeconds = 0;
             let statusMessage = "Đang đếm ngược";
 
-            const currentTrust = window.userTrustScore || 100;
-            if (currentTrust < 80) {
-                penaltySeconds = 30; 
-                statusMessage = "Phạt 30s do Tín Nhiệm thấp";
-            }
-
             let totalRequiredSeconds = baseSeconds + randomOffset + penaltySeconds;
 
             actionArea.innerHTML = `
@@ -1653,7 +1704,6 @@
 
             let timeLeft = totalRequiredSeconds;
             const timerBtn = document.getElementById(`timer-btn-${taskId}`);
-            const claimBtn = document.getElementById(`claim-btn-${taskId}`);
 
             const countdown = setInterval(() => {
                 timeLeft--;
@@ -1671,6 +1721,8 @@
         };
 
         window.claimVideoPoints = async function(taskId, points) {
+            if (window.isCocCocRestricted) return;
+
             window.activeVideoTaskId = null; 
             localStorage.removeItem('saovn_video_lock');
 
@@ -1830,13 +1882,11 @@
             try {
                 const batch = writeBatch(db);
 
-                // Lệnh 1: Trừ tiền
                 const userRef = doc(db, "users", user.uid);
                 batch.update(userRef, {
                     balance: increment(-amount)
                 });
 
-                // Lệnh 2: Tạo lệnh rút
                 const withdrawRef = doc(collection(db, "withdrawals"));
                 batch.set(withdrawRef, {
                     userId: user.uid,
@@ -1847,7 +1897,6 @@
                     timestamp: new Date().toISOString()
                 });
 
-                // Thực thi đồng thời
                 await batch.commit();
 
                 alert("Tạo lệnh rút tiền thành công! Hệ thống đã ghi nhận và đang chờ admin xử lý.");
